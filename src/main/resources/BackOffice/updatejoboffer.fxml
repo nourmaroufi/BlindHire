@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.effect.*?>
+
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="Controller.BackOffice.joboffer.UpdateJobOfferController"
+            prefWidth="600" prefHeight="700"
+            style="-fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #667eea, #764ba2);">
+
+    <children>
+        <!-- Main Card -->
+        <VBox spacing="20"
+              AnchorPane.topAnchor="20" AnchorPane.leftAnchor="20"
+              AnchorPane.rightAnchor="20" AnchorPane.bottomAnchor="20"
+              style="-fx-background-color: white; -fx-background-radius: 30;
+                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 30, 0, 0, 10);">
+
+            <padding>
+                <Insets top="25" right="30" bottom="25" left="30" />
+            </padding>
+
+            <children>
+                <!-- Header -->
+                <HBox alignment="CENTER_LEFT" spacing="15">
+                    <StackPane style="-fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #667eea, #764ba2);
+                                      -fx-background-radius: 15; -fx-padding: 10;">
+                        <Label text="✏️" style="-fx-font-size: 28px;" />
+                    </StackPane>
+
+                    <VBox spacing="5">
+                        <Label text="Update Job Offer"
+                               style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
+                        <Label text="Make your job offer even better!"
+                               style="-fx-font-size: 13px; -fx-text-fill: #64748b;"/>
+                    </VBox>
+
+                    <Region HBox.hgrow="ALWAYS" />
+                </HBox>
+
+                <!-- Form Fields -->
+                <VBox spacing="15" VBox.vgrow="ALWAYS">
+                    <!-- Job Title -->
+                    <VBox spacing="5">
+                        <Label text="📋 Job Title"
+                               style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #475569;"/>
+                        <TextField fx:id="titleField"
+                                   promptText="e.g. Senior Software Developer"
+                                   style="-fx-background-radius: 15; -fx-border-radius: 15;
+                                          -fx-border-color: #e2e8f0; -fx-border-width: 1.5;
+                                          -fx-background-color: white; -fx-padding: 12 15;
+                                          -fx-font-size: 14px;"/>
+                    </VBox>
+
+                    <!-- Description -->
+                    <VBox spacing="5">
+                        <Label text="📝 Description"
+                               style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #475569;"/>
+                        <TextArea fx:id="descriptionField"
+                                  promptText="Describe the job position..."
+                                  prefHeight="100"
+                                  style="-fx-background-radius: 15; -fx-border-radius: 15;
+                                         -fx-border-color: #e2e8f0; -fx-border-width: 1.5;
+                                         -fx-background-color: white; -fx-font-size: 14px;
+                                         -fx-padding: 10;"
+                                  wrapText="true"/>
+                    </VBox>
+
+                    <!-- First Row -->
+                    <HBox spacing="15">
+
+
+                        <VBox spacing="5" HBox.hgrow="ALWAYS">
+                            <Label text="⏰ Job Type"
+                                   style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #475569;"/>
+                            <ComboBox fx:id="typeField"
+                                      promptText="Select type"
+                                      style="-fx-background-radius: 15; -fx-border-radius: 15;
+                                             -fx-border-color: #e2e8f0; -fx-border-width: 1.5;
+                                             -fx-background-color: white; -fx-padding: 5;
+                                             -fx-font-size: 14px;"
+                                      maxWidth="Infinity"/>
+                        </VBox>
+                    </HBox>
+
+                    <!-- Second Row -->
+                    <HBox spacing="15">
+                        <VBox spacing="5" HBox.hgrow="ALWAYS">
+                            <Label text="🔮 Status"
+                                   style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #475569;"/>
+                            <ComboBox fx:id="statusField"
+                                      promptText="Select status"
+                                      style="-fx-background-radius: 15; -fx-border-radius: 15;
+                                             -fx-border-color: #e2e8f0; -fx-border-width: 1.5;
+                                             -fx-background-color: white; -fx-padding: 5;
+                                             -fx-font-size: 14px;"
+                                      maxWidth="Infinity"/>
+                        </VBox>
+
+
+                    </HBox>
+
+                    <!-- Skills -->
+                    <VBox spacing="5">
+                        <Label text="🔧 Required Skills"
+                               style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #475569;"/>
+                        <TextField fx:id="skillsField"
+                                   promptText="e.g. Java, Python, Communication"
+                                   style="-fx-background-radius: 15; -fx-border-radius: 15;
+                                          -fx-border-color: #e2e8f0; -fx-border-width: 1.5;
+                                          -fx-background-color: white; -fx-padding: 12 15;
+                                          -fx-font-size: 14px;"/>
+                        <FlowPane fx:id="skillsPreview" hgap="8" vgap="8" style="-fx-padding: 5 0 0 0;"/>
+                    </VBox>
+                </VBox>
+
+                <!-- Action Buttons -->
+                <HBox spacing="15" alignment="CENTER">
+                    <Button fx:id="cancelButton"
+                            text="Cancel"
+                            onAction="#handleCancel"
+                            style="-fx-background-color: white; -fx-text-fill: #64748b;
+                                   -fx-border-color: #e2e8f0; -fx-border-width: 1.5;
+                                   -fx-border-radius: 20; -fx-background-radius: 20;
+                                   -fx-padding: 12 30; -fx-font-size: 14px;
+                                   -fx-font-weight: bold; -fx-cursor: hand;"/>
+
+                    <Button text="✨ Update Job Offer"
+                            onAction="#handleUpdate"
+                            style="-fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #667eea, #764ba2);
+                                   -fx-text-fill: white; -fx-background-radius: 20;
+                                   -fx-padding: 12 30; -fx-font-size: 14px;
+                                   -fx-font-weight: bold; -fx-cursor: hand;">
+                        <effect>
+                            <DropShadow color="#667eea80" radius="10" spread="0.1" />
+                        </effect>
+                    </Button>
+                </HBox>
+            </children>
+        </VBox>
+    </children>
+</AnchorPane>

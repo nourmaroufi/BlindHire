@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.shape.Circle?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="Controller.BackOffice.joboffer.JobOfferController"
+            prefHeight="600.0"
+            prefWidth="900.0">
+
+    <children>
+
+        <VBox spacing="15"
+              style="-fx-background-color: #f8fafc; -fx-padding: 20 30 10 30;"
+              AnchorPane.topAnchor="0.0"
+              AnchorPane.leftAnchor="0.0"
+              AnchorPane.rightAnchor="0.0">
+
+            <HBox alignment="CENTER_LEFT" spacing="15">
+                <Label text="📋 Job Offers"
+                       style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <Button fx:id="addJobButton"
+                        text="Add Job"
+                        onAction="#handleAddJob"
+                        style="-fx-background-radius: 12;
+                               -fx-background-insets: 0;
+                               -fx-background-color: linear-gradient(to right, #4f46e5, #3b82f6);
+                               -fx-text-fill: white;
+                               -fx-font-weight: bold;
+                               -fx-font-size: 14px;
+                               -fx-padding: 10 20;
+                               -fx-cursor: hand;
+                               -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 6, 0, 0, 2);">
+                    <graphic>
+                        <Text text="➕" style="-fx-font-size: 14px; -fx-fill: white;"/>
+                    </graphic>
+                </Button>
+            </HBox>
+
+            <!-- Navigation -->
+            <HBox spacing="25" alignment="CENTER_LEFT">
+                <Label fx:id="dashboardNav"
+                       text="Dashboard"
+                       style="-fx-font-size: 14px; -fx-text-fill: #64748b; -fx-cursor: hand;"
+                       onMouseClicked="#handleDashboard"/>
+
+                <Label fx:id="allJobsNav"
+                       text="All Jobs"
+                       style="-fx-font-size: 14px; -fx-text-fill: #64748b; -fx-cursor: hand;"
+                       onMouseClicked="#handleAllJobs"/>
+
+                <Label fx:id="messagesNav"
+                       text="Messages"
+                       style="-fx-font-size: 14px; -fx-text-fill: #64748b; -fx-cursor: hand;"
+                       onMouseClicked="#handleMessages"/>
+
+                <Label fx:id="applicationsNav"
+                       text="Applications"
+                       style="-fx-font-size: 14px; -fx-text-fill: #64748b; -fx-cursor: hand;"
+                       onMouseClicked="#handleApplications"/>
+
+                <Label fx:id="scheduleNav"
+                       text="Schedule"
+                       style="-fx-font-size: 14px; -fx-text-fill: #64748b; -fx-cursor: hand;"
+                       onMouseClicked="#handleSchedule"/>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <HBox spacing="10"
+                      alignment="CENTER_RIGHT"
+                      style="-fx-cursor: hand;"
+                      onMouseClicked="#handleProfile">
+                    <Circle radius="16" fill="#2563eb" stroke="WHITE" strokeWidth="2"/>
+                    <Label text="Sandy Chen"
+                           style="-fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
+                </HBox>
+            </HBox>
+
+            <Separator style="-fx-background-color: #e2e8f0;"/>
+        </VBox>
+
+        <!-- Content Area - positioned below the header -->
+        <StackPane fx:id="contentArea"
+                   AnchorPane.topAnchor="120.0"
+                   AnchorPane.leftAnchor="0.0"
+                   AnchorPane.rightAnchor="0.0"
+                   AnchorPane.bottomAnchor="0.0"
+                   style="-fx-background-color: #f5f7fa;"/>
+    </children>
+</AnchorPane>

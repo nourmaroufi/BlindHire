@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.effect.*?>
+<?import java.lang.String?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="Controller.BackOffice.joboffer.JobOfferDetailsController"
+            prefWidth="650" prefHeight="600"
+            style="-fx-background-color: #f0f4f8;">
+
+    <!-- Decorative background elements -->
+    <children>
+        <Circle fill="#2563eb08" radius="200" layoutX="-50" layoutY="-50" />
+        <Circle fill="#26d0ce08" radius="150" layoutX="500" layoutY="450" />
+        <Rectangle fill="white" arcWidth="20" arcHeight="20"
+                   AnchorPane.topAnchor="10" AnchorPane.leftAnchor="10"
+                   AnchorPane.rightAnchor="10" AnchorPane.bottomAnchor="10"
+                   style="-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 20, 0, 0, 5);" />
+
+        <!-- Main Content Card -->
+        <VBox spacing="20" AnchorPane.topAnchor="30" AnchorPane.leftAnchor="30"
+              AnchorPane.rightAnchor="30" AnchorPane.bottomAnchor="30">
+
+            <!-- Header with accent bar -->
+            <VBox spacing="15">
+                <!-- Title with accent bar -->
+                <HBox alignment="CENTER_LEFT" spacing="15">
+                    <Rectangle width="5" height="40" arcWidth="5" arcHeight="5"
+                               style="-fx-fill: linear-gradient(to bottom, #1a2980, #26d0ce);"/>
+                    <Label fx:id="titleLabel"
+                           text="Job Title"
+                           style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #0f172a;"/>
+                </HBox>
+
+                <!-- Status Badge -->
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label fx:id="statusBadge" text="Active"
+                           style="-fx-background-color: #10b98115; -fx-text-fill: #10b981;
+                                  -fx-padding: 4 12; -fx-background-radius: 20;
+                                  -fx-font-size: 12px; -fx-font-weight: bold;"/>
+                </HBox>
+            </VBox>
+
+            <!-- Company/Recruiter Card -->
+            <VBox spacing="10" style="-fx-background-color: #ffffff; -fx-background-radius: 16;
+                                       -fx-border-color: #e2e8f0; -fx-border-width: 1;
+                                       -fx-border-radius: 16; -fx-padding: 15;">
+
+                <HBox spacing="15" alignment="CENTER_LEFT">
+                    <!-- Avatar Placeholder -->
+                    <StackPane style="-fx-background-color: linear-gradient(to bottom right, #1a2980, #26d0ce);
+                                      -fx-background-radius: 12; -fx-min-width: 50; -fx-min-height: 50;">
+                        <Label text="🏢" style="-fx-font-size: 24px; -fx-text-fill: white;"/>
+                    </StackPane>
+
+                    <VBox spacing="5">
+                        <Label text="Recruiter" style="-fx-font-size: 12px; -fx-text-fill: #64748b;"/>
+                        <Label fx:id="recruiterLabel" text="Recruiter Name"
+                               style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #0f172a;"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+
+            <!-- Job Details Grid -->
+            <GridPane hgap="20" vgap="15" style="-fx-padding: 5 0;">
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="50"/>
+                    <ColumnConstraints percentWidth="50"/>
+                </columnConstraints>
+
+                <!-- Posting Date -->
+                <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                    <Label text="📅 Posting Date"
+                           style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #64748b;"/>
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Circle radius="4" fill="#2563eb"/>
+                        <Label fx:id="dateLabel" text="Posted 2 days ago"
+                               style="-fx-font-size: 15px; -fx-font-weight: 600; -fx-text-fill: #0f172a;"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Job Type -->
+                <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                    <Label text="⏰ Job Type"
+                           style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #64748b;"/>
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Circle radius="4" fill="#26d0ce"/>
+                        <Label fx:id="typeLabel" text="Full-time"
+                               style="-fx-font-size: 15px; -fx-font-weight: 600; -fx-text-fill: #0f172a;"/>
+                    </HBox>
+                </VBox>
+            </GridPane>
+
+            <!-- Description Section -->
+            <VBox spacing="10" VBox.vgrow="ALWAYS">
+                <Label text="📝 Job Description"
+                       style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #0f172a;"/>
+
+                <TextArea fx:id="descriptionArea" editable="false" wrapText="true"
+                          style="-fx-background-color: #ffffff; -fx-border-color: #e2e8f0;
+                                 -fx-border-width: 1; -fx-border-radius: 12; -fx-background-radius: 12;
+                                 -fx-padding: 15; -fx-font-size: 14px; -fx-text-fill: #334155;"
+                          VBox.vgrow="ALWAYS"/>
+            </VBox>
+
+            <!-- Skills Section -->
+            <VBox spacing="10">
+                <Label text="🔧 Required Skills"
+                       style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #0f172a;"/>
+                <FlowPane fx:id="skillsContainer" hgap="8" vgap="8"/>
+            </VBox>
+
+            <!-- Action Buttons -->
+            <!-- Action Buttons -->
+            <HBox spacing="12" alignment="CENTER_RIGHT">
+                <Button text="Delete"
+                        onAction="#handleDelete"
+                        style="-fx-background-color: white; -fx-text-fill: #dc2626;
+                   -fx-border-color: #dc2626; -fx-border-width: 1.5;
+                   -fx-border-radius: 12; -fx-background-radius: 12;
+                   -fx-padding: 12 30; -fx-font-size: 14px;
+                   -fx-font-weight: bold; -fx-cursor: hand;"/>
+
+                <Button text="Modify"
+                        onAction="#goToModify"
+                        style="-fx-background-color: linear-gradient(to right, #1a2980, #26d0ce);
+                   -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;
+                   -fx-background-radius: 12; -fx-padding: 12 30; -fx-cursor: hand;">
+                    <effect>
+                        <DropShadow color="#1a298080" radius="8" spread="0.1" />
+                    </effect>
+                </Button>
+
+                <Button text="View Applications"
+                        onAction="#handleViewApplications"
+                        style="-fx-background-color: linear-gradient(to right, #4f46e5, #3b82f6);
+               -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;
+               -fx-background-radius: 12; -fx-padding: 12 25; -fx-cursor: hand;"/>
+
+                <Button text="Close" onAction="#handleClose"
+                        style="-fx-background-color: white; -fx-text-fill: #64748b;
+                   -fx-border-color: #e2e8f0; -fx-border-width: 1.5;
+                   -fx-border-radius: 12; -fx-background-radius: 12;
+                   -fx-padding: 12 30; -fx-font-size: 14px;
+                   -fx-font-weight: bold; -fx-cursor: hand;"/>
+            </HBox>
+        </VBox>
+    </children>
+</AnchorPane>

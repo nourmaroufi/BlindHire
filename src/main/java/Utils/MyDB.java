@@ -1,48 +1,35 @@
-package Utils;
+package utils;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class MyDB {
-    private final String URL = "jdbc:mysql://localhost:3306/blindhire?autoReconnect=true&useSSL=false";
-    private final String USERNAME = "root";
+public class Mydb {
+    private final String URL = "jdbc:mysql://localhost:3306/blindhire";
+    private final String USER = "root";
     private final String PASSWORD = "";
-
     private Connection connection;
-    private static MyDB instance;
+    private static Mydb instance;
 
-    private MyDB() {
-        connect();
-    }
-
-    private void connect() {
+    private Mydb() {
         try {
-            connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-            System.out.println("DB connected.");
+            this.connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/blindhire", "root", "");
+            System.out.println("Connected to the database");
         } catch (SQLException e) {
-            System.err.println("DB connection failed: " + e.getMessage());
+            System.err.println(e.getMessage());
         }
+
     }
 
-    public static MyDB getInstance() {
+    public static Mydb getInstance() {
         if (instance == null) {
-            instance = new MyDB();
+            instance = new Mydb();
         }
+
         return instance;
     }
 
     public Connection getConnection() {
-        try {
-            // If connection is closed or invalid, reconnect
-            if (connection == null || connection.isClosed() || !connection.isValid(2)) {
-                System.out.println("Connection lost, reconnecting...");
-                connect();
-            }
-        } catch (SQLException e) {
-            System.err.println("Error checking connection: " + e.getMessage());
-            connect();
-        }
-        return connection;
+        return this.connection;
     }
 }
