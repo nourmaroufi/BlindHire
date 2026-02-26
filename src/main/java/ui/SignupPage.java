@@ -3,7 +3,10 @@ package ui;
 import Model.Role;
 import Model.User;
 import Service.userservice;
+import Utils.ApiService;
+import Utils.PdfReader;
 import javafx.animation.FadeTransition;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -14,17 +17,20 @@ import javafx.scene.shape.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.util.Duration;
+
+import java.io.File;
 
 public class SignupPage {
 
     private StackPane root;
 
     // Basic fields
-    private TextField    firstnameField;
-    private TextField    lastnameField;
+    private TextField     firstnameField;
+    private TextField     lastnameField;
     private ComboBox<String> typeComboBox;
-    private TextField    emailField;
+    private TextField     emailField;
     private PasswordField passwordField;
 
     // Client-only fields
@@ -32,11 +38,12 @@ public class SignupPage {
     private TextField diplomasField;
     private TextField experienceField;
     private TextArea  bioArea;
+    private VBox      clientSection;
 
-    // The box that wraps client-only fields (shown/hidden dynamically)
-    private VBox clientSection;
-
+    // Status labels
     private Label errorLabel;
+    private Label nameStatusLabel;
+    private Label cvStatusLabel;
 
     public SignupPage() {
         createUI();
@@ -45,32 +52,26 @@ public class SignupPage {
     private void createUI() {
         root = new StackPane();
         root.setStyle("-fx-background-color: #f5f5f5;");
-        root.getChildren().addAll(createBackgroundShapes(), createContent());
+        root.getChildren().addAll(createBackground(), createContent());
     }
 
     // ─── BACKGROUND ───────────────────────────────────────────────────────────
 
-    private Pane createBackgroundShapes() {
+    private Pane createBackground() {
         Pane pane = new Pane();
-
         Path wave = new Path();
-        wave.setFill(Color.web("#A8E6F5"));
-        wave.setLayoutX(0); wave.setLayoutY(410);
+        wave.setFill(Color.web("#A8E6F5")); wave.setLayoutX(0); wave.setLayoutY(410);
         wave.getElements().addAll(new MoveTo(0,0), new CubicCurveTo(150,-50,300,50,450,0),
                 new LineTo(450,130), new LineTo(0,130), new ClosePath());
-
         Path right = new Path();
-        right.setFill(Color.web("#6BA3BE"));
-        right.setLayoutX(450); right.setLayoutY(0);
+        right.setFill(Color.web("#6BA3BE")); right.setLayoutX(450); right.setLayoutY(0);
         right.getElements().addAll(new MoveTo(0,0), new LineTo(510,0), new LineTo(510,600),
                 new CubicCurveTo(350,400,200,300,0,200), new ClosePath());
-
         Path overlay = new Path();
         overlay.setFill(Color.web("#87CEEB")); overlay.setOpacity(0.5);
         overlay.setLayoutX(400); overlay.setLayoutY(0);
         overlay.getElements().addAll(new MoveTo(0,0), new CubicCurveTo(50,100,100,200,150,300),
                 new LineTo(560,300), new LineTo(560,0), new ClosePath());
-
         pane.getChildren().addAll(wave, right, overlay);
         return pane;
     }
@@ -79,8 +80,6 @@ public class SignupPage {
 
     private BorderPane createContent() {
         BorderPane bp = new BorderPane();
-
-        // Top bar
         HBox topBox = new HBox(20);
         topBox.setPadding(new Insets(20));
         Button backBtn = new Button("← back");
@@ -89,50 +88,57 @@ public class SignupPage {
         topBox.getChildren().addAll(createLogo(), backBtn);
         bp.setTop(topBox);
 
-        // Scrollable center
-        ScrollPane scroll = new ScrollPane(createForm());
+        ScrollPane scroll = new ScrollPane(buildForm());
         scroll.setFitToWidth(true);
         scroll.setStyle("-fx-background-color: transparent; -fx-background: transparent;");
         bp.setCenter(scroll);
-
         return bp;
     }
 
-    private VBox createForm() {
+    // ─── FORM ─────────────────────────────────────────────────────────────────
+
+    private VBox buildForm() {
         VBox center = new VBox(20);
         center.setAlignment(Pos.CENTER);
         center.setPadding(new Insets(20, 40, 40, 40));
 
         VBox card = new VBox(16);
         card.setAlignment(Pos.CENTER);
-        card.setMaxWidth(620);
-        card.setStyle(
-                "-fx-background-color: rgba(168,230,245,0.5);" +
-                        "-fx-background-radius: 30; -fx-padding: 36;"
-        );
+        card.setMaxWidth(640);
+        card.setStyle("-fx-background-color: rgba(168,230,245,0.5); -fx-background-radius: 30; -fx-padding: 36;");
 
         Text title = new Text("Create Account");
         title.setFill(Color.web("#2C3E50"));
         title.setFont(Font.font("System", FontWeight.BOLD, 34));
 
-        // ── Row 1: firstname + lastname ──
-        HBox row1 = new HBox(15);
-        firstnameField = makeField("First name", 250);
-        lastnameField  = makeField("Last name",  250);
-        row1.getChildren().addAll(firstnameField, lastnameField);
+        // ── Name row + Generate button ──
+        VBox nameGroup = new VBox(6);
+        HBox nameRow = new HBox(10);
+        nameRow.setAlignment(Pos.CENTER_LEFT);
 
-        // ── Row 2: role + email ──
+        firstnameField = makeField("First name", 190);
+        lastnameField  = makeField("Last name",  190);
+
+        Button genNameBtn = new Button("🎲 Blind Name");
+        genNameBtn.setStyle(
+                "-fx-background-color: #4A9DB5; -fx-text-fill: white;" +
+                        "-fx-background-radius: 20; -fx-padding: 10 14;" +
+                        "-fx-font-size: 12px; -fx-cursor: hand;"
+        );
+        genNameBtn.setOnAction(e -> handleGenerateName(genNameBtn));
+        nameRow.getChildren().addAll(firstnameField, lastnameField, genNameBtn);
+
+        nameStatusLabel = new Label("Click 🎲 to auto-generate a blind/anonymous name");
+        nameStatusLabel.setFont(Font.font(11));
+        nameStatusLabel.setTextFill(Color.web("#666"));
+        nameGroup.getChildren().addAll(nameRow, nameStatusLabel);
+
+        // ── Role + Email row ──
         HBox row2 = new HBox(15);
-
         typeComboBox = new ComboBox<>();
         typeComboBox.setPromptText("I am a...");
-        // ── admin is intentionally excluded ──
-        typeComboBox.getItems().addAll("recruteur", "client");
-        typeComboBox.setStyle(
-                "-fx-background-color: #f0f0f0; -fx-background-radius: 25;" +
-                        "-fx-font-size: 14px; -fx-pref-width: 250;"
-        );
-
+        typeComboBox.getItems().addAll("recruteur", "client"); // admin excluded from signup
+        typeComboBox.setStyle("-fx-background-color: #f0f0f0; -fx-background-radius: 25; -fx-font-size: 14px; -fx-pref-width: 250;");
         emailField = makeField("Email", 250);
         row2.getChildren().addAll(typeComboBox, emailField);
 
@@ -141,12 +147,11 @@ public class SignupPage {
         passwordField.setPromptText("Password (min 6 chars, letter + number)");
         passwordField.setStyle(fieldCss(515));
 
-        // ── Client-only section (hidden by default) ──
+        // ── Client section (hidden until "client" is selected) ──
         clientSection = buildClientSection();
         clientSection.setVisible(false);
         clientSection.setManaged(false);
 
-        // Show/hide client section when role changes
         typeComboBox.setOnAction(e -> {
             boolean isClient = "client".equals(typeComboBox.getValue());
             clientSection.setVisible(isClient);
@@ -162,9 +167,9 @@ public class SignupPage {
         errorLabel.setTextFill(Color.RED);
         errorLabel.setFont(Font.font(12));
         errorLabel.setWrapText(true);
-        errorLabel.setMaxWidth(500);
+        errorLabel.setMaxWidth(530);
 
-        // ── Signup button ──
+        // ── Submit ──
         Button signupBtn = new Button("Sign Up");
         signupBtn.setStyle(
                 "-fx-background-color: #3E4A5E; -fx-text-fill: white;" +
@@ -177,7 +182,7 @@ public class SignupPage {
         loginLink.setStyle("-fx-text-fill: #4A9DB5; -fx-font-size: 13px;");
         loginLink.setOnAction(e -> BlindHireApp.loadScene(new LoginPage().getRoot(), 960, 540));
 
-        card.getChildren().addAll(title, row1, row2, passwordField, clientSection, errorLabel, signupBtn, loginLink);
+        card.getChildren().addAll(title, nameGroup, row2, passwordField, clientSection, errorLabel, signupBtn, loginLink);
         center.getChildren().add(card);
         return center;
     }
@@ -186,49 +191,148 @@ public class SignupPage {
 
     private VBox buildClientSection() {
         VBox section = new VBox(14);
-        section.setMaxWidth(515);
+        section.setMaxWidth(530);
 
         Separator sep = new Separator();
-        sep.setStyle("-fx-background-color: rgba(0,0,0,0.1);");
-
         Label sectionTitle = new Label("📋  Your Professional Profile");
         sectionTitle.setFont(Font.font("System", FontWeight.BOLD, 14));
         sectionTitle.setTextFill(Color.web("#2C3E50"));
 
-        // Skills
-        skillsArea = makeTextArea(
-                "Your skills (e.g. Java, Python, Project Management, Communication...)", 80);
+        // ── CV Upload + status ──
+        VBox cvGroup = new VBox(6);
+        Label cvLabel = new Label("📄  Upload your CV (PDF)");
+        cvLabel.setStyle("-fx-text-fill: #3E4A5E; -fx-font-size: 12px; -fx-font-weight: bold;");
 
-        // Diplomas
-        diplomasField = makeField("Highest diploma (e.g. Bachelor in Computer Science)", 515);
+        HBox cvRow = new HBox(12);
+        cvRow.setAlignment(Pos.CENTER_LEFT);
 
-        // Experience
-        experienceField = makeField("Years of experience (e.g. 3 years in software development)", 515);
+        Button uploadBtn = new Button("📂 Choose CV file");
+        uploadBtn.setStyle(
+                "-fx-background-color: #3E4A5E; -fx-text-fill: white;" +
+                        "-fx-background-radius: 20; -fx-padding: 10 18;" +
+                        "-fx-font-size: 13px; -fx-cursor: hand;"
+        );
 
-        // Bio
-        bioArea = makeTextArea("Short bio — tell employers about yourself...", 70);
+        cvStatusLabel = new Label("No file chosen");
+        cvStatusLabel.setFont(Font.font(12));
+        cvStatusLabel.setTextFill(Color.web("#888"));
+
+        uploadBtn.setOnAction(e -> handleCvUpload(uploadBtn));
+        cvRow.getChildren().addAll(uploadBtn, cvStatusLabel);
+        cvGroup.getChildren().addAll(cvLabel, cvRow);
+
+        // ── Professional fields ──
+        skillsArea      = makeTextArea("Skills (auto-filled from CV, or type manually)...", 70);
+        diplomasField   = makeField("Diploma / Education", 515);
+        experienceField = makeField("Years & domain of experience", 515);
+        bioArea         = makeTextArea("Short bio (optional)...", 60);
 
         section.getChildren().addAll(
-                sep,
-                sectionTitle,
-                labeledField("🛠  Skills", skillsArea),
-                labeledField("🎓  Diploma", diplomasField),
-                labeledField("💼  Experience", experienceField),
-                labeledField("📝  Bio", bioArea)
+                sep, sectionTitle, cvGroup,
+                labeledField("🛠  Skills *",      skillsArea),
+                labeledField("🎓  Diploma *",     diplomasField),
+                labeledField("💼  Experience *",  experienceField),
+                labeledField("📝  Bio",            bioArea)
         );
         return section;
     }
 
-    private VBox labeledField(String label, Control field) {
-        VBox g = new VBox(5);
-        Label lbl = new Label(label);
-        lbl.setStyle("-fx-text-fill: #3E4A5E; -fx-font-size: 12px; -fx-font-weight: bold;");
-        g.getChildren().addAll(lbl, field);
-        return g;
+    // ─── HANDLERS ─────────────────────────────────────────────────────────────
+
+    /**
+     * Calls randomuser.me on a background thread, then fills the name fields.
+     */
+    private void handleGenerateName(Button btn) {
+        btn.setDisable(true);
+        btn.setText("...");
+        nameStatusLabel.setText("Fetching random name...");
+        nameStatusLabel.setTextFill(Color.web("#666"));
+
+        Thread t = new Thread(() -> {
+            String[] name = ApiService.fetchRandomName();
+            Platform.runLater(() -> {
+                btn.setDisable(false);
+                btn.setText("🎲 Blind Name");
+                if (name != null) {
+                    firstnameField.setText(name[0]);
+                    lastnameField.setText(name[1]);
+                    nameStatusLabel.setText("✅ Blind name generated — your real identity stays private!");
+                    nameStatusLabel.setTextFill(Color.web("#27ae60"));
+                } else {
+                    nameStatusLabel.setText("⚠ Could not reach randomuser.me — check your internet connection.");
+                    nameStatusLabel.setTextFill(Color.web("#e74c3c"));
+                }
+            });
+        });
+        t.setDaemon(true);
+        t.start();
     }
 
-    // ─── VALIDATION & SUBMIT ──────────────────────────────────────────────────
+    /**
+     * Opens a file chooser, reads the PDF text locally with PDFBox,
+     * sends it to Gemini on a background thread, then auto-fills the fields.
+     */
+    private void handleCvUpload(Button uploadBtn) {
+        FileChooser fc = new FileChooser();
+        fc.setTitle("Select your CV");
+        fc.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("PDF Files", "*.pdf")
+        );
 
+        File file = fc.showOpenDialog(root.getScene().getWindow());
+        if (file == null) return;
+
+        cvStatusLabel.setText("📖 Reading CV...");
+        cvStatusLabel.setTextFill(Color.web("#4A9DB5"));
+        uploadBtn.setDisable(true);
+
+        Thread t = new Thread(() -> {
+            // Step 1: extract text locally with PDFBox
+            String pdfText = PdfReader.extractText(file);
+
+            if (pdfText == null || pdfText.isEmpty()) {
+                Platform.runLater(() -> {
+                    uploadBtn.setDisable(false);
+                    cvStatusLabel.setText("❌ Could not read PDF. Make sure it's not a scanned image.");
+                    cvStatusLabel.setTextFill(Color.web("#e74c3c"));
+                });
+                return;
+            }
+
+            // Step 2: send to Gemini
+            Platform.runLater(() -> cvStatusLabel.setText("🤖 Analyzing CV with Gemini AI..."));
+
+            ApiService.CvData data = ApiService.extractCvData(pdfText);
+
+            Platform.runLater(() -> {
+                uploadBtn.setDisable(false);
+                if (data == null) {
+                    cvStatusLabel.setText("❌ Gemini extraction failed. Fill fields manually.");
+                    cvStatusLabel.setTextFill(Color.web("#e74c3c"));
+                    return;
+                }
+
+                // Auto-fill the fields
+                if (data.skills != null && !data.skills.isEmpty())
+                    skillsArea.setText(data.skills);
+                if (data.diplomas != null && !data.diplomas.isEmpty())
+                    diplomasField.setText(data.diplomas);
+                if (data.experience != null && !data.experience.isEmpty())
+                    experienceField.setText(data.experience);
+                if (data.bio != null && !data.bio.isEmpty())
+                    bioArea.setText(data.bio);
+
+                cvStatusLabel.setText("✅ CV analyzed! Fields auto-filled — review and edit if needed.");
+                cvStatusLabel.setTextFill(Color.web("#27ae60"));
+            });
+        });
+        t.setDaemon(true);
+        t.start();
+    }
+
+    /**
+     * Validates all fields and registers the user.
+     */
     private void handleSignup() {
         String nom     = firstnameField.getText().trim();
         String prenom  = lastnameField.getText().trim();
@@ -236,7 +340,7 @@ public class SignupPage {
         String email   = emailField.getText().trim();
         String mdp     = passwordField.getText();
 
-        // ── Basic required fields ──
+        // ── Basic validation ──
         if (nom.isEmpty() || prenom.isEmpty() || typeStr == null || email.isEmpty() || mdp.isEmpty()) {
             showError("Please fill in all required fields."); return;
         }
@@ -262,27 +366,16 @@ public class SignupPage {
             showError("Password must contain at least one letter and one number."); return;
         }
 
-        // ── Client-specific required fields ──
-        String skills     = null;
-        String diplomas   = null;
-        String experience = null;
-        String bio        = null;
-
+        // ── Client-specific validation ──
+        String skills = null, diplomas = null, experience = null, bio = null;
         if ("client".equals(typeStr)) {
             skills     = skillsArea.getText().trim();
             diplomas   = diplomasField.getText().trim();
             experience = experienceField.getText().trim();
             bio        = bioArea.getText().trim();
-
-            if (skills.isEmpty()) {
-                showError("Please enter at least one skill."); return;
-            }
-            if (diplomas.isEmpty()) {
-                showError("Please enter your diploma / education."); return;
-            }
-            if (experience.isEmpty()) {
-                showError("Please describe your experience."); return;
-            }
+            if (skills.isEmpty())     { showError("Please enter at least one skill."); return; }
+            if (diplomas.isEmpty())   { showError("Please enter your diploma."); return; }
+            if (experience.isEmpty()) { showError("Please describe your experience."); return; }
         }
 
         // ── Register ──
@@ -300,15 +393,12 @@ public class SignupPage {
 
             switch (registered.getRole()) {
                 case admin:
-                    BlindHireApp.loadScene(new DashboardPage().getRoot(), 960, 540);
-                    break;
+                    BlindHireApp.loadScene(new DashboardPage().getRoot(), 960, 540); break;
                 case recruteur:
                 case client:
                 default:
-                    BlindHireApp.loadScene(new HomePage(registered).getRoot(), 960, 540);
-                    break;
+                    BlindHireApp.loadScene(new HomePage(registered).getRoot(), 960, 540); break;
             }
-
         } catch (IllegalArgumentException e) {
             showError(e.getMessage());
         } catch (Exception e) {
@@ -331,13 +421,18 @@ public class SignupPage {
         ta.setPromptText(prompt);
         ta.setPrefHeight(height);
         ta.setWrapText(true);
-        ta.setStyle(
-                "-fx-background-color: #f0f0f0; -fx-background-radius: 12;" +
-                        "-fx-padding: 10 16; -fx-font-size: 13px;" +
-                        "-fx-border-color: transparent; -fx-border-radius: 12;" +
-                        "-fx-pref-width: 515;"
-        );
+        ta.setStyle("-fx-background-color: #f0f0f0; -fx-background-radius: 12;" +
+                "-fx-padding: 10 16; -fx-font-size: 13px;" +
+                "-fx-border-color: transparent; -fx-border-radius: 12; -fx-pref-width: 515;");
         return ta;
+    }
+
+    private VBox labeledField(String label, javafx.scene.control.Control field) {
+        VBox g = new VBox(5);
+        Label lbl = new Label(label);
+        lbl.setStyle("-fx-text-fill: #3E4A5E; -fx-font-size: 12px; -fx-font-weight: bold;");
+        g.getChildren().addAll(lbl, field);
+        return g;
     }
 
     private String fieldCss(double width) {
