@@ -6,6 +6,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
@@ -162,10 +163,58 @@ public class LoginPage {
         );
         loginButton.setOnAction(e -> handleLogin());
 
-        Hyperlink forgotPasswordLink = new Hyperlink("forget password?");
+        Hyperlink forgotPasswordLink = new Hyperlink("Forgot password?");
         forgotPasswordLink.setStyle("-fx-text-fill: #4A9DB5; -fx-font-size: 13px;");
+        forgotPasswordLink.setOnAction(e -> BlindHireApp.loadScene(new ForgotPasswordPage().getRoot(), 960, 540));
 
-        formCard.getChildren().addAll(titleText, emailField, passwordField, errorLabel, loginButton, forgotPasswordLink);
+        // Divider
+        javafx.scene.control.Separator orSep = new javafx.scene.control.Separator();
+        javafx.scene.control.Label orLabel = new javafx.scene.control.Label("── or ──");
+        orLabel.setStyle("-fx-text-fill: #aaa; -fx-font-size: 12px;");
+        VBox orBox = new VBox(4, orSep, orLabel);
+        orBox.setAlignment(Pos.CENTER);
+
+        // Face login button
+        Button faceLoginBtn = new Button("📷  Login with Face");
+        faceLoginBtn.setStyle(
+                "-fx-background-color: #2C3E50; -fx-text-fill: white;" +
+                        "-fx-font-size: 13px; -fx-background-radius: 25;" +
+                        "-fx-padding: 11 24; -fx-cursor: hand;"
+        );
+        faceLoginBtn.setOnAction(e -> handleFaceLogin());
+
+        // Fingerprint login button
+        Button fpLoginBtn = new Button("🖐  Login with Fingerprint");
+        fpLoginBtn.setStyle(
+                "-fx-background-color: #2C3E50; -fx-text-fill: white;" +
+                        "-fx-font-size: 13px; -fx-background-radius: 25;" +
+                        "-fx-padding: 11 24; -fx-cursor: hand;"
+        );
+        fpLoginBtn.setOnAction(e -> handleFingerprintLogin(fpLoginBtn));
+
+        // Check availability — disable fingerprint button if Windows Hello not present
+        new Thread(() -> {
+            Service.FingerprintService.Result avail =
+                    Service.FingerprintService.checkAvailability();
+            javafx.application.Platform.runLater(() -> {
+                if (avail == Service.FingerprintService.Result.NOT_AVAILABLE
+                        || avail == Service.FingerprintService.Result.ERROR) {
+                    fpLoginBtn.setDisable(true);
+                    fpLoginBtn.setStyle(
+                            "-fx-background-color: #aaa; -fx-text-fill: white;" +
+                                    "-fx-font-size: 13px; -fx-background-radius: 25;" +
+                                    "-fx-padding: 11 24;"
+                    );
+                    fpLoginBtn.setTooltip(new Tooltip("Windows Hello not available on this device"));
+                }
+            });
+        }, "fp-check-thread").start();
+
+        HBox biometricRow = new HBox(12, faceLoginBtn, fpLoginBtn);
+        biometricRow.setAlignment(Pos.CENTER);
+
+        formCard.getChildren().addAll(titleText, emailField, passwordField,
+                errorLabel, loginButton, forgotPasswordLink, orBox, biometricRow);
         centerBox.getChildren().add(formCard);
         borderPane.setCenter(centerBox);
 
@@ -192,6 +241,57 @@ public class LoginPage {
         return logoBox;
     }
 
+    /**
+     * Fingerprint login flow:
+     *  1. Require email to look up the user
+     *  2. Check the user has fingerprint enabled in their account
+     *  3. Invoke Windows Hello — if verified, log in
+     */
+    private void handleFingerprintLogin(Button btn) {
+        String email = emailField.getText().trim();
+        if (email.isEmpty()) {
+            errorLabel.setText("Please enter your email first, then click Login with Fingerprint.");
+            return;
+        }
+
+        Service.userservice svc = new Service.userservice();
+        Model.User user = svc.getUserByEmail(email);
+
+        if (user == null) {
+            errorLabel.setText("No account found with this email.");
+            return;
+        }
+        if (!user.isVerified()) {
+            errorLabel.setText("Account not verified. Please verify first.");
+            return;
+        }
+        if (!user.isFingerprintEnabled()) {
+            errorLabel.setText("Fingerprint login not enabled for this account.\nUse password or face login.");
+            return;
+        }
+
+        btn.setDisable(true);
+        errorLabel.setTextFill(javafx.scene.paint.Color.web("#4A9DB5"));
+        errorLabel.setText("⏳ Waiting for Windows Hello...");
+
+        new Thread(() -> {
+            Service.FingerprintService.Result result =
+                    Service.FingerprintService.verify(
+                            "BlindHire — Login as " + user.getNom() + " " + user.getPrenom()
+                    );
+            javafx.application.Platform.runLater(() -> {
+                btn.setDisable(false);
+                errorLabel.setTextFill(javafx.scene.paint.Color.RED);
+                if (result == Service.FingerprintService.Result.SUCCESS) {
+                    svc.setCurrentUser(user);
+                    navigateByRole(user);
+                } else {
+                    errorLabel.setText(Service.FingerprintService.getResultMessage(result));
+                }
+            });
+        }, "fp-login-thread").start();
+    }
+
     private void handleBack() {
         WelcomePage welcomePage = new WelcomePage();
         BlindHireApp.loadScene(welcomePage.getRoot(), 960, 540);
@@ -210,6 +310,45 @@ public class LoginPage {
         }
     }
 
+    /**
+     * Opens the face capture dialog, then scans all users for a matching face.
+     * If found, logs in that user directly.
+     */
+    private void handleFaceLogin() {
+        // We need the email to know which user's face to compare against.
+        // If email is filled in, use that user. Otherwise scan all users.
+        String email = emailField.getText().trim();
+        Service.userservice svc = new Service.userservice();
+
+        if (!email.isEmpty()) {
+            // Email provided — look up that specific user
+            Model.User user = svc.getUserByEmail(email);
+            if (user == null) {
+                errorLabel.setText("No account found with this email.");
+                return;
+            }
+            if (user.getFaceData() == null || user.getFaceData().isEmpty()) {
+                errorLabel.setText("No face registered for this account. Use password login.");
+                return;
+            }
+            if (!user.isVerified()) {
+                errorLabel.setText("Account not verified. Please verify first.");
+                return;
+            }
+            // Open face dialog in AUTH mode for this specific user
+            FaceCaptureDialog dialog = new FaceCaptureDialog(FaceCaptureDialog.Mode.AUTH, user.getFaceData());
+            dialog.showAndWait();
+            if (dialog.isAuthSuccess()) {
+                svc.setCurrentUser(user);
+                navigateByRole(user);
+            } else {
+                errorLabel.setText("Face not recognized. Try again or use password.");
+            }
+        } else {
+            errorLabel.setText("Please enter your email first, then click Login with Face.");
+        }
+    }
+
     private void handleLogin() {
         String email = emailField.getText().trim();
         String password = passwordField.getText();
@@ -223,10 +362,23 @@ public class LoginPage {
             userservice userservice = new userservice();
             User user = userservice.authenticate(email, password);
             userservice.setCurrentUser(user);
-
             navigateByRole(user);
         } catch (IllegalArgumentException e) {
-            errorLabel.setText(e.getMessage());
+            // Special case: account exists but not yet verified
+            if ("UNVERIFIED".equals(e.getMessage())) {
+                try {
+                    userservice svc = new userservice();
+                    User unverified = svc.getUserByEmail(email);
+                    svc.setCurrentUser(unverified);
+                    // Resend a fresh code and go to verification
+                    svc.resendVerificationCode(unverified);
+                    BlindHireApp.loadScene(new VerificationPage(unverified).getRoot(), 960, 540);
+                } catch (Exception ex) {
+                    errorLabel.setText("Account not verified. Please check your email.");
+                }
+            } else {
+                errorLabel.setText(e.getMessage());
+            }
         } catch (Exception e) {
             errorLabel.setText("An error occurred. Please try again.");
             e.printStackTrace();

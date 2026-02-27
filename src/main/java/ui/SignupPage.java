@@ -40,6 +40,12 @@ public class SignupPage {
     private TextArea  bioArea;
     private VBox      clientSection;
 
+    // Phone field (shown for all roles)
+    private ComboBox<String> countryCodeCombo;
+    private TextField        phoneNumberField;
+    private String           capturedFaceData   = null;  // set after face capture
+    private boolean          fingerprintEnabled = false; // set after fingerprint enrollment
+
     // Status labels
     private Label errorLabel;
     private Label nameStatusLabel;
@@ -147,6 +153,129 @@ public class SignupPage {
         passwordField.setPromptText("Password (min 6 chars, letter + number)");
         passwordField.setStyle(fieldCss(515));
 
+        // ── Phone (country code dropdown + number) ──
+        HBox phoneRow = new HBox(10);
+        phoneRow.setAlignment(Pos.CENTER_LEFT);
+
+        countryCodeCombo = new ComboBox<>();
+        countryCodeCombo.getItems().addAll(
+                "🇹🇳 +216 Tunisia",     "🇩🇿 +213 Algeria",     "🇲🇦 +212 Morocco",
+                "🇱🇾 +218 Libya",       "🇪🇬 +20 Egypt",        "🇫🇷 +33 France",
+                "🇩🇪 +49 Germany",      "🇬🇧 +44 UK",           "🇺🇸 +1 USA",
+                "🇨🇦 +1 Canada",        "🇸🇦 +966 Saudi Arabia","🇦🇪 +971 UAE",
+                "🇶🇦 +974 Qatar",       "🇰🇼 +965 Kuwait",      "🇧🇭 +973 Bahrain",
+                "🇴🇲 +968 Oman",        "🇯🇴 +962 Jordan",      "🇱🇧 +961 Lebanon",
+                "🇸🇾 +963 Syria",       "🇮🇶 +964 Iraq",        "🇾🇪 +967 Yemen",
+                "🇸🇩 +249 Sudan",       "🇸🇴 +252 Somalia",     "🇩🇯 +253 Djibouti",
+                "🇲🇷 +222 Mauritania",  "🇸🇳 +221 Senegal",     "🇨🇮 +225 Côte d'Ivoire",
+                "🇳🇬 +234 Nigeria",     "🇬🇭 +233 Ghana",       "🇰🇪 +254 Kenya",
+                "🇿🇦 +27 South Africa", "🇪🇸 +34 Spain",        "🇮🇹 +39 Italy",
+                "🇵🇹 +351 Portugal",    "🇧🇪 +32 Belgium",      "🇨🇭 +41 Switzerland",
+                "🇳🇱 +31 Netherlands",  "🇸🇪 +46 Sweden",       "🇳🇴 +47 Norway",
+                "🇩🇰 +45 Denmark",      "🇵🇱 +48 Poland",       "🇹🇷 +90 Turkey",
+                "🇷🇺 +7 Russia",        "🇺🇦 +380 Ukraine",     "🇨🇳 +86 China",
+                "🇯🇵 +81 Japan",        "🇰🇷 +82 South Korea",  "🇮🇳 +91 India",
+                "🇧🇷 +55 Brazil",       "🇦🇷 +54 Argentina",    "🇲🇽 +52 Mexico",
+                "🇦🇺 +61 Australia",    "🇳🇿 +64 New Zealand"
+        );
+        countryCodeCombo.setValue("🇹🇳 +216 Tunisia"); // default
+        countryCodeCombo.setStyle(
+                "-fx-background-color: #f0f0f0; -fx-background-radius: 25;" +
+                        "-fx-font-size: 13px; -fx-pref-width: 230;"
+        );
+
+        phoneNumberField = makeField("Phone number", 265);
+        phoneRow.getChildren().addAll(countryCodeCombo, phoneNumberField);
+
+        // ── Biometrics section: Face + Fingerprint side by side ──
+        VBox faceGroup = new VBox(8);
+
+        Label bioTitle = new Label("🔐  Biometric Login (optional)");
+        bioTitle.setStyle("-fx-text-fill: #3E4A5E; -fx-font-size: 12px; -fx-font-weight: bold;");
+
+        // ── Face capture button + status ──
+        Button faceBtn = new Button("📷  Register Face");
+        faceBtn.setStyle(
+                "-fx-background-color: #3E4A5E; -fx-text-fill: white;" +
+                        "-fx-background-radius: 20; -fx-padding: 10 16;" +
+                        "-fx-font-size: 13px; -fx-cursor: hand;"
+        );
+        Label faceStatusLabel = new Label("Not registered");
+        faceStatusLabel.setFont(Font.font(11));
+        faceStatusLabel.setTextFill(Color.web("#888"));
+
+        VBox faceCol = new VBox(5, faceBtn, faceStatusLabel);
+        faceCol.setAlignment(Pos.CENTER);
+
+        faceBtn.setOnAction(e -> {
+            FaceCaptureDialog dialog = new FaceCaptureDialog();
+            dialog.showAndWait();
+            capturedFaceData = dialog.getCapturedFace();
+            if (capturedFaceData != null) {
+                faceStatusLabel.setText("✅ Registered");
+                faceStatusLabel.setTextFill(Color.web("#27ae60"));
+                faceBtn.setText("📷  Re-capture Face");
+            } else {
+                faceStatusLabel.setText("Cancelled");
+                faceStatusLabel.setTextFill(Color.web("#888"));
+            }
+        });
+
+        // ── Fingerprint button + status ──
+        // Check availability first — hide button if Windows Hello not present
+        Service.FingerprintService.Result fpAvail =
+                Service.FingerprintService.checkAvailability();
+        boolean fpAvailable = fpAvail != Service.FingerprintService.Result.NOT_AVAILABLE
+                && fpAvail != Service.FingerprintService.Result.ERROR;
+
+        Button fpBtn = new Button("🖐  Register Fingerprint");
+        fpBtn.setStyle(
+                "-fx-background-color: #3E4A5E; -fx-text-fill: white;" +
+                        "-fx-background-radius: 20; -fx-padding: 10 16;" +
+                        "-fx-font-size: 13px; -fx-cursor: hand;"
+        );
+        Label fpStatusLabel = new Label(
+                fpAvail == Service.FingerprintService.Result.NOT_CONFIGURED
+                        ? "⚠ Windows Hello not set up"
+                        : (fpAvailable ? "Not registered" : "Not available on this PC")
+        );
+        fpStatusLabel.setFont(Font.font(11));
+        fpStatusLabel.setTextFill(fpAvailable ? Color.web("#888") : Color.web("#bbb"));
+        fpBtn.setDisable(!fpAvailable);
+
+        VBox fpCol = new VBox(5, fpBtn, fpStatusLabel);
+        fpCol.setAlignment(Pos.CENTER);
+
+        fpBtn.setOnAction(e -> {
+            fpBtn.setDisable(true);
+            fpStatusLabel.setText("⏳ Waiting for Windows Hello...");
+            fpStatusLabel.setTextFill(Color.web("#4A9DB5"));
+            new Thread(() -> {
+                Service.FingerprintService.Result result =
+                        Service.FingerprintService.verify("BlindHire — Register your fingerprint");
+                javafx.application.Platform.runLater(() -> {
+                    fpBtn.setDisable(false);
+                    if (result == Service.FingerprintService.Result.SUCCESS) {
+                        fingerprintEnabled = true;
+                        fpStatusLabel.setText("✅ Registered");
+                        fpStatusLabel.setTextFill(Color.web("#27ae60"));
+                        fpBtn.setText("🖐  Re-verify");
+                    } else {
+                        fingerprintEnabled = false;
+                        fpStatusLabel.setText(Service.FingerprintService.getResultMessage(result));
+                        fpStatusLabel.setTextFill(Color.web("#e74c3c"));
+                    }
+                });
+            }, "fp-register-thread").start();
+        });
+
+        HBox bioRow = new HBox(30, faceCol, fpCol);
+        bioRow.setAlignment(Pos.CENTER_LEFT);
+
+        Label faceHint = new Label("💡 Register one or both to enable biometric login later");
+        faceHint.setStyle("-fx-text-fill: #888; -fx-font-size: 11px;");
+        faceGroup.getChildren().addAll(bioTitle, bioRow, faceHint);
+
         // ── Client section (hidden until "client" is selected) ──
         clientSection = buildClientSection();
         clientSection.setVisible(false);
@@ -182,7 +311,7 @@ public class SignupPage {
         loginLink.setStyle("-fx-text-fill: #4A9DB5; -fx-font-size: 13px;");
         loginLink.setOnAction(e -> BlindHireApp.loadScene(new LoginPage().getRoot(), 960, 540));
 
-        card.getChildren().addAll(title, nameGroup, row2, passwordField, clientSection, errorLabel, signupBtn, loginLink);
+        card.getChildren().addAll(title, nameGroup, row2, passwordField, phoneRow, faceGroup, clientSection, errorLabel, signupBtn, loginLink);
         center.getChildren().add(card);
         return center;
     }
@@ -299,15 +428,15 @@ public class SignupPage {
                 return;
             }
 
-            // Step 2: send to Gemini
-            Platform.runLater(() -> cvStatusLabel.setText("🤖 Analyzing CV with Gemini AI..."));
+            // Step 2: send to Groq
+            Platform.runLater(() -> cvStatusLabel.setText("🤖 Analyzing CV with Groq AI..."));
 
             ApiService.CvData data = ApiService.extractCvData(pdfText);
 
             Platform.runLater(() -> {
                 uploadBtn.setDisable(false);
                 if (data == null) {
-                    cvStatusLabel.setText("❌ Gemini extraction failed. Fill fields manually.");
+                    cvStatusLabel.setText("❌ Groq extraction failed. Fill fields manually.");
                     cvStatusLabel.setTextFill(Color.web("#e74c3c"));
                     return;
                 }
@@ -340,6 +469,18 @@ public class SignupPage {
         String email   = emailField.getText().trim();
         String mdp     = passwordField.getText();
 
+        // Extract phone: parse dial code from combo selection
+        String dialCode = "";
+        String comboVal = countryCodeCombo.getValue();
+        if (comboVal != null) {
+            // e.g. "🇹🇳 +216 Tunisia" → extract "+216"
+            int plusIdx = comboVal.indexOf('+');
+            int spaceAfter = comboVal.indexOf(' ', plusIdx);
+            if (plusIdx != -1 && spaceAfter != -1)
+                dialCode = comboVal.substring(plusIdx, spaceAfter);
+        }
+        String phoneNum = phoneNumberField.getText().trim();
+        String phone    = phoneNum.isEmpty() ? null : (dialCode + phoneNum);
         // ── Basic validation ──
         if (nom.isEmpty() || prenom.isEmpty() || typeStr == null || email.isEmpty() || mdp.isEmpty()) {
             showError("Please fill in all required fields."); return;
@@ -365,6 +506,9 @@ public class SignupPage {
         if (!mdp.matches(".*[a-zA-Z].*") || !mdp.matches(".*[0-9].*")) {
             showError("Password must contain at least one letter and one number."); return;
         }
+        if (!phoneNum.isEmpty() && !phoneNum.matches("[0-9]{5,15}")) {
+            showError("Phone number must contain digits only (e.g. 12345678)."); return;
+        }
 
         // ── Client-specific validation ──
         String skills = null, diplomas = null, experience = null, bio = null;
@@ -386,19 +530,16 @@ public class SignupPage {
             newUser.setDiplomas(diplomas);
             newUser.setExperience(experience);
             newUser.setBio(bio);
+            newUser.setPhone(phone);
+            newUser.setFaceData(capturedFaceData);
+            newUser.setFingerprintEnabled(fingerprintEnabled);
 
             userservice svc = new userservice();
             User registered = svc.register(newUser);
             svc.setCurrentUser(registered);
 
-            switch (registered.getRole()) {
-                case admin:
-                    BlindHireApp.loadScene(new DashboardPage().getRoot(), 960, 540); break;
-                case recruteur:
-                case client:
-                default:
-                    BlindHireApp.loadScene(new HomePage(registered).getRoot(), 960, 540); break;
-            }
+            // Always go to VerificationPage first — regardless of role
+            BlindHireApp.loadScene(new VerificationPage(registered).getRoot(), 960, 540);
         } catch (IllegalArgumentException e) {
             showError(e.getMessage());
         } catch (Exception e) {

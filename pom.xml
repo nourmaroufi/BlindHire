@@ -22,11 +22,11 @@
             <version>9.6.0</version>
         </dependency>
 
-        <!-- JavaMail API for sending emails -->
+        <!-- JavaMail -->
         <dependency>
             <groupId>com.sun.mail</groupId>
-            <artifactId>javax.mail</artifactId>
-            <version>1.6.2</version>
+            <artifactId>jakarta.mail</artifactId>
+            <version>2.0.1</version>
         </dependency>
 
         <!-- Activation Framework -->
@@ -36,60 +36,51 @@
             <version>1.1.1</version>
         </dependency>
 
-        <!-- JavaFX Dependencies - All with same version -->
+        <!-- JavaFX (single consistent version — 17.0.2 win) -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
-            <version>25</version>
+            <version>17.0.2</version>
+            <classifier>win</classifier>
         </dependency>
-
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
-            <version>25</version>
+            <version>17.0.2</version>
+            <classifier>win</classifier>
         </dependency>
-
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-base</artifactId>
-            <version>25</version>
+            <version>17.0.2</version>
+            <classifier>win</classifier>
         </dependency>
-
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-graphics</artifactId>
-            <version>25</version>
+            <version>17.0.2</version>
+            <classifier>win</classifier>
         </dependency>
-
-        <!-- Add platform-specific dependencies for Windows -->
         <dependency>
             <groupId>org.openjfx</groupId>
-            <artifactId>javafx-controls</artifactId>
-            <version>25</version>
+            <artifactId>javafx-swing</artifactId>
+            <version>17.0.2</version>
             <classifier>win</classifier>
         </dependency>
 
+        <!--
+            JavaCV 1.5.10 — bundles OpenCV + all Windows native libs automatically.
+            ⚠ DO NOT add org.openpnp:opencv alongside this.
+               It ships a different OpenCV native and causes native pointer crashes
+               (BytePointer "ptr" is null) and breaks the cascade classifier loader.
+        -->
         <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-fxml</artifactId>
-            <version>25</version>
-            <classifier>win</classifier>
+            <groupId>org.bytedeco</groupId>
+            <artifactId>javacv-platform</artifactId>
+            <version>1.5.10</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-base</artifactId>
-            <version>25</version>
-            <classifier>win</classifier>
-        </dependency>
-
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-graphics</artifactId>
-            <version>25</version>
-            <classifier>win</classifier>
-        </dependency>
-
+        <!-- PDFBox -->
         <dependency>
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>pdfbox</artifactId>
@@ -98,28 +89,25 @@
     </dependencies>
 
     <build>
-    <plugins>
-        <!-- Maven Compiler Plugin -->
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <version>3.11.0</version>
-            <configuration>
-                <source>17</source>
-                <target>17</target>
-            </configuration>
-        </plugin>
-
-        <!-- JavaFX Maven Plugin -->
-        <plugin>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-maven-plugin</artifactId>
-            <version>0.0.8</version>
-            <configuration>
-                <mainClass>GUI.MainFX</mainClass>
-            </configuration>
-        </plugin>
-    </plugins>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <source>17</source>
+                    <target>17</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>0.0.8</version>
+                <configuration>
+                    <mainClass>ui.BlindHireApp</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 
 </project>
