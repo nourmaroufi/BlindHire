@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="15"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="Controller.FrontOffice.PracticeInterviewController"
+      style="-fx-padding:20; -fx-background-color:#f4f6f9;">
+
+    <!-- Title -->
+    <Label text="AI Interview Practice"
+           style="-fx-font-size:22px; -fx-font-weight:bold;" />
+
+    <!-- Chat Area -->
+    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
+        <VBox fx:id="chatContainer"
+              spacing="10"
+              style="-fx-padding:10;" />
+    </ScrollPane>
+
+    <!-- Input Area -->
+    <HBox spacing="10">
+        <TextField fx:id="messageField"
+                   promptText="Type your answer..."
+                   HBox.hgrow="ALWAYS" />
+
+        <Button text="Send"
+                onAction="#handleSend"
+                style="-fx-background-color:#26d0ce; -fx-text-fill:white; -fx-background-radius:8;" />
+    </HBox>
+
+</VBox>

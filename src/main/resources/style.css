@@ -1,0 +1,182 @@
+/* Root container */
+.root {
+    -fx-background-color: #f4f7fc;
+    -fx-font-family: "Segoe UI", "System", sans-serif;
+}
+
+/* Header banner with gradient */
+.header-banner {
+    -fx-background-color: linear-gradient(to right, #2b3a67, #3f5277);
+    -fx-background-radius: 12px;
+    -fx-padding: 20px 25px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0, 0, 4);
+}
+
+.header-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 5, 0, 0, 2);
+}
+
+/* ScrollPane transparent background */
+.transparent-scrollpane {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.transparent-scrollpane > .viewport {
+    -fx-background-color: transparent;
+}
+
+/* Interview list container */
+.interview-list {
+    -fx-background-color: transparent;
+}
+
+/* Interview Card */
+.interview-card {
+    -fx-background-color: white;
+    -fx-background-radius: 16px;
+    -fx-padding: 18px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0, 0, 4);
+    -fx-border-color: #eaeef3;
+    -fx-border-radius: 16px;
+    -fx-spacing: 12px;
+}
+
+.interview-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 18, 0, 0, 8);
+    -fx-translate-y: -2px;
+    -fx-transition: translate-y 0.2s ease;
+}
+
+/* Header row inside card (icon + type badge) */
+.card-header {
+    -fx-alignment: center-left;
+    -fx-spacing: 12px;
+}
+
+/* Icon for interview type (emoji fallback) */
+.type-icon {
+    -fx-font-size: 28px;
+    -fx-min-width: 40px;
+    -fx-alignment: center;
+}
+
+/* Badge for interview type */
+.type-badge {
+    -fx-background-color: #e6f0ff;
+    -fx-background-radius: 20px;
+    -fx-padding: 5px 15px;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2b3a67;
+}
+
+/* Details grid */
+.details-grid {
+    -fx-hgap: 20px;
+    -fx-vgap: 8px;
+    -fx-padding: 5px 0 5px 0;
+}
+
+.detail-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #2c3e50;
+}
+
+.detail-value {
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #1a2639;
+}
+
+/* Separator */
+.card-separator {
+    -fx-background-color: #e0e6ed;
+    -fx-padding: 0 0 1px 0;
+    -fx-max-height: 1px;
+}
+
+/* Action buttons row */
+.card-actions {
+    -fx-alignment: center-right;
+    -fx-spacing: 10px;
+    -fx-padding: 5px 0 0 0;
+}
+
+/* Chat button */
+.chat-button {
+    -fx-background-color: #2b3a67;
+    -fx-background-radius: 25px;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 20px;
+    -fx-cursor: hand;
+    -fx-font-size: 13px;
+}
+
+.chat-button:hover {
+    -fx-background-color: #3f5277;
+    -fx-effect: dropshadow(gaussian, rgba(43,58,103,0.4), 8, 0, 0, 2);
+}
+
+/* Empty state message */
+.empty-message {
+    -fx-font-size: 16px;
+    -fx-text-fill: #7f8c8d;
+    -fx-padding: 40px;
+    -fx-alignment: center;
+}
+/* ===== Header Banner ===== */
+.header-banner {
+    -fx-background-color: linear-gradient(to right, #1a2980, #26d0ce);
+    -fx-background-radius: 15;
+    -fx-padding: 20;
+}
+
+.header-label {
+    -fx-text-fill: white;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+
+/* ===== Calendar Styling ===== */
+.calendar-wrapper {
+    -fx-background-color: white;
+    -fx-background-radius: 20;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 15,0,0,5);
+}
+/* ===== Dashboard Cards ===== */
+.interview-card {
+    -fx-background-color: white;
+    -fx-background-radius: 15;
+    -fx-padding: 15;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10,0,0,3);
+}
+/* ===== Modern Tabs ===== */
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-background-color: transparent;
+}
+
+.tab-pane .tab {
+    -fx-background-color: #e6ecf5;
+    -fx-background-radius: 15 15 0 0;
+    -fx-padding: 8 20 8 20;
+}
+
+.tab-pane .tab:selected {
+    -fx-background-color: #1a2980;
+}
+
+.tab-pane .tab:selected .tab-label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.tab-pane .tab-label {
+    -fx-text-fill: #1a2980;
+    -fx-font-size: 14px;
+}

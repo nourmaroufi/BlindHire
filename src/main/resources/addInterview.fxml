@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="Controller.AddInterviewController"
+      spacing="15" alignment="TOP_CENTER"
+      style="-fx-background-color: #f0f4f8;">
+
+    <!-- VBox padding -->
+    <padding>
+        <Insets top="30" right="30" bottom="30" left="30"/>
+    </padding>
+
+    <Label text="Schedule an Interview"
+           style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+
+    <GridPane hgap="20" vgap="15">
+        <!-- GridPane padding -->
+        <padding>
+            <Insets top="10" right="10" bottom="10" left="10"/>
+        </padding>
+
+        <columnConstraints>
+            <ColumnConstraints percentWidth="30"/>
+            <ColumnConstraints percentWidth="70"/>
+        </columnConstraints>
+
+        <!-- Candidate ID -->
+        <Label text="Candidate ID:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <ComboBox fx:id="candidateComboBox" prefWidth="200"  GridPane.columnIndex="1"/>
+
+
+        <!-- Date -->
+        <Label text="Date:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <DatePicker fx:id="datePicker" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+        <!-- Time -->
+        <Label text="Time:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <ComboBox fx:id="timeComboBox" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+        <!-- Type -->
+        <Label text="Type:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <ComboBox fx:id="typeComboBox" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+        <!-- Job Offer -->
+        <Label text="Job Offer:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+        <TextField fx:id="jobOfferField" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+        <!-- Interviewer -->
+        <Label text="Interviewer:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+        <TextField fx:id="interviewerField" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+    </GridPane>
+
+    <HBox spacing="20" alignment="CENTER">
+        <Button text="Add Interview" fx:id="addButton" onAction="#handleAddInterview"
+                style="-fx-background-color: #1a2980; -fx-text-fill: white; -fx-background-radius: 12;"/>
+        <Button text="Cancel" fx:id="cancelButton" onAction="#handleCancel"
+                style="-fx-background-color: #ffffff; -fx-text-fill: #1a2980; -fx-background-radius: 12;"/>
+    </HBox>
+
+</VBox>

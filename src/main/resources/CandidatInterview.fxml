@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="Controller.FrontOffice.InterviewController"
+      spacing="20"
+      styleClass="root"
+      stylesheets="@style.css">
+
+    <padding>
+        <Insets top="25" right="25" bottom="25" left="25"/>
+    </padding>
+
+    <!-- HEADER with gradient -->
+    <HBox alignment="CENTER_LEFT" styleClass="header-banner">
+        <Label text="My Upcoming Interviews"
+               styleClass="header-title"/>
+    </HBox>
+
+    <!-- Interviews List -->
+    <ScrollPane fitToWidth="true" styleClass="transparent-scrollpane">
+        <VBox fx:id="interviewContainer" spacing="15" styleClass="interview-list">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+        </VBox>
+    </ScrollPane>
+
+</VBox>
