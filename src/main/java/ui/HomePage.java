@@ -72,7 +72,7 @@ public class HomePage {
         Circle avatar = new Circle(40);
         avatar.setFill(Color.web("#4A6CF7"));
 
-        String displayName = currentUser.getNom() + " " + currentUser.getPrenom();
+        String displayName = currentUser.getDisplayName();
         String displayRole = currentUser.getRole().name();
 
         Text nameText = new Text(displayName);
@@ -116,6 +116,7 @@ public class HomePage {
 
         Button logoutBtn = createNavButton("🚪  Logout", false);
         logoutBtn.setOnAction(e -> {
+            Utils.SessionManager.clearSession();
             userService.setCurrentUser(null);
             BlindHireApp.loadScene(new WelcomePage().getRoot(), 960, 540);
         });

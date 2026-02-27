@@ -20,10 +20,8 @@ public class userDAO {
     }
 
     private User mapRow(ResultSet rs) throws Exception {
-        // fingerprint_enabled column — default false if column doesn't exist yet
-        boolean fpEnabled = false;
-        try { fpEnabled = rs.getInt("fingerprint_enabled") == 1; }
-        catch (Exception ignored) {}
+        String username = null;
+        try { username = rs.getString("username"); } catch (Exception ignored) {}
 
         return new User(
                 rs.getInt("id"),
@@ -40,16 +38,15 @@ public class userDAO {
                 rs.getInt("is_verified") == 1,
                 rs.getString("verification_code"),
                 rs.getString("face_data"),
-                fpEnabled
+                username
         );
     }
 
     // ── INSERT ────────────────────────────────────────────────────────────────
     public void insert(User user) {
-        String sql =
-                "INSERT INTO user(nom, prenom, mail, mdp, role, skills, diplomas, " +
-                        "experience, bio, phone, is_verified, verification_code, face_data, fingerprint_enabled) " +
-                        "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO user(nom, prenom, mail, mdp, role, skills, diplomas, " +
+                "experience, bio, phone, is_verified, verification_code, face_data, username) " +
+                "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
         try (Connection conn = MyDB.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1,  user.getNom());
@@ -65,7 +62,7 @@ public class userDAO {
             ps.setInt(11,    user.isVerified() ? 1 : 0);
             ps.setString(12, user.getVerificationCode());
             ps.setString(13, user.getFaceData());
-            ps.setInt(14,    user.isFingerprintEnabled() ? 1 : 0);
+            ps.setString(14, user.getUsername());
             ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -87,6 +84,20 @@ public class userDAO {
         return list;
     }
 
+    // ── FIND BY ID ────────────────────────────────────────────────────────────
+    public User findById(int id) {
+        try (Connection conn = MyDB.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement("SELECT * FROM user WHERE id=?")) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return mapRow(rs);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     // ── FIND BY EMAIL ─────────────────────────────────────────────────────────
     public User findByEmail(String email) {
         try (Connection conn = MyDB.getInstance().getConnection();
@@ -99,6 +110,18 @@ public class userDAO {
             e.printStackTrace();
             throw new RuntimeException("Error finding user by email: " + e.getMessage());
         }
+        return null;
+    }
+
+    // ── FIND BY USERNAME ──────────────────────────────────────────────────────
+    public User findByUsername(String username) {
+        try (Connection conn = MyDB.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement("SELECT * FROM user WHERE username=?")) {
+            ps.setString(1, username);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return mapRow(rs);
+            }
+        } catch (Exception e) { /* ignore */ }
         return null;
     }
 
@@ -119,10 +142,9 @@ public class userDAO {
 
     // ── UPDATE (full) ─────────────────────────────────────────────────────────
     public void update(User user) {
-        String sql =
-                "UPDATE user SET nom=?,prenom=?,mail=?,mdp=?,role=?," +
-                        "skills=?,diplomas=?,experience=?,bio=?,phone=?," +
-                        "is_verified=?,verification_code=?,face_data=?,fingerprint_enabled=? WHERE id=?";
+        String sql = "UPDATE user SET nom=?,prenom=?,mail=?,mdp=?,role=?," +
+                "skills=?,diplomas=?,experience=?,bio=?,phone=?," +
+                "is_verified=?,verification_code=?,face_data=?,username=? WHERE id=?";
         try (Connection conn = MyDB.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1,  user.getNom());
@@ -138,26 +160,12 @@ public class userDAO {
             ps.setInt(11,    user.isVerified() ? 1 : 0);
             ps.setString(12, user.getVerificationCode());
             ps.setString(13, user.getFaceData());
-            ps.setInt(14,    user.isFingerprintEnabled() ? 1 : 0);
+            ps.setString(14, user.getUsername());
             ps.setInt(15,    user.getId());
             ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Error updating user: " + e.getMessage());
-        }
-    }
-
-    // ── UPDATE fingerprint_enabled only ───────────────────────────────────────
-    public void updateFingerprintEnabled(int userId, boolean enabled) {
-        try (Connection conn = MyDB.getInstance().getConnection();
-             PreparedStatement ps = conn.prepareStatement(
-                     "UPDATE user SET fingerprint_enabled=? WHERE id=?")) {
-            ps.setInt(1, enabled ? 1 : 0);
-            ps.setInt(2, userId);
-            ps.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("Error updating fingerprint flag: " + e.getMessage());
         }
     }
 

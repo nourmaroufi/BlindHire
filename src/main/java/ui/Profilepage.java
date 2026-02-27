@@ -41,6 +41,7 @@ public class Profilepage {
     private Text displayPrenom;
     private Text displayEmail;
     private Text displayRole;
+    private Text displayUsername;
     // Client view rows (shown/hidden)
     private VBox clientViewSection;
     private Text displaySkills;
@@ -91,7 +92,7 @@ public class Profilepage {
         userBox.setPadding(new Insets(24, 20, 16, 20));
         Circle avatar = new Circle(40);
         avatar.setFill(Color.web("#4A6CF7"));
-        Text nameText = new Text(currentUser.getNom() + " " + currentUser.getPrenom());
+        Text nameText = new Text(currentUser.getDisplayName());
         nameText.setFont(Font.font("System", FontWeight.BOLD, 14));
         nameText.setFill(Color.web("#1a1a2e"));
         Text roleText = new Text(currentUser.getRole().name());
@@ -122,6 +123,7 @@ public class Profilepage {
 
         Button logoutBtn = createNavButton("🚪  Logout", false);
         logoutBtn.setOnAction(e -> {
+            Utils.SessionManager.clearSession();
             userService.setCurrentUser(null);
             BlindHireApp.loadScene(new WelcomePage().getRoot(), 960, 540);
         });
@@ -184,7 +186,7 @@ public class Profilepage {
         StackPane avatarStack = new StackPane(bigAvatar, initials);
 
         VBox headerInfo = new VBox(5);
-        Text headerName = new Text(currentUser.getNom() + " " + currentUser.getPrenom());
+        Text headerName = new Text(currentUser.getDisplayName());
         headerName.setFont(Font.font("System", FontWeight.BOLD, 22));
         headerName.setFill(Color.WHITE);
         Label roleBadge = new Label(currentUser.getRole().name().toUpperCase());
@@ -197,12 +199,14 @@ public class Profilepage {
         viewBox = new VBox(0);
         viewBox.setPadding(new Insets(28, 30, 28, 30));
 
-        displayNom    = new Text(currentUser.getNom());
-        displayPrenom = new Text(currentUser.getPrenom());
-        displayEmail  = new Text(currentUser.getEmail());
-        displayRole   = new Text(currentUser.getRole().name());
+        displayNom      = new Text(currentUser.getNom());
+        displayPrenom   = new Text(currentUser.getPrenom());
+        displayEmail    = new Text(currentUser.getEmail());
+        displayRole     = new Text(currentUser.getRole().name());
+        displayUsername = new Text(currentUser.getDisplayName());
 
         viewBox.getChildren().addAll(
+                infoRow("🎭  Username",    displayUsername), divider(),
                 infoRow("👤  First Name",  displayNom),   divider(),
                 infoRow("👤  Last Name",   displayPrenom), divider(),
                 infoRow("✉️  Email",        displayEmail),  divider(),
@@ -467,6 +471,7 @@ public class Profilepage {
         displayPrenom.setText(currentUser.getPrenom());
         displayEmail.setText(currentUser.getEmail());
         displayRole.setText(currentUser.getRole().name());
+        displayUsername.setText(currentUser.getDisplayName());
         headerName.setText(currentUser.getNom() + " " + currentUser.getPrenom());
         if (currentUser.getRole() == Role.client) {
             displaySkills.setText(orEmpty(currentUser.getSkills()));

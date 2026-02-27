@@ -50,7 +50,7 @@ public class FaceService {
     // LBPH confidence threshold — below this = same person
     // 80.0 is a good balance: strict enough to reject others,
     // lenient enough to handle lighting/angle changes
-    private static final double LBPH_THRESHOLD = 80.0;
+    private static final double LBPH_THRESHOLD = 65.0;
     private static final int    FACE_SIZE      = 200; // larger = more detail for LBPH
 
     private OpenCVFrameGrabber         grabber;

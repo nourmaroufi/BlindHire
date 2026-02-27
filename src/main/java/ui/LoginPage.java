@@ -6,7 +6,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
-import javafx.scene.control.Tooltip;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
@@ -152,6 +151,10 @@ public class LoginPage {
         errorLabel.setTextFill(Color.RED);
         errorLabel.setFont(Font.font(12));
 
+        // Remember Me checkbox
+        CheckBox rememberMe = new CheckBox("Remember me");
+        rememberMe.setStyle("-fx-font-size: 13px; -fx-text-fill: #555;");
+
         Button loginButton = new Button("Login");
         loginButton.setStyle(
                 "-fx-background-color: #3E4A5E;" +
@@ -161,7 +164,7 @@ public class LoginPage {
                         "-fx-padding: 12 80;" +
                         "-fx-cursor: hand;"
         );
-        loginButton.setOnAction(e -> handleLogin());
+        loginButton.setOnAction(e -> handleLogin(rememberMe.isSelected()));
 
         Hyperlink forgotPasswordLink = new Hyperlink("Forgot password?");
         forgotPasswordLink.setStyle("-fx-text-fill: #4A9DB5; -fx-font-size: 13px;");
@@ -178,43 +181,13 @@ public class LoginPage {
         Button faceLoginBtn = new Button("📷  Login with Face");
         faceLoginBtn.setStyle(
                 "-fx-background-color: #2C3E50; -fx-text-fill: white;" +
-                        "-fx-font-size: 13px; -fx-background-radius: 25;" +
-                        "-fx-padding: 11 24; -fx-cursor: hand;"
+                        "-fx-font-size: 14px; -fx-background-radius: 25;" +
+                        "-fx-padding: 12 50; -fx-cursor: hand;"
         );
         faceLoginBtn.setOnAction(e -> handleFaceLogin());
 
-        // Fingerprint login button
-        Button fpLoginBtn = new Button("🖐  Login with Fingerprint");
-        fpLoginBtn.setStyle(
-                "-fx-background-color: #2C3E50; -fx-text-fill: white;" +
-                        "-fx-font-size: 13px; -fx-background-radius: 25;" +
-                        "-fx-padding: 11 24; -fx-cursor: hand;"
-        );
-        fpLoginBtn.setOnAction(e -> handleFingerprintLogin(fpLoginBtn));
-
-        // Check availability — disable fingerprint button if Windows Hello not present
-        new Thread(() -> {
-            Service.FingerprintService.Result avail =
-                    Service.FingerprintService.checkAvailability();
-            javafx.application.Platform.runLater(() -> {
-                if (avail == Service.FingerprintService.Result.NOT_AVAILABLE
-                        || avail == Service.FingerprintService.Result.ERROR) {
-                    fpLoginBtn.setDisable(true);
-                    fpLoginBtn.setStyle(
-                            "-fx-background-color: #aaa; -fx-text-fill: white;" +
-                                    "-fx-font-size: 13px; -fx-background-radius: 25;" +
-                                    "-fx-padding: 11 24;"
-                    );
-                    fpLoginBtn.setTooltip(new Tooltip("Windows Hello not available on this device"));
-                }
-            });
-        }, "fp-check-thread").start();
-
-        HBox biometricRow = new HBox(12, faceLoginBtn, fpLoginBtn);
-        biometricRow.setAlignment(Pos.CENTER);
-
         formCard.getChildren().addAll(titleText, emailField, passwordField,
-                errorLabel, loginButton, forgotPasswordLink, orBox, biometricRow);
+                errorLabel, rememberMe, loginButton, forgotPasswordLink, orBox, faceLoginBtn);
         centerBox.getChildren().add(formCard);
         borderPane.setCenter(centerBox);
 
@@ -239,57 +212,6 @@ public class LoginPage {
 
         logoBox.getChildren().addAll(iconPath, brandText, taglineText);
         return logoBox;
-    }
-
-    /**
-     * Fingerprint login flow:
-     *  1. Require email to look up the user
-     *  2. Check the user has fingerprint enabled in their account
-     *  3. Invoke Windows Hello — if verified, log in
-     */
-    private void handleFingerprintLogin(Button btn) {
-        String email = emailField.getText().trim();
-        if (email.isEmpty()) {
-            errorLabel.setText("Please enter your email first, then click Login with Fingerprint.");
-            return;
-        }
-
-        Service.userservice svc = new Service.userservice();
-        Model.User user = svc.getUserByEmail(email);
-
-        if (user == null) {
-            errorLabel.setText("No account found with this email.");
-            return;
-        }
-        if (!user.isVerified()) {
-            errorLabel.setText("Account not verified. Please verify first.");
-            return;
-        }
-        if (!user.isFingerprintEnabled()) {
-            errorLabel.setText("Fingerprint login not enabled for this account.\nUse password or face login.");
-            return;
-        }
-
-        btn.setDisable(true);
-        errorLabel.setTextFill(javafx.scene.paint.Color.web("#4A9DB5"));
-        errorLabel.setText("⏳ Waiting for Windows Hello...");
-
-        new Thread(() -> {
-            Service.FingerprintService.Result result =
-                    Service.FingerprintService.verify(
-                            "BlindHire — Login as " + user.getNom() + " " + user.getPrenom()
-                    );
-            javafx.application.Platform.runLater(() -> {
-                btn.setDisable(false);
-                errorLabel.setTextFill(javafx.scene.paint.Color.RED);
-                if (result == Service.FingerprintService.Result.SUCCESS) {
-                    svc.setCurrentUser(user);
-                    navigateByRole(user);
-                } else {
-                    errorLabel.setText(Service.FingerprintService.getResultMessage(result));
-                }
-            });
-        }, "fp-login-thread").start();
     }
 
     private void handleBack() {
@@ -349,7 +271,7 @@ public class LoginPage {
         }
     }
 
-    private void handleLogin() {
+    private void handleLogin(boolean rememberMe) {
         String email = emailField.getText().trim();
         String password = passwordField.getText();
 
@@ -362,6 +284,7 @@ public class LoginPage {
             userservice userservice = new userservice();
             User user = userservice.authenticate(email, password);
             userservice.setCurrentUser(user);
+            if (rememberMe) Utils.SessionManager.saveSession(user.getId());
             navigateByRole(user);
         } catch (IllegalArgumentException e) {
             // Special case: account exists but not yet verified

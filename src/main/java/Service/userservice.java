@@ -27,8 +27,16 @@ public class userservice {
                 && userDAO.findByPhone(user.getPhone()) != null)
             throw new IllegalArgumentException("Phone number already registered!");
 
-        // Save as unverified — VerificationPage will send the code
-        // after the user chooses their preferred channel
+        // Auto-generate a blind username if not already set
+        if (user.getUsername() == null || user.getUsername().isBlank()) {
+            String username;
+            // Ensure uniqueness (retry on collision — extremely rare)
+            do {
+                username = Utils.UsernameGenerator.generate();
+            } while (userDAO.findByUsername(username) != null);
+            user.setUsername(username);
+        }
+
         user.setVerificationCode(null);
         user.setVerified(false);
         userDAO.insert(user);
@@ -159,17 +167,10 @@ public class userservice {
         userDAO.updateFaceData(user.getId(), faceBase64);
         user.setFaceData(faceBase64);
     }
-
-    public void updateFingerprintEnabled(User user, boolean enabled) {
-        userDAO.updateFingerprintEnabled(user.getId(), enabled);
-        user.setFingerprintEnabled(enabled);
-    }
     public User getUserByPhone(String phone) { return userDAO.findByPhone(phone); }
 
     public User getUserById(int id) {
-        for (User u : userDAO.getAll())
-            if (u.getId() == id) return u;
-        return null;
+        return userDAO.findById(id);
     }
 
     public List<User> getAllUsers()           { return userDAO.getAll(); }

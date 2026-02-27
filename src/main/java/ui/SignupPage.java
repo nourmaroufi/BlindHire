@@ -532,7 +532,7 @@ public class SignupPage {
             newUser.setBio(bio);
             newUser.setPhone(phone);
             newUser.setFaceData(capturedFaceData);
-            newUser.setFingerprintEnabled(fingerprintEnabled);
+
 
             userservice svc = new userservice();
             User registered = svc.register(newUser);

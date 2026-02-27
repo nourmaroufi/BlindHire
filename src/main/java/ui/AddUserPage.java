@@ -36,9 +36,22 @@ public class AddUserPage {
         root = new StackPane();
         root.setStyle("-fx-background-color: #A8E6F5;");
 
+        // ── Top bar with close button ──
+        HBox topBar = new HBox();
+        topBar.setAlignment(Pos.CENTER_LEFT);
+        topBar.setPadding(new Insets(16, 20, 0, 20));
+        Button closeBtn = new Button("✕  Close");
+        closeBtn.setStyle(
+                "-fx-background-color: transparent; -fx-text-fill: #2C3E50;" +
+                        "-fx-font-size: 13px; -fx-cursor: hand;" +
+                        "-fx-border-color: #2C3E50; -fx-border-radius: 20; -fx-padding: 6 14;"
+        );
+        closeBtn.setOnAction(e -> closeWindow());
+        topBar.getChildren().add(closeBtn);
+
         VBox contentBox = new VBox(20);
         contentBox.setAlignment(Pos.CENTER);
-        contentBox.setPadding(new Insets(40));
+        contentBox.setPadding(new Insets(20, 40, 40, 40));
 
         Text titleText = new Text("Add New User");
         titleText.setFill(Color.web("#2C3E50"));
@@ -99,7 +112,8 @@ public class AddUserPage {
                 mdpField, roleComboBox, errorLabel, buttonBox
         );
 
-        root.getChildren().add(contentBox);
+        VBox wrapper = new VBox(topBar, contentBox);
+        root.getChildren().add(wrapper);
     }
 
     private TextField createTextField(String prompt, double width) {

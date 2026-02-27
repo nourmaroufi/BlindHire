@@ -93,7 +93,11 @@ public class VerificationPage {
         step2Box.setVisible(false);
         step2Box.setManaged(false);
 
-        card.getChildren().addAll(icon, title, step1Box, step2Box);
+        Hyperlink backLink = new Hyperlink("← Back to Login");
+        backLink.setStyle("-fx-text-fill: #4A9DB5; -fx-font-size: 12px;");
+        backLink.setOnAction(e -> BlindHireApp.loadScene(new LoginPage().getRoot(), 960, 540));
+
+        card.getChildren().addAll(icon, title, step1Box, step2Box, backLink);
         outer.getChildren().add(card);
         return outer;
     }

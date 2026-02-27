@@ -41,11 +41,11 @@ public class NotificationService {
 
     // ── Gmail SMTP ────────────────────────────────────────────────────────────
     private static final String GMAIL_ADDRESS      = "jedchihi100@gmail.com";
-    private static final String GMAIL_APP_PASSWORD = "agjx xeho zrck nhcb";
+    private static final String GMAIL_APP_PASSWORD = "hixr ugif tykh kwsv";
 
     // ── Twilio SMS ────────────────────────────────────────────────────────────
     private static final String TWILIO_ACCOUNT_SID = "ACd7784cedc764c0264de4c988a294f022";
-    private static final String TWILIO_AUTH_TOKEN  = "d717a778a5e3e2ab934d78ccdc239782";
+    private static final String TWILIO_AUTH_TOKEN  = "79bb48d06a2203761d76295bf87f5663";
     private static final String TWILIO_FROM_PHONE  = "+13527815271";
 
     // =========================================================================
