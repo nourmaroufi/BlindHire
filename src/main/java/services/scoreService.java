@@ -47,7 +47,20 @@ public class scoreService {
         }
         return list;
     }
-
+    public List<models.LeaderboardRow> getLeaderboardBySkill(int idSkill) throws SQLException {
+        List<models.LeaderboardRow> list = new ArrayList<>();
+        String sql = "SELECT id_user, score FROM score WHERE id_skill=? ORDER BY score DESC, id_user ASC";
+        PreparedStatement ps = cnx.prepareStatement(sql);
+        ps.setInt(1, idSkill);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            list.add(new models.LeaderboardRow(
+                    rs.getInt("id_user"),
+                    rs.getBigDecimal("score")
+            ));
+        }
+        return list;
+    }
     // LIST: history for a user + skill
     public List<score> getscoresByUserAndSkill(int userId, int skillId) throws SQLException {
         List<score> list = new ArrayList<>();

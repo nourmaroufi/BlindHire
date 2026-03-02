@@ -47,6 +47,7 @@ public class QuestionCrudPanel extends StackPane {
 
     public final Label lblStatus = new Label("");
     public final Button btnGoTakeQuiz = new Button("Take Quiz →");
+    public final Button btnLeaderboard = new Button("🏆 Leaderboard");
 
     private final questionController controller;
 
@@ -137,12 +138,19 @@ public class QuestionCrudPanel extends StackPane {
         btnGenerateQuiz.setPrefHeight(40);
         btnGenerateQuiz.setMinWidth(150);
 
+        stylePrimaryAlt(btnLeaderboard);
+        btnLeaderboard.setPrefHeight(40);
+        btnLeaderboard.setMinWidth(150);
+
+// add it near your other buttons (example order)
+
+
         stylePrimaryAlt(btnGoTakeQuiz); // reuse your style
         btnGoTakeQuiz.setPrefHeight(40);
         btnGoTakeQuiz.setMinWidth(140);
 
         // add to header (generate next to take quiz)
-        header.getChildren().addAll(titles, spacer, lblStatus, btnGenerateQuiz, btnGoTakeQuiz);
+        header.getChildren().addAll(titles, spacer, lblStatus, btnGenerateQuiz,btnLeaderboard, btnGoTakeQuiz);
 
         return header;
     }

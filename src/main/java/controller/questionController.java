@@ -11,6 +11,7 @@ import models.skill;
 import services.choiceqcmService;
 import services.questionService;
 import services.skillService;
+import ui.Navigator;
 import ui.QuestionCrudPanel;
 
 import java.math.BigDecimal;
@@ -38,6 +39,7 @@ public class questionController {
         bindEvents();
         loadskills();
         view.lblStatus.setText("Ready");
+        view.btnLeaderboard.setOnAction(e -> Navigator.showLeaderboard());
     }
 
     // ---------- setup ----------
