@@ -362,7 +362,7 @@ public class QuizPassController {
             lastPercent = percent;// 2 decimals
         }
 
-// SAVE percent instead of raw points
+
         scoreService.addScore(userId, skill.getIdSkill(), percent);
         if (!autoSubmitting) {
             view.lblStatus.setText("Saved score: " + percent + "% (user " + userId + ")");
@@ -372,10 +372,86 @@ public class QuizPassController {
                             "\nScore: " + percent + "%" +
                             "\n(saved to DB)");
         }
+        if (lastPercent != null && lastPercent.compareTo(new java.math.BigDecimal("50")) < 0) {
+            runAiRemediation(view.skillCombo.getValue(), lastPercent);
+        }
 
 
 
+    }
+    private final services.AiCandidateAnalysisService analysisService = new services.AiCandidateAnalysisService();
 
+    private void runAiRemediation(models.skill sk, java.math.BigDecimal percent) {
+        try {
+            String prompt =
+                    "Return ONLY ONE JSON object. No text before/after. Do NOT say \"Sure\". Do NOT wrap in ``` ." +
+                            "Return ONLY JSON. If you output anything other than JSON, you failed." +
+                            "Return ONLY ONE valid JSON object. No markdown.\n" +
+                            "First char '{' last char '}'.\n\n" +
+
+                            "Context:\n" +
+                            "- Candidate score: " + percent.toPlainString() + "% (FAILED, under 50%)\n" +
+                            "- Skill: " + sk.getName() + "\n" +
+                            "- Skill description: " + (sk.getDescription() == null ? "" : sk.getDescription()) + "\n\n" +
+
+                            "TASK:\n" +
+                            "1) strength_summary (1-2 lines)\n" +
+                            "2) weakness_summary (2-4 lines)\n" +
+                            "3) hire_recommendation: one of [Hire, Borderline, No hire]\n" +
+                            "4) reasoning: 2 lines max\n" +
+                            "5) resources: give 6 to 10 FREE learning resources WITH DIRECT URLs.\n" +
+                            "   Must include at least 3 videos and 2 official docs.\n" +
+                            "   Prefer stable sources (official docs, MDN, Microsoft Learn, Oracle, freeCodeCamp, Coursera audit/free, YouTube playlists).\n\n" +
+
+                            "JSON schema:\n" +
+                            "{"
+                            + "\"strength_summary\":string,"
+                            + "\"weakness_summary\":string,"
+                            + "\"hire_recommendation\":\"Hire\"|\"Borderline\"|\"No hire\","
+                            + "\"reasoning\":string,"
+                            + "\"resources\":[{\"title\":string,\"type\":\"video\"|\"docs\"|\"article\"|\"course\",\"url\":string,\"why\":string}]"
+                            + "}";
+
+            String json = analysisService.analyze(prompt);
+
+            com.google.gson.Gson gson = new com.google.gson.Gson();
+            dto.AiCandidateAnalysisDTO a = gson.fromJson(json, dto.AiCandidateAnalysisDTO.class);
+
+            showAnalysisDialog(a); // same dialog method I gave before
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            showError("AI Error", ex.getMessage());
+        }
+    }private void showAnalysisDialog(dto.AiCandidateAnalysisDTO a) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Strengths:\n").append(a.strength_summary).append("\n\n");
+        sb.append("Weaknesses:\n").append(a.weakness_summary).append("\n\n");
+        sb.append("Hire recommendation: ").append(a.hire_recommendation).append("\n");
+        sb.append("Reasoning: ").append(a.reasoning).append("\n\n");
+        sb.append("Resources:\n");
+
+        if (a.resources != null) {
+            for (int i = 0; i < a.resources.size(); i++) {
+                var r = a.resources.get(i);
+                sb.append(i+1).append(". [").append(r.type).append("] ")
+                        .append(r.title).append("\n")
+                        .append("   ").append(r.url).append("\n")
+                        .append("   Why: ").append(r.why).append("\n\n");
+            }
+        }
+
+        javafx.scene.control.Dialog<Void> d = new javafx.scene.control.Dialog<>();
+        d.setTitle("AI Candidate Analysis");
+        d.getDialogPane().getButtonTypes().add(javafx.scene.control.ButtonType.CLOSE);
+
+        javafx.scene.control.TextArea ta = new javafx.scene.control.TextArea(sb.toString());
+        ta.setWrapText(true);
+        ta.setEditable(false);
+        ta.setPrefWidth(720);
+        ta.setPrefHeight(520);
+
+        d.getDialogPane().setContent(ta);
+        d.showAndWait();
     }
 
     private int parseUserId(String txt) {
