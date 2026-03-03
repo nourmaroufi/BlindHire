@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.shape.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="Controller.FrontOffice.MyApplicationsController"
+      spacing="25"
+      style="-fx-background-color: linear-gradient(to bottom right, #f8fafc, #f1f5f9); -fx-padding: 30 50;">
+
+    <!-- HEADER -->
+    <HBox alignment="CENTER_LEFT" spacing="15">
+        <Button text="← Back"
+                onAction="#handleBack"
+                style="-fx-background-color: white;
+                       -fx-text-fill: #4f46e5;
+                       -fx-border-color: #4f46e5;
+                       -fx-border-radius: 20;
+                       -fx-background-radius: 20;
+                       -fx-padding: 8 20;
+                       -fx-font-weight: bold;
+                       -fx-cursor: hand;
+                       -fx-effect: dropshadow(gaussian, rgba(79,70,229,0.1), 5,0,0,2);"/>
+
+        <Rectangle width="5" height="35" fill="#4f46e5"
+                   style="-fx-arc-width: 5; -fx-arc-height: 5;"/>
+
+        <VBox spacing="5">
+            <Label text="My Applications"
+                   style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #0f172a;"/>
+            <Label text="Track your submitted job applications"
+                   style="-fx-font-size: 14px; -fx-text-fill: #64748b;"/>
+        </VBox>
+
+        <Region HBox.hgrow="ALWAYS"/>
+
+        <Label fx:id="countLabel"
+               text="0 Applications"
+               style="-fx-font-size: 14px; -fx-text-fill: #64748b;
+                      -fx-font-style: italic; -fx-background-color: white;
+                      -fx-padding: 8 15; -fx-background-radius: 20;
+                      -fx-border-color: #e2e8f0; -fx-border-radius: 20;"/>
+    </HBox>
+
+    <!-- APPLICATIONS LIST -->
+    <ScrollPane fitToWidth="true"
+                VBox.vgrow="ALWAYS"
+                style="-fx-background-color: transparent; -fx-border-width: 0;">
+
+        <VBox fx:id="applicationsContainer"
+              spacing="20"
+              style="-fx-padding: 10;">
+            <!-- Application cards will be added dynamically -->
+        </VBox>
+
+    </ScrollPane>
+
+</VBox>

@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="Controller.BackOffice.HomeController">
+
+    <!-- Sidebar -->
+    <left>
+        <VBox spacing="15"
+              prefWidth="220"
+              style="-fx-background-color: linear-gradient(to bottom, #1a2980, #26d0ce);
+                 -fx-padding: 20;
+                 -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);">
+
+            <!-- Logo Section -->
+            <VBox alignment="CENTER" spacing="5" style="-fx-padding: 0 0 15 0;">
+                <StackPane style="-fx-background-color: rgba(255,255,255,0.2);
+                             -fx-background-radius: 50;
+                             -fx-pref-width: 60;
+                             -fx-pref-height: 60;">
+                    <Label text="BH"
+                           style="-fx-text-fill: white;
+                              -fx-font-size: 24;
+                              -fx-font-weight: bold;
+                              -fx-font-family: 'Segoe UI';"/>
+                </StackPane>
+                <Label text="BlindHire"
+                       style="-fx-text-fill: white;
+                          -fx-font-size: 18;
+                          -fx-font-weight: bold;
+                          -fx-font-family: 'Segoe UI';
+                          -fx-letter-spacing: 1;"/>
+                <Label text="Connect with opportunity"
+                       style="-fx-text-fill: rgba(255,255,255,0.7);
+                          -fx-font-size: 10;
+                          -fx-font-family: 'Segoe UI';"/>
+            </VBox>
+
+            <!-- Separator -->
+            <Region style="-fx-background-color: rgba(255,255,255,0.2);
+                      -fx-pref-height: 1;
+                      -fx-max-width: 180;"/>
+
+            <!-- Navigation Buttons -->
+            <VBox spacing="8">
+                <!-- Dashboard Button -->
+                <Button text="📊  Dashboard"
+                        onAction="#goToDashboard"
+                        style="-fx-background-color: rgba(255,255,255,0.15);
+                           -fx-background-radius: 10;
+                           -fx-text-fill: white;
+                           -fx-font-size: 14;
+                           -fx-font-weight: bold;
+                           -fx-padding: 10 15;
+                           -fx-alignment: CENTER_LEFT;
+                           -fx-cursor: hand;"/>
+
+                <!-- Job Offers Button -->
+                <Button text="💼  Job Offers"
+                        onAction="#goToJobOffers"
+                        style="-fx-background-color: rgba(255,255,255,0.15);
+                           -fx-background-radius: 10;
+                           -fx-text-fill: white;
+                           -fx-font-size: 14;
+                           -fx-font-weight: bold;
+                           -fx-padding: 10 15;
+                           -fx-alignment: CENTER_LEFT;
+                           -fx-cursor: hand;"/>
+
+                <!-- Applications Button -->
+                <Button text="📝  Applications"
+                        onAction="#goToApplications"
+                        style="-fx-background-color: rgba(255,255,255,0.15);
+                           -fx-background-radius: 10;
+                           -fx-text-fill: white;
+                           -fx-font-size: 14;
+                           -fx-font-weight: bold;
+                           -fx-padding: 10 15;
+                           -fx-alignment: CENTER_LEFT;
+                           -fx-cursor: hand;"/>
+
+                <!-- Messages Button -->
+                <Button text="💬  Messages"
+                        onAction="#goToMessages"
+                        style="-fx-background-color: rgba(255,255,255,0.15);
+                           -fx-background-radius: 10;
+                           -fx-text-fill: white;
+                           -fx-font-size: 14;
+                           -fx-font-weight: bold;
+                           -fx-padding: 10 15;
+                           -fx-alignment: CENTER_LEFT;
+                           -fx-cursor: hand;"/>
+
+                <!-- Profile Button -->
+                <Button text="👤  Profile"
+                        onAction="#goToProfile"
+                        style="-fx-background-color: rgba(255,255,255,0.15);
+                           -fx-background-radius: 10;
+                           -fx-text-fill: white;
+                           -fx-font-size: 14;
+                           -fx-font-weight: bold;
+                           -fx-padding: 10 15;
+                           -fx-alignment: CENTER_LEFT;
+                           -fx-cursor: hand;"/>
+
+                <!-- Settings Button -->
+                <Button text="⚙️  Settings"
+                        onAction="#goToSettings"
+                        style="-fx-background-color: rgba(255,255,255,0.15);
+                           -fx-background-radius: 10;
+                           -fx-text-fill: white;
+                           -fx-font-size: 14;
+                           -fx-font-weight: bold;
+                           -fx-padding: 10 15;
+                           -fx-alignment: CENTER_LEFT;
+                           -fx-cursor: hand;"/>
+            </VBox>
+
+            <!-- Spacer to push logout to bottom -->
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <!-- Logout Button -->
+            <Button text="🚪  Logout"
+                    onAction="#logout"
+                    style="-fx-background-color: rgba(255,255,255,0.1);
+                       -fx-background-radius: 10;
+                       -fx-text-fill: rgba(255,255,255,0.8);
+                       -fx-font-size: 13;
+                       -fx-padding: 8 15;
+                       -fx-alignment: CENTER_LEFT;
+                       -fx-cursor: hand;"/>
+        </VBox>
+    </left>
+    <!-- Dynamic Content Area -->
+    <center>
+        <StackPane fx:id="contentArea"
+                   style="-fx-background-color: #f5f7fa;"/>
+    </center>
+    <right>
+        <VBox spacing="15"
+              prefWidth="220"
+              style="-fx-background-color: linear-gradient(to bottom, #1a2980, #26d0ce);
+                 -fx-padding: 20;">
+
+
+
+
+
+            <!-- Simple Calendar -->
+            <VBox spacing="10"
+                  style="-fx-background-color: rgba(255,255,255,0.9);
+                     -fx-background-radius: 10;
+                     -fx-padding: 10;">
+
+                <Label text="March 2024"
+                       style="-fx-font-weight: bold;
+                          -fx-font-size: 14;
+                          -fx-text-fill: #1a2980;"/>
+
+                <!-- Week days header -->
+                <HBox spacing="5" alignment="CENTER">
+                    <Label text="M" style="-fx-font-weight: bold; -fx-text-fill: #1a2980;" prefWidth="20"/>
+                    <Label text="T" style="-fx-font-weight: bold; -fx-text-fill: #1a2980;" prefWidth="20"/>
+                    <Label text="W" style="-fx-font-weight: bold; -fx-text-fill: #1a2980;" prefWidth="20"/>
+                    <Label text="T" style="-fx-font-weight: bold; -fx-text-fill: #1a2980;" prefWidth="20"/>
+                    <Label text="F" style="-fx-font-weight: bold; -fx-text-fill: #1a2980;" prefWidth="20"/>
+                    <Label text="S" style="-fx-font-weight: bold; -fx-text-fill: #1a2980;" prefWidth="20"/>
+                    <Label text="S" style="-fx-font-weight: bold; -fx-text-fill: #1a2980;" prefWidth="20"/>
+                </HBox>
+
+                <!-- Calendar days grid -->
+                <GridPane hgap="5" vgap="5" alignment="CENTER">
+                    <!-- Row 1 -->
+                    <Label text="1" GridPane.rowIndex="0" GridPane.columnIndex="4" style="-fx-text-fill: #333;" prefWidth="20"/>
+                    <Label text="2" GridPane.rowIndex="0" GridPane.columnIndex="5" style="-fx-text-fill: #333;" prefWidth="20"/>
+                    <Label text="3" GridPane.rowIndex="0" GridPane.columnIndex="6" style="-fx-text-fill: #333;" prefWidth="20"/>
+
+                    <!-- Row 2 -->
+                    <Label text="4" GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-text-fill: #333;" prefWidth="20"/>
+                    <Label text="5" GridPane.rowIndex="1" GridPane.columnIndex="1" style="-fx-text-fill: #333;" prefWidth="20"/>
+                    <Label text="6" GridPane.rowIndex="1" GridPane.columnIndex="2" style="-fx-text-fill: #333;" prefWidth="20"/>
+                    <Label text="7" GridPane.rowIndex="1" GridPane.columnIndex="3" style="-fx-text-fill: #333;" prefWidth="20"/>
+                    <Label text="8" GridPane.rowIndex="1" GridPane.columnIndex="4" style="-fx-text-fill: #333;" prefWidth="20"/>
+                    <Label text="9" GridPane.rowIndex="1" GridPane.columnIndex="5" style="-fx-text-fill: #333;" prefWidth="20"/>
+                    <Label text="10" GridPane.rowIndex="1" GridPane.columnIndex="6" style="-fx-text-fill: #333;" prefWidth="20"/>
+
+                    <!-- Row 3 -->
+                    <Label text="11" GridPane.rowIndex="2" GridPane.columnIndex="0" style="-fx-text-fill: #333;" prefWidth="20"/>
+                    <Label text="12" GridPane.rowIndex="2" GridPane.columnIndex="1" style="-fx-text-fill: #333;" prefWidth="20"/>
+                    <Label text="13" GridPane.rowIndex="2" GridPane.columnIndex="2" style="-fx-text-fill: #333;" prefWidth="20"/>
+                    <Label text="14" GridPane.rowIndex="2" GridPane.columnIndex="3" style="-fx-text-fill: #333;" prefWidth="20"/>
+                    <Label text="15" GridPane.rowIndex="2" GridPane.columnIndex="4" style="-fx-text-fill: #333;" prefWidth="20"/>
+                    <Label text="16" GridPane.rowIndex="2" GridPane.columnIndex="5" style="-fx-text-fill: #333;" prefWidth="20"/>
+                    <Label text="17" GridPane.rowIndex="2" GridPane.columnIndex="6" style="-fx-text-fill: #333;" prefWidth="20"/>
+
+                    <!-- Row 4 -->
+                    <Label text="18" GridPane.rowIndex="3" GridPane.columnIndex="0" style="-fx-text-fill: #333;" prefWidth="20"/>
+                    <Label text="19" GridPane.rowIndex="3" GridPane.columnIndex="1" style="-fx-text-fill: #333;" prefWidth="20"/>
+                    <Label text="20" GridPane.rowIndex="3" GridPane.columnIndex="2" style="-fx-text-fill: #333;" prefWidth="20"/>
+                    <Label text="21" GridPane.rowIndex="3" GridPane.columnIndex="3" style="-fx-text-fill: #333;" prefWidth="20"/>
+                    <Label text="22" GridPane.rowIndex="3" GridPane.columnIndex="4" style="-fx-text-fill: #333;" prefWidth="20"/>
+                    <Label text="23" GridPane.rowIndex="3" GridPane.columnIndex="5" style="-fx-text-fill: #333;" prefWidth="20"/>
+                    <Label text="24" GridPane.rowIndex="3" GridPane.columnIndex="6" style="-fx-text-fill: #333;" prefWidth="20"/>
+
+                    <!-- Row 5 -->
+                    <Label text="25" GridPane.rowIndex="4" GridPane.columnIndex="0" style="-fx-text-fill: #333;" prefWidth="20"/>
+                    <Label text="26" GridPane.rowIndex="4" GridPane.columnIndex="1" style="-fx-text-fill: #333;" prefWidth="20"/>
+                    <Label text="27" GridPane.rowIndex="4" GridPane.columnIndex="2" style="-fx-text-fill: #333;" prefWidth="20"/>
+                    <Label text="28" GridPane.rowIndex="4" GridPane.columnIndex="3" style="-fx-text-fill: #333;" prefWidth="20"/>
+                    <Label text="29" GridPane.rowIndex="4" GridPane.columnIndex="4" style="-fx-text-fill: #333;" prefWidth="20"/>
+                    <Label text="30" GridPane.rowIndex="4" GridPane.columnIndex="5" style="-fx-text-fill: #333;" prefWidth="20"/>
+                    <Label text="31" GridPane.rowIndex="4" GridPane.columnIndex="6" style="-fx-text-fill: #333;" prefWidth="20"/>
+                </GridPane>
+
+                <!-- Upcoming events -->
+                <VBox spacing="5" style="-fx-padding: 5 0 0 0;">
+                    <Label text="• Interview: 15 Mar" style="-fx-text-fill: #1a2980; -fx-font-size: 11;"/>
+                    <Label text="• Meeting: 22 Mar" style="-fx-text-fill: #1a2980; -fx-font-size: 11;"/>
+                </VBox>
+            </VBox>
+        </VBox>
+    </right>
+</BorderPane>

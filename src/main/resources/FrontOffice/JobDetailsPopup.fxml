@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.geometry.Insets?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="Controller.FrontOffice.JobDetailsController"
+            fitToWidth="true"
+            style="-fx-background: transparent;">
+    <VBox spacing="20" padding="20" style="-fx-background-color: white; -fx-background-radius: 15; -fx-border-radius: 15; -fx-border-color: #e2e8f0;">
+
+        <!-- TITLE -->
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label fx:id="titleLabel" text="Job Title"
+                   style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #0f172a;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Circle fx:id="statusIndicator" radius="8"/>
+            <Label fx:id="statusLabel" text="● OPEN"
+                   style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+        </HBox>
+
+        <!-- TYPE AND DATE -->
+        <HBox spacing="15">
+            <Label fx:id="typeLabel" text="Full Time" style="-fx-font-size: 14px; -fx-text-fill: #4f46e5;"/>
+            <Label fx:id="dateLabel" text="15 Feb 2026" style="-fx-font-size: 14px; -fx-text-fill: #64748b;"/>
+        </HBox>
+
+        <!-- DESCRIPTION -->
+        <Label fx:id="descriptionLabel" text="Job description here..." wrapText="true" style="-fx-font-size: 14px; -fx-text-fill: #1e293b;"/>
+
+        <!-- SKILLS -->
+        <VBox spacing="10">
+            <Label text="Required Skills:" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+            <FlowPane fx:id="skillsContainer" hgap="10" vgap="10"/>
+        </VBox>
+
+        <!-- ACTION BUTTONS -->
+        <HBox spacing="20" alignment="CENTER_RIGHT">
+            <Button fx:id="applyButton" text="Apply" onAction="#handleApply"
+                    style="-fx-background-color: linear-gradient(to right, #4f46e5, #6366f1); -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 20; -fx-padding: 8 20;"/>
+            <Button fx:id="saveButton" text="Save" onAction="#handleSave"
+                    style="-fx-background-color: white; -fx-text-fill: #4f46e5; -fx-border-color: #4f46e5; -fx-border-radius: 20; -fx-background-radius: 20; -fx-padding: 8 20;"/>
+        </HBox>
+
+        <!-- SIMILAR JOBS -->
+        <VBox spacing="10">
+            <Label text="Similar Jobs:" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+            <HBox fx:id="similarJobsContainer" spacing="10"/>
+        </VBox>
+    </VBox>
+</ScrollPane>

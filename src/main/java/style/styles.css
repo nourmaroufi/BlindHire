@@ -1,0 +1,222 @@
+/* Additional styles for stats boxes */
+.stat-box {
+    -fx-background-color: white;
+    -fx-background-radius: 15;
+    -fx-padding: 15 25;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);
+    -fx-min-width: 120;
+}
+
+.stat-box:hover {
+    -fx-effect: dropshadow(gaussian, rgba(26, 41, 128, 0.15), 15, 0, 0, 4);
+}
+
+.stat-number {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a2980;
+}
+
+.stat-label {
+    -fx-text-fill: #64748b;
+    -fx-font-size: 14px;
+}
+
+/* Search field styling */
+.search-field {
+    -fx-background-radius: 25;
+    -fx-padding: 10 20;
+    -fx-background-color: white;
+    -fx-border-color: #e0e7ef;
+    -fx-border-width: 1;
+    -fx-border-radius: 25;
+    -fx-pref-width: 280;
+}
+
+.search-field:focused {
+    -fx-border-color: #1a2980;
+    -fx-effect: dropshadow(gaussian, rgba(26, 41, 128, 0.1), 5, 0, 0, 0);
+}
+
+/* Filter button styling */
+.filter-button {
+    -fx-background-color: #26d0ce;
+    -fx-text-fill: white;
+    -fx-font-weight: 600;
+    -fx-padding: 10 25;
+    -fx-background-radius: 25;
+    -fx-cursor: hand;
+    -fx-font-size: 14px;
+}
+
+.filter-button:hover {
+    -fx-background-color: #1fb5b3;
+    -fx-effect: dropshadow(gaussian, rgba(38, 208, 206, 0.3), 10, 0, 0, 2);
+}
+
+/* Card Container Styling */
+.job-card {
+    -fx-background-color: white;
+    -fx-background-radius: 20;
+    -fx-padding: 20;
+    -fx-min-width: 280;
+    -fx-max-width: 280;
+    -fx-pref-height: 320;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 15, 0, 0, 4);
+    -fx-border-color: #e0e7ef;
+    -fx-border-width: 1px;
+    -fx-border-radius: 20;
+}
+
+.job-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(26, 41, 128, 0.2), 20, 0, 0, 8);
+    -fx-translate-y: -2;
+    -fx-cursor: hand;
+}
+
+/* Card Header */
+.card-header {
+    -fx-padding: 0 0 15 0;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-color: #eef2ff;
+}
+
+.job-id {
+    -fx-background-color: #1a2980;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 4 12;
+    -fx-background-radius: 15;
+}
+
+.job-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a2980;
+    -fx-wrap-text: true;
+    -fx-max-height: 50;
+}
+
+/* Card Content */
+.card-content {
+    -fx-padding: 10 0;
+    -fx-spacing: 10;
+}
+
+.skills-container {
+    -fx-padding: 5 0 0 0;
+}
+
+.skill-tag {
+    -fx-background-color: #eef2ff;
+    -fx-text-fill: #1a2980;
+    -fx-font-size: 11px;
+    -fx-padding: 4 10;
+    -fx-background-radius: 15;
+    -fx-font-weight: 500;
+}
+
+.description-preview {
+    -fx-font-size: 12px;
+    -fx-text-fill: #475569;
+    -fx-wrap-text: true;
+    -fx-max-height: 60;
+    -fx-line-spacing: 2;
+}
+
+/* Recruiter Info */
+.recruiter-info {
+    -fx-padding: 12 0 0 0;
+    -fx-border-width: 1 0 0 0;
+    -fx-border-color: #eef2ff;
+}
+
+.recruiter-label {
+    -fx-text-fill: #64748b;
+    -fx-font-size: 11px;
+}
+
+.recruiter-value {
+    -fx-text-fill: #1a2980;
+    -fx-font-weight: 600;
+    -fx-font-size: 13px;
+}
+
+/* Card Footer */
+.card-footer {
+    -fx-padding: 12 0 0 0;
+    -fx-alignment: CENTER_RIGHT;
+}
+
+.view-details-btn {
+    -fx-background-color: #26d0ce;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-padding: 6 18;
+    -fx-background-radius: 20;
+    -fx-cursor: hand;
+}
+
+.view-details-btn:hover {
+    -fx-background-color: #1fb5b3;
+}
+
+/* Status Badges */
+.status-badge {
+    -fx-background-radius: 12;
+    -fx-padding: 4 10;
+    -fx-font-size: 11px;
+    -fx-font-weight: 600;
+}
+
+.status-active {
+    -fx-background-color: #dcfce7;
+    -fx-text-fill: #059669;
+}
+
+.status-pending {
+    -fx-background-color: #fff3cd;
+    -fx-text-fill: #856404;
+}
+
+.status-closed {
+    -fx-background-color: #fee2e2;
+    -fx-text-fill: #dc2626;
+}
+
+/* Empty State */
+.empty-state {
+    -fx-alignment: CENTER;
+    -fx-padding: 50;
+    -fx-pref-width: 800;
+}
+
+.empty-state-text {
+    -fx-font-size: 16px;
+    -fx-text-fill: #64748b;
+}
+
+/* Scrollbar Styling */
+.scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-padding: 0 5;
+}
+
+.scroll-bar:vertical .thumb {
+    -fx-background-color: #cbd5e1;
+    -fx-background-radius: 10;
+}
+
+.scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #94a3b8;
+}

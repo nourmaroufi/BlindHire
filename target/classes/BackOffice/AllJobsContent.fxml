@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="Controller.BackOffice.joboffer.JobOfferListController"
+      spacing="20"
+      style="-fx-padding: 20 30; -fx-background-color: #f5f7fa;"
+      fx:id="allJobsRoot"
+      alignment="TOP_CENTER">
+
+    <!-- Section Title - Centered -->
+    <Label text="My Jobs"
+           style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1e293b;"
+           maxWidth="Infinity" alignment="CENTER"/>
+
+    <!-- Filter Bar - Centered with max width -->
+    <HBox spacing="15" alignment="CENTER" maxWidth="1000">
+        <Label text="Filter by:"
+               style="-fx-font-weight: bold; -fx-text-fill: #475569;"/>
+
+        <MenuButton fx:id="timeFilter"
+                    text="Time ▼"
+                    style="-fx-background-color: white; -fx-border-color: #e2e8f0; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8 15;"/>
+        <MenuButton fx:id="typeFilter"
+                    text="Type ▼"
+                    style="-fx-background-color: white; -fx-border-color: #e2e8f0; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8 15;"/>
+
+        <Region HBox.hgrow="ALWAYS" maxWidth="50"/>
+        <TextField fx:id="searchField"
+                   promptText="Search jobs..."
+                   style="-fx-background-color: white; -fx-border-color: #e2e8f0; -fx-border-radius: 8; -fx-background-radius: 8; -fx-pref-width: 250; -fx-padding: 8 15;"/>
+    </HBox>
+
+    <!-- Cards Container - Centered -->
+    <ScrollPane fitToWidth="true"
+                fitToHeight="true"
+                style="-fx-background: transparent; -fx-background-color: transparent; -fx-border-width: 0;"
+                hbarPolicy="NEVER">
+        <content>
+            <VBox alignment="TOP_CENTER" spacing="20">
+                <FlowPane fx:id="cardsContainer"
+                          hgap="25"
+                          vgap="25"
+                          prefWrapLength="1000"
+                          alignment="CENTER"
+                          style="-fx-padding: 10 0 20 0;"/>
+            </VBox>
+        </content>
+    </ScrollPane>
+</VBox>

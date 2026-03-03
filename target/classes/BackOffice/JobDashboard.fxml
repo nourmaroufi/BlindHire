@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.paint.Color?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="Controller.BackOffice.joboffer.JobDashboardController"
+
+      spacing="30"
+      style="-fx-padding: 30; -fx-background-color: transparent;">
+
+
+    <!-- Dashboard Header -->
+    <Label text="📊 Dashboard"
+           style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
+
+    <!-- Cards Row -->
+    <HBox spacing="20">
+
+        <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 16; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10,0,0,4); -fx-pref-width: 200;">
+            <Label text="Total Jobs" style="-fx-font-size: 14px; -fx-text-fill: #475569;"/>
+            <Label fx:id="totalJobsLabel" text="0" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #16a34a;"/>
+        </VBox>
+
+
+
+        <!-- Applications Card -->
+        <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 16; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10,0,0,4); -fx-pref-width: 200;">
+            <Label text="Applications" style="-fx-font-size: 14px; -fx-text-fill: #475569;"/>
+            <Label text="15" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #16a34a;"/>
+        </VBox>
+
+        <!-- Messages Card -->
+        <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 16; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10,0,0,4); -fx-pref-width: 200;">
+            <Label text="Messages" style="-fx-font-size: 14px; -fx-text-fill: #475569;"/>
+            <Label text="8" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #facc15;"/>
+        </VBox>
+
+        <!-- Upcoming Schedule Card -->
+        <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 16; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10,0,0,4); -fx-pref-width: 200;">
+            <Label text="Upcoming Schedule" style="-fx-font-size: 14px; -fx-text-fill: #475569;"/>
+            <Label text="3 Interviews" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #f97316;"/>
+        </VBox>
+
+    </HBox>
+
+    <!-- Quick Links Section -->
+    <VBox spacing="15">
+        <Label text="Quick Actions" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
+
+        <HBox spacing="20">
+            <Button text="Post a Job" style="-fx-background-color: #2563eb; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 10 20;"/>
+            <Button text="View Applications" style="-fx-background-color: #16a34a; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 10 20;"/>
+            <Button text="Check Messages" style="-fx-background-color: #facc15; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 10 20;"/>
+        </HBox>
+    </VBox>
+
+</VBox>

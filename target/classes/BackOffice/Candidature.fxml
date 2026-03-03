@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Rectangle?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="Controller.BackOffice.Candidature.CandidatureController"
+            prefHeight="600.0"
+            prefWidth="900.0"
+            style="-fx-background-color: #f5f7fa;">
+
+    <children>
+
+
+        <VBox spacing="20"
+              style="-fx-background-color: white; -fx-background-radius: 24; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 4);"
+              AnchorPane.topAnchor="20"
+              AnchorPane.leftAnchor="20"
+              AnchorPane.rightAnchor="20"
+              AnchorPane.bottomAnchor="20">
+
+            <padding>
+                <Insets top="25" right="25" bottom="25" left="25"/>
+            </padding>
+
+            <VBox spacing="20">
+                <HBox alignment="CENTER_LEFT" spacing="15">
+                    <Rectangle width="6" height="40" arcWidth="6" arcHeight="6"
+                               style="-fx-fill: linear-gradient(to bottom, #4f46e5, #3b82f6);"/>
+                    <Label text="📊 Job Applications"
+                           style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
+
+                    <Region HBox.hgrow="ALWAYS"/>
+
+                    <!-- Filter Button -->
+                    <Button text="Filter"
+                            style="-fx-background-color: white; -fx-border-color: #e2e8f0; -fx-border-width: 1.5;
+                                   -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 8 20;
+                                   -fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #475569;
+                                   -fx-cursor: hand;">
+                        <graphic>
+                            <Text text="🔍" style="-fx-font-size: 14px;"/>
+                        </graphic>
+                    </Button>
+
+                    <!-- Export Button -->
+                    <Button text="Export"
+                            style="-fx-background-color: white; -fx-border-color: #e2e8f0; -fx-border-width: 1.5;
+                                   -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 8 20;
+                                   -fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #475569;
+                                   -fx-cursor: hand;">
+                        <graphic>
+                            <Text text="📥" style="-fx-font-size: 14px;"/>
+                        </graphic>
+                    </Button>
+                </HBox>
+
+                <!-- Statistics Cards -->
+                <HBox spacing="15" alignment="CENTER_LEFT">
+                    <!-- Total Applications Card -->
+                    <VBox spacing="8"
+                          style="-fx-background-color: linear-gradient(to right, #4f46e5, #3b82f6);
+                                 -fx-background-radius: 16; -fx-padding: 15 25;">
+                        <Label text="Total Applications"
+                               style="-fx-text-fill: rgba(255,255,255,0.8); -fx-font-size: 13px; -fx-font-weight: 600;"/>
+                        <Label fx:id="totalApplicationsLabel" text="0"
+                               style="-fx-text-fill: white; -fx-font-size: 32px; -fx-font-weight: bold;"/>
+                    </VBox>
+
+                    <!-- Pending Card -->
+                    <VBox spacing="8"
+                          style="-fx-background-color: #fef3c7; -fx-background-radius: 16; -fx-padding: 15 25;">
+                        <Label text="Pending Review"
+                               style="-fx-text-fill: #92400e; -fx-font-size: 13px; -fx-font-weight: 600;"/>
+                        <Label fx:id="pendingApplicationsLabel" text="0"
+                               style="-fx-text-fill: #92400e; -fx-font-size: 32px; -fx-font-weight: bold;"/>
+                    </VBox>
+
+                    <!-- Accepted Card -->
+                    <VBox spacing="8"
+                          style="-fx-background-color: #dcfce7; -fx-background-radius: 16; -fx-padding: 15 25;">
+                        <Label text="Accepted"
+                               style="-fx-text-fill: #166534; -fx-font-size: 13px; -fx-font-weight: 600;"/>
+                        <Label fx:id="acceptedApplicationsLabel" text="0"
+                               style="-fx-text-fill: #166534; -fx-font-size: 32px; -fx-font-weight: bold;"/>
+                    </VBox>
+
+                    <!-- Rejected Card -->
+                    <VBox spacing="8"
+                          style="-fx-background-color: #fee2e2; -fx-background-radius: 16; -fx-padding: 15 25;">
+                        <Label text="Rejected"
+                               style="-fx-text-fill: #991b1b; -fx-font-size: 13px; -fx-font-weight: 600;"/>
+                        <Label fx:id="rejectedApplicationsLabel" text="0"
+                               style="-fx-text-fill: #991b1b; -fx-font-size: 32px; -fx-font-weight: bold;"/>
+                    </VBox>
+                </HBox>
+
+                <!-- Search and Filter Bar -->
+                <HBox spacing="15" alignment="CENTER_LEFT">
+                    <HBox spacing="5" alignment="CENTER_LEFT"
+                          style="-fx-background-color: #f8fafc; -fx-border-color: #e2e8f0; -fx-border-width: 1;
+                                 -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 0 15;">
+                        <Label text="🔍" style="-fx-font-size: 16px;"/>
+                        <TextField fx:id="searchField" promptText="Search by candidate name, job title, or email..."
+                                   style="-fx-background-color: transparent; -fx-border: none; -fx-padding: 12 5;
+                                          -fx-font-size: 14px; -fx-pref-width: 350;"/>
+                    </HBox>
+
+                    <ComboBox fx:id="jobPositionFilter" promptText="Job Position"
+                              style="-fx-background-color: white; -fx-border-color: #e2e8f0; -fx-border-radius: 12;
+                                     -fx-background-radius: 12; -fx-padding: 5; -fx-font-size: 14px; -fx-pref-width: 150;"/>
+
+                    <ComboBox fx:id="statusFilter" promptText="Status"
+                              style="-fx-background-color: white; -fx-border-color: #e2e8f0; -fx-border-radius: 12;
+                                     -fx-background-radius: 12; -fx-padding: 5; -fx-font-size: 14px; -fx-pref-width: 150;"/>
+                </HBox>
+            </VBox>
+
+            <!-- Applications Table -->
+            <TableView fx:id="applicationsTable" VBox.vgrow="ALWAYS"
+                       style="-fx-background-color: transparent; -fx-border-color: #e2e8f0; -fx-border-radius: 16;
+                              -fx-background-radius: 16;">
+                <columns>
+                    <!-- Candidate Column -->
+                    <TableColumn fx:id="candidateNameColumn" prefWidth="200" text="Candidate" />
+
+                    <!-- Job Position Column -->
+                    <TableColumn fx:id="jobPositionColumn" prefWidth="180" text="Job Position" />
+
+                    <!-- Applied Date Column -->
+                    <TableColumn fx:id="appliedDateColumn" prefWidth="120" text="Applied Date" />
+
+                    <!-- Status Column -->
+                    <TableColumn fx:id="statusColumn" prefWidth="120" text="Status" />
+
+                    <!-- Experience Column -->
+                    <TableColumn fx:id="experienceColumn" prefWidth="100" text="Experience" />
+
+                    <!-- Actions Column -->
+                    <TableColumn fx:id="actionsColumn" prefWidth="150" text="Actions" />
+                </columns>
+
+                <placeholder>
+                    <Label text="No applications found" style="-fx-text-fill: #64748b; -fx-font-size: 14px;"/>
+                </placeholder>
+            </TableView>
+
+            <!-- Bottom Pagination -->
+            <HBox alignment="CENTER_RIGHT" spacing="15">
+                <Label fx:id="paginationInfoLabel" text="Showing 0-0 of 0 applications"
+                       style="-fx-text-fill: #64748b; -fx-font-size: 13px;"/>
+
+                <HBox spacing="5">
+                    <Button fx:id="prevPageButton" text="←"
+                            style="-fx-background-color: white; -fx-border-color: #e2e8f0; -fx-border-width: 1;
+                                   -fx-border-radius: 8; -fx-background-radius: 8; -fx-min-width: 35; -fx-min-height: 35;
+                                   -fx-cursor: hand; -fx-font-weight: bold;"/>
+
+                    <Button fx:id="page1Button" text="1"
+                            style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-border-radius: 8;
+                                   -fx-background-radius: 8; -fx-min-width: 35; -fx-min-height: 35;
+                                   -fx-cursor: hand; -fx-font-weight: bold; -fx-border: none;"/>
+
+                    <Button fx:id="page2Button" text="2"
+                            style="-fx-background-color: white; -fx-border-color: #e2e8f0; -fx-border-width: 1;
+                                   -fx-border-radius: 8; -fx-background-radius: 8; -fx-min-width: 35; -fx-min-height: 35;
+                                   -fx-cursor: hand; -fx-font-weight: bold;"/>
+
+                    <Button fx:id="page3Button" text="3"
+                            style="-fx-background-color: white; -fx-border-color: #e2e8f0; -fx-border-width: 1;
+                                   -fx-border-radius: 8; -fx-background-radius: 8; -fx-min-width: 35; -fx-min-height: 35;
+                                   -fx-cursor: hand; -fx-font-weight: bold;"/>
+
+                    <Button fx:id="nextPageButton" text="→"
+                            style="-fx-background-color: white; -fx-border-color: #e2e8f0; -fx-border-width: 1;
+                                   -fx-border-radius: 8; -fx-background-radius: 8; -fx-min-width: 35; -fx-min-height: 35;
+                                   -fx-cursor: hand; -fx-font-weight: bold;"/>
+                </HBox>
+            </HBox>
+        </VBox>
+    </children>
+</AnchorPane>
