@@ -1,0 +1,128 @@
+/* Root container */
+.root {
+    -fx-background-color: linear-gradient(to bottom, #f0f4fa, #e6ecf5);
+    -fx-padding: 20;
+    -fx-font-family: "Segoe UI", "System";
+}
+
+/* Header */
+.header {
+    -fx-background-color: rgba(255, 255, 255, 0.7);
+    -fx-background-radius: 15;
+    -fx-padding: 12 20;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 10, 0, 0, 2);
+}
+
+.header-icon {
+    -fx-font-size: 24px;
+}
+
+.header-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+.status-online {
+    -fx-font-size: 12px;
+    -fx-text-fill: #27ae60;
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 12;
+    -fx-padding: 4 12;
+    -fx-border-color: #27ae60;
+    -fx-border-radius: 12;
+    -fx-border-width: 1;
+}
+
+/* Chat ScrollPane */
+.chat-scrollpane {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-border-width: 0;
+}
+
+.chat-scrollpane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.chat-scrollpane .scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-pref-width: 12;
+}
+
+.chat-scrollpane .scroll-bar:vertical .thumb {
+    -fx-background-color: #b0bec5;
+    -fx-background-radius: 6;
+}
+
+.chat-scrollpane .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #90a4ae;
+}
+
+/* Chat container - fills width */
+.chat-container {
+    -fx-padding: 10 5;
+    -fx-max-width: Infinity; /* Ensures it stretches to fill available width */
+}
+
+/* Message bubbles */
+.user-message, .bot-message {
+    -fx-padding: 12 16;
+    -fx-font-size: 14px;
+    -fx-line-spacing: 2;
+}
+
+.user-message {
+    -fx-background-color: #007aff;
+    -fx-background-radius: 18 18 4 18;
+    -fx-text-fill: white;
+}
+
+.bot-message {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 18 18 18 4;
+    -fx-text-fill: #2c3e50;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 5, 0, 0, 2);
+}
+
+/* Input area */
+.input-area {
+    -fx-background-color: white;
+    -fx-background-radius: 30;
+    -fx-padding: 8 16;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 15, 0, 0, 5);
+}
+
+.message-field {
+    -fx-background-color: transparent;
+    -fx-padding: 10 5;
+    -fx-font-size: 14px;
+    -fx-prompt-text-fill: #95a5a6;
+}
+
+.message-field:focused {
+    -fx-background-color: transparent;
+    -fx-border-width: 0 0 2 0;
+    -fx-border-color: #007aff;
+}
+
+.send-button {
+    -fx-background-color: #007aff;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 10 24;
+    -fx-background-radius: 25;
+    -fx-cursor: hand;
+    -fx-font-size: 14px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 122, 255, 0.3), 10, 0, 0, 2);
+}
+
+.send-button:hover {
+    -fx-background-color: #005bb5;
+    -fx-effect: dropshadow(gaussian, rgba(0, 122, 255, 0.5), 15, 0, 0, 4);
+}
+
+.send-button:pressed {
+    -fx-background-color: #004080;
+    -fx-effect: none;
+}

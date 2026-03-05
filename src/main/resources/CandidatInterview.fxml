@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="Controller.FrontOffice.InterviewController"
+      spacing="20"
+      styleClass="root"
+      stylesheets="@style.css">
+
+    <padding>
+        <Insets top="25" right="25" bottom="25" left="25"/>
+    </padding>
+
+    <!-- HEADER -->
+    <HBox alignment="CENTER_LEFT" styleClass="header-banner">
+        <Label text="My Interviews" styleClass="header-title"/>
+        <Region HBox.hgrow="ALWAYS"/>
+
+        <!-- Notification Bell -->
+        <StackPane fx:id="notificationPane" style="-fx-cursor:hand;">
+            <Label fx:id="bellLabel" text="🔔"
+                   style="-fx-font-size:24px;"/>
+            <Label fx:id="notifBadge" text="0"
+                   style="-fx-background-color:#e74c3c;
+                          -fx-text-fill:white;
+                          -fx-background-radius:10;
+                          -fx-font-size:10px;
+                          -fx-padding: 1 5;
+                          -fx-font-weight:bold;"
+                   StackPane.alignment="TOP_RIGHT"
+                   visible="false"/>
+        </StackPane>
+    </HBox>
+
+    <!-- Notification Dropdown (hidden by default) -->
+    <VBox fx:id="notificationDropdown"
+          spacing="8"
+          visible="false"
+          managed="false"
+          style="-fx-background-color:white;
+                 -fx-border-color:#e0e0e0;
+                 -fx-border-radius:10;
+                 -fx-background-radius:10;
+                 -fx-padding:12;
+                 -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);">
+        <Label text="🔔 Notifications"
+               style="-fx-font-weight:bold; -fx-font-size:14px;"/>
+        <VBox fx:id="notificationList" spacing="6"/>
+    </VBox>
+
+    <!-- Tab Pane -->
+    <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+
+        <!-- Upcoming Tab -->
+        <Tab text="📅 Upcoming">
+            <ScrollPane fitToWidth="true" styleClass="transparent-scrollpane">
+                <VBox fx:id="interviewContainer" spacing="15" styleClass="interview-list">
+                    <padding>
+                        <Insets top="10" right="10" bottom="10" left="10"/>
+                    </padding>
+                </VBox>
+            </ScrollPane>
+        </Tab>
+
+        <!-- Past Interviews Tab -->
+        <Tab text="🕐 Past Interviews">
+            <ScrollPane fitToWidth="true" styleClass="transparent-scrollpane">
+                <VBox fx:id="pastContainer" spacing="15" styleClass="interview-list">
+                    <padding>
+                        <Insets top="10" right="10" bottom="10" left="10"/>
+                    </padding>
+                </VBox>
+            </ScrollPane>
+        </Tab>
+
+    </TabPane>
+
+</VBox>

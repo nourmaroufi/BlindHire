@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox spacing="15"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="Controller.FrontOffice.PracticeInterviewController"
+      stylesheets="/chatbot.css"
+      styleClass="root">
+
+    <!-- Header -->
+    <HBox styleClass="header" alignment="CENTER_LEFT" spacing="10">
+        <Label text="🤖" styleClass="header-icon" />
+        <Label text="AI Interview Practice" styleClass="header-title" />
+        <Region HBox.hgrow="ALWAYS" />
+        <Label text="● Online" styleClass="status-online" />
+    </HBox>
+
+    <!-- Chat Area -->
+    <ScrollPane fitToWidth="true"
+                VBox.vgrow="ALWAYS"
+                styleClass="chat-scrollpane">
+        <VBox fx:id="chatContainer"
+              styleClass="chat-container"
+              spacing="12"
+              maxWidth="Infinity" />   <!-- Ensures full width -->
+    </ScrollPane>
+
+    <!-- Input Area -->
+    <HBox spacing="12" styleClass="input-area">
+        <TextField fx:id="messageField"
+                   promptText="Type your answer..."
+                   HBox.hgrow="ALWAYS"
+                   styleClass="message-field" />
+        <Button text="Send"
+                onAction="#handleSend"
+                styleClass="send-button" />
+    </HBox>
+</VBox>

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.Tab?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="Controller.InterviewPageController"
+      spacing="20"
+      stylesheets="@style.css"
+      styleClass="root">
+
+
+    <!-- Padding for the main VBox -->
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <!-- ================= HEADER ================= -->
+    <HBox alignment="CENTER_LEFT" styleClass="header-banner">
+        <Label text="Interviews Dashboard" styleClass="header-label"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="Schedule an Interview"
+                onAction="#openAddInterviewForm"
+                style="-fx-background-color: white;
+                   -fx-text-fill: #1a2980;
+                   -fx-background-radius: 20;"/>
+    </HBox>
+
+
+    <!-- ================= TAB PANE ================= -->
+    <TabPane fx:id="mainTabPane"
+             tabClosingPolicy="UNAVAILABLE"
+             prefHeight="600"
+             VBox.vgrow="ALWAYS">
+        <VBox.margin>
+            <Insets top="25"/>
+        </VBox.margin>
+
+        <!-- ========== UPCOMING CARDS TAB ========== -->
+        <Tab text="📋 Overview">
+            <ScrollPane fitToWidth="true"
+                        style="-fx-background-color:transparent;">
+                <VBox fx:id="overviewContainer"
+                      spacing="20"
+                      style="-fx-padding:20;">
+                </VBox>
+            </ScrollPane>
+        </Tab>
+
+
+        <!-- ========== DASHBOARD TAB ========== -->
+        <Tab text="Dashboard">
+            <VBox spacing="10">
+                <HBox spacing="10" alignment="CENTER_RIGHT">
+                    <Label text="Filter by type:" style="-fx-font-weight: bold;"/>
+                    <ComboBox fx:id="filterTypeComboBox" prefWidth="150"/>
+                </HBox>
+
+                <!-- Horizontal scroll wraps both header and rows -->
+                <ScrollPane fitToHeight="true"
+                            style="-fx-background-color: transparent;"
+                            hbarPolicy="AS_NEEDED" vbarPolicy="NEVER">
+
+                    <VBox spacing="10">
+                        <!-- Header -->
+                        <HBox spacing="10"
+                              style="-fx-background-color:#e3eaf2;
+                             -fx-padding:12;
+                             -fx-background-radius:10;">
+                            <Label text="Candidate"     prefWidth="120" style="-fx-font-weight:bold;"/>
+                            <Label text="Date"          prefWidth="160" style="-fx-font-weight:bold;"/>
+                            <Label text="Type"          prefWidth="110" style="-fx-font-weight:bold;"/>
+                            <Label text="Job Offer"     prefWidth="120" style="-fx-font-weight:bold;"/>
+                            <Label text="Interviewer"   prefWidth="120" style="-fx-font-weight:bold;"/>
+                            <Label text="Location"      prefWidth="180" style="-fx-font-weight:bold;"/>
+                            <Label text="Notes"         prefWidth="150" style="-fx-font-weight:bold;"/>
+                            <Label text="Actions"       prefWidth="220" style="-fx-font-weight:bold;"/>
+                        </HBox>
+
+                        <!-- Scrollable rows -->
+                        <ScrollPane fitToWidth="true"
+                                    style="-fx-background-color:transparent;"
+                                    vbarPolicy="AS_NEEDED" hbarPolicy="NEVER">
+                            <VBox fx:id="interviewContainer" spacing="10">
+                                <padding>
+                                    <Insets top="10" right="10" bottom="10" left="10"/>
+                                </padding>
+                            </VBox>
+                        </ScrollPane>
+                    </VBox>
+                </ScrollPane>
+            </VBox>
+        </Tab>
+
+        <!-- ========== CALENDAR TAB ========== -->
+        <Tab text="Calendar">
+
+            <VBox alignment="CENTER" spacing="20">
+
+                <VBox fx:id="calendarContainer"
+                      styleClass="calendar-wrapper"
+                      prefWidth="900"
+                      prefHeight="600"/>
+
+            </VBox>
+
+        </Tab>
+        <!-- ========== PAST INTERVIEWS TAB ========== -->
+        <Tab text="Past Interviews">
+            <VBox spacing="15">
+                <padding>
+                    <Insets top="15" right="15" bottom="15" left="15"/>
+                </padding>
+                <Label text="Past Interviews"
+                       style="-fx-font-size:18px; -fx-font-weight:bold;"/>
+                <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                            style="-fx-background-color:transparent;">
+                    <VBox fx:id="pastInterviewContainer" spacing="12">
+                        <padding>
+                            <Insets top="5" right="5" bottom="5" left="5"/>
+                        </padding>
+                    </VBox>
+                </ScrollPane>
+            </VBox>
+        </Tab>
+
+
+    </TabPane>
+
+</VBox>

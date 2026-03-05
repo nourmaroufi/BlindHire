@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.web.WebView?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="Controller.AddInterviewController"
+      spacing="15" alignment="TOP_CENTER"
+      prefWidth="650"
+      style="-fx-background-color: #f0f4f8;">
+
+    <padding>
+        <Insets top="30" right="30" bottom="30" left="30"/>
+    </padding>
+
+    <Label text="Schedule an Interview"
+           style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+
+    <GridPane hgap="20" vgap="15" prefWidth="580">
+        <padding>
+            <Insets top="10" right="10" bottom="10" left="10"/>
+        </padding>
+
+        <columnConstraints>
+            <ColumnConstraints percentWidth="25"/>
+            <ColumnConstraints percentWidth="75"/>
+        </columnConstraints>
+
+        <!-- Candidate -->
+        <Label text="Candidate:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <ComboBox fx:id="candidateComboBox" prefWidth="300" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+        <!-- Date -->
+        <Label text="Date:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <DatePicker fx:id="datePicker" prefWidth="300" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+        <!-- Time -->
+        <Label text="Time:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <ComboBox fx:id="timeComboBox" prefWidth="300" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+        <!-- Type -->
+        <Label text="Type:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <ComboBox fx:id="typeComboBox" prefWidth="300" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+        <!-- Job Offer -->
+        <Label text="Job Offer:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+        <TextField fx:id="jobOfferField" prefWidth="300" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+        <!-- Interviewer -->
+        <Label text="Interviewer:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+        <TextField fx:id="interviewerField" prefWidth="300" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+        <!-- Location Row (single, clean) -->
+        <Label fx:id="locationLabel" text="Location:" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+        <HBox GridPane.rowIndex="6" GridPane.columnIndex="1" spacing="8" alignment="CENTER_LEFT">
+            <TextField fx:id="locationField" prefWidth="240"
+                       promptText="Select type first..."/>
+            <Button fx:id="searchMapBtn" text="🔍 Search"
+                    onAction="#handleSearchLocation"
+                    style="-fx-background-color:#1a2980; -fx-text-fill:white; -fx-background-radius:8;"/>
+        </HBox>
+
+        <!-- Map Preview (hidden by default, shown for In Person) -->
+        <Label fx:id="mapLabel" text="Map Preview:" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
+        <WebView fx:id="mapView"
+                 GridPane.rowIndex="7" GridPane.columnIndex="1"
+                 prefHeight="350"
+                 maxWidth="Infinity"/>
+
+    </GridPane>
+
+    <HBox spacing="20" alignment="CENTER">
+        <Button text="Add Interview" fx:id="addButton" onAction="#handleAddInterview"
+                style="-fx-background-color: #1a2980; -fx-text-fill: white; -fx-background-radius: 12; -fx-padding: 8 20;"/>
+        <Button text="Cancel" fx:id="cancelButton" onAction="#handleCancel"
+                style="-fx-background-color: #ffffff; -fx-text-fill: #1a2980; -fx-background-radius: 12; -fx-padding: 8 20;"/>
+    </HBox>
+
+</VBox>

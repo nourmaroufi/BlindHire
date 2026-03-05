@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="Controller.CandidatController"
+      spacing="20"
+      stylesheets="@style.css"
+      styleClass="root">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <!-- Header -->
+    <HBox alignment="CENTER_LEFT" styleClass="header-banner">
+        <Label text="Candidats Dashboard" styleClass="header-label"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="Add Candidat"
+                onAction="#openAddCandidatForm"
+                style="-fx-background-color: white;
+                       -fx-text-fill: #1a2980;
+                       -fx-background-radius: 20;"/>
+    </HBox>
+
+    <!-- Column Titles -->
+    <HBox spacing="20"
+          style="-fx-background-color: #e3eaf2;
+                 -fx-padding: 12;
+                 -fx-background-radius: 10;">
+
+        <Label text="ID" prefWidth="100" style="-fx-font-weight: bold;" />
+        <Label text="Score" prefWidth="150" style="-fx-font-weight: bold;" />
+        <Label text="Status" prefWidth="150" style="-fx-font-weight: bold;" />
+        <Label text="Actions" prefWidth="200" style="-fx-font-weight: bold;" />
+    </HBox>
+
+    <!-- Scrollable Cards -->
+    <ScrollPane fitToWidth="true"
+                style="-fx-background-color: transparent;">
+
+        <VBox fx:id="candidatContainer" spacing="10">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+        </VBox>
+
+    </ScrollPane>
+
+</VBox>
