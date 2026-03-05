@@ -68,13 +68,26 @@
 
         <!-- Past Interviews Tab -->
         <Tab text="🕐 Past Interviews">
-            <ScrollPane fitToWidth="true" styleClass="transparent-scrollpane">
-                <VBox fx:id="pastContainer" spacing="15" styleClass="interview-list">
-                    <padding>
-                        <Insets top="10" right="10" bottom="10" left="10"/>
-                    </padding>
-                </VBox>
-            </ScrollPane>
+            <VBox spacing="10">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
+
+                <!-- Filter row -->
+                <HBox spacing="10" alignment="CENTER_RIGHT">
+                    <Label text="Filter by status:"
+                           style="-fx-font-weight:bold; -fx-text-fill:#444;"/>
+                    <ComboBox fx:id="statusFilterComboBox" prefWidth="150"/>
+                </HBox>
+
+                <ScrollPane fitToWidth="true" styleClass="transparent-scrollpane" VBox.vgrow="ALWAYS">
+                    <VBox fx:id="pastContainer" spacing="15" styleClass="interview-list">
+                        <padding>
+                            <Insets top="10" right="10" bottom="10" left="10"/>
+                        </padding>
+                    </VBox>
+                </ScrollPane>
+            </VBox>
         </Tab>
 
     </TabPane>

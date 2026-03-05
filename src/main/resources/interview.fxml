@@ -55,8 +55,13 @@
         <!-- ========== DASHBOARD TAB ========== -->
         <Tab text="Dashboard">
             <VBox spacing="10">
-                <HBox spacing="10" alignment="CENTER_RIGHT">
-                    <Label text="Filter by type:" style="-fx-font-weight: bold;"/>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <TextField fx:id="searchField"
+                               promptText="🔍 Search by candidate, job, interviewer..."
+                               prefWidth="320"
+                               style="-fx-background-radius:8; -fx-padding: 6 12;"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label text="Filter by type:" style="-fx-font-weight:bold;"/>
                     <ComboBox fx:id="filterTypeComboBox" prefWidth="150"/>
                 </HBox>
 
@@ -111,12 +116,18 @@
         </Tab>
         <!-- ========== PAST INTERVIEWS TAB ========== -->
         <Tab text="Past Interviews">
-            <VBox spacing="15">
+            <VBox spacing="10">
                 <padding>
                     <Insets top="15" right="15" bottom="15" left="15"/>
                 </padding>
-                <Label text="Past Interviews"
-                       style="-fx-font-size:18px; -fx-font-weight:bold;"/>
+
+                <!-- Filter row -->
+                <HBox spacing="10" alignment="CENTER_RIGHT">
+                    <Label text="Filter by status:"
+                           style="-fx-font-weight:bold; -fx-text-fill:#444;"/>
+                    <ComboBox fx:id="pastStatusFilterComboBox" prefWidth="150"/>
+                </HBox>
+
                 <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
                             style="-fx-background-color:transparent;">
                     <VBox fx:id="pastInterviewContainer" spacing="12">

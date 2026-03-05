@@ -13,14 +13,16 @@ import services.MessageService;
 import services.VideoCallService;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import javafx.collections.FXCollections;
 
 public class InterviewController {
 
-
+    @FXML private ComboBox<String> statusFilterComboBox;
     @FXML private VBox interviewContainer;
     @FXML private VBox pastContainer;
     @FXML private VBox notificationDropdown;
@@ -38,6 +40,11 @@ public class InterviewController {
     @FXML
     public void initialize() {
         loadInterviews();
+        statusFilterComboBox.setItems(FXCollections.observableArrayList(
+                "All", "Pending", "Accepted", "Rejected"
+        ));
+        statusFilterComboBox.setValue("All");
+        statusFilterComboBox.setOnAction(e -> filterPastInterviews());
 
         // Toggle notification dropdown on bell click
         notificationPane.setOnMouseClicked(e -> {
@@ -57,20 +64,25 @@ public class InterviewController {
                     interviewService.afficherByCandidat(connectedCandidatId);
 
             LocalDateTime now = LocalDateTime.now();
-            List<Interview> notifications = new ArrayList<>();
+            LocalDate tomorrow = LocalDate.now().plusDays(1);
+
+            // Each entry: [interview, "status" or "reminder"]
+            List<Object[]> notifications = new ArrayList<>();
 
             for (Interview interview : interviews) {
                 if (interview.getDate().isAfter(now)) {
-                    // Upcoming
                     interviewContainer.getChildren().add(createInterviewCard(interview, false));
+
+                    // Check if interview is tomorrow
+                    if (interview.getDate().toLocalDate().equals(tomorrow)) {
+                        notifications.add(new Object[]{interview, "reminder"});
+                    }
                 } else {
-                    // Past
                     pastContainer.getChildren().add(createInterviewCard(interview, true));
 
-                    // Collect notifications for accepted/rejected
                     if (interview.getStatus() != null &&
                             !interview.getStatus().equals("Pending")) {
-                        notifications.add(interview);
+                        notifications.add(new Object[]{interview, "status"});
                     }
                 }
             }
@@ -87,7 +99,6 @@ public class InterviewController {
                 pastContainer.getChildren().add(lbl);
             }
 
-            // Build notification bell
             buildNotifications(notifications);
 
         } catch (SQLException e) {
@@ -95,7 +106,7 @@ public class InterviewController {
         }
     }
 
-    private void buildNotifications(List<Interview> notifications) {
+    private void buildNotifications(List<Object[]> notifications) {
         if (notifications.isEmpty()) {
             notifBadge.setVisible(false);
             Label none = new Label("No new notifications.");
@@ -107,13 +118,24 @@ public class InterviewController {
         notifBadge.setText(String.valueOf(notifications.size()));
         notifBadge.setVisible(true);
 
-        for (Interview interview : notifications) {
-            String status = interview.getStatus();
-            String emoji  = status.equals("Accepted") ? "🎉" : "❌";
-            String color  = status.equals("Accepted") ? "#27ae60" : "#e74c3c";
-            String msg    = status.equals("Accepted")
-                    ? "You were accepted for \"" + interview.getJob_offer() + "\""
-                    : "You were rejected for \"" + interview.getJob_offer() + "\"";
+        for (Object[] entry : notifications) {
+            Interview interview = (Interview) entry[0];
+            String type = (String) entry[1];
+
+            String emoji, color, msg;
+
+            if ("reminder".equals(type)) {
+                emoji  = "⏰";
+                color  = "#1a2980";
+                msg    = "Reminder: You have an interview tomorrow for \"" + interview.getJob_offer() + "\" at " + interview.getDate().format(DateTimeFormatter.ofPattern("HH:mm"));
+            } else {
+                String status = interview.getStatus();
+                emoji  = status.equals("Accepted") ? "🎉" : "❌";
+                color  = status.equals("Accepted") ? "#27ae60" : "#e74c3c";
+                msg    = status.equals("Accepted")
+                        ? "You were accepted for \"" + interview.getJob_offer() + "\""
+                        : "You were rejected for \"" + interview.getJob_offer() + "\"";
+            }
 
             HBox notifItem = new HBox(10);
             notifItem.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
@@ -131,16 +153,16 @@ public class InterviewController {
 
             VBox textBox = new VBox(2);
             Label msgLbl = new Label(msg);
+            msgLbl.setWrapText(true);
+            msgLbl.setMaxWidth(280);
             msgLbl.setStyle("-fx-font-size:12px; -fx-font-weight:bold; -fx-text-fill:" + color + ";");
             Label dateLbl = new Label("📅 " + interview.getDate().format(displayFormatter));
             dateLbl.setStyle("-fx-font-size:11px; -fx-text-fill:#888;");
             textBox.getChildren().addAll(msgLbl, dateLbl);
 
-            // Spacer to push X to the right
             Region spacer = new Region();
             HBox.setHgrow(spacer, Priority.ALWAYS);
 
-            // X dismiss button
             Button dismissBtn = new Button("✕");
             dismissBtn.setStyle(
                     "-fx-background-color:transparent;" +
@@ -151,8 +173,6 @@ public class InterviewController {
             );
             dismissBtn.setOnAction(e -> {
                 notificationList.getChildren().remove(notifItem);
-
-                // Update badge count
                 int remaining = notificationList.getChildren().size();
                 if (remaining == 0) {
                     notifBadge.setVisible(false);
@@ -269,7 +289,7 @@ public class InterviewController {
         actionsRow.getStyleClass().add("card-actions");
 
         if (!isPast) {
-            // Get unread count
+            // Upcoming: chat + video call buttons
             int unread = 0;
             try {
                 unread = messageService.countUnread(interview.getId(), "CANDIDATE");
@@ -277,10 +297,8 @@ public class InterviewController {
                 ex.printStackTrace();
             }
 
-            // Button + badge in a StackPane
             Button chatButton = new Button("💬 Open Chat");
             chatButton.getStyleClass().add("chat-button");
-
             StackPane chatStack = new StackPane(chatButton);
 
             if (unread > 0) {
@@ -296,8 +314,6 @@ public class InterviewController {
                 StackPane.setAlignment(badge, javafx.geometry.Pos.TOP_RIGHT);
                 StackPane.setMargin(badge, new javafx.geometry.Insets(-5, -5, 0, 0));
                 chatStack.getChildren().add(badge);
-
-                // Mark as read when chat is opened
                 chatButton.setOnAction(e -> {
                     try {
                         messageService.markAsRead(interview.getId(), "CANDIDATE");
@@ -325,6 +341,16 @@ public class InterviewController {
                         videoCallService.openVideoCall(interview, "CANDIDATE")
                 );
                 actionsRow.getChildren().add(joinCallBtn);
+            }
+
+        } else {
+            // Past: show chat button only for Accepted or Pending
+            String status = interview.getStatus() != null ? interview.getStatus() : "Pending";
+            if ("Accepted".equals(status) || "Pending".equals(status)) {
+                Button chatButton = new Button("💬 Open Chat");
+                chatButton.getStyleClass().add("chat-button");
+                chatButton.setOnAction(e -> openChat(interview));
+                actionsRow.getChildren().add(chatButton);
             }
         }
 
@@ -356,6 +382,42 @@ public class InterviewController {
             case "online":    return "🌐";
             case "in person": return "🏢";
             default:          return "📅";
+        }
+    }
+    private void filterPastInterviews() {
+        String selected = statusFilterComboBox.getValue();
+        pastContainer.getChildren().clear();
+
+        try {
+            List<Interview> interviews =
+                    interviewService.afficherByCandidat(connectedCandidatId);
+            LocalDateTime now = LocalDateTime.now();
+            boolean found = false;
+
+            for (Interview interview : interviews) {
+                if (interview.getDate().isBefore(now)) {
+                    String status = interview.getStatus() != null
+                            ? interview.getStatus() : "Pending";
+
+                    if ("All".equals(selected) || status.equals(selected)) {
+                        pastContainer.getChildren().add(
+                                createInterviewCard(interview, true)
+                        );
+                        found = true;
+                    }
+                }
+            }
+
+            if (!found) {
+                Label empty = new Label("No " +
+                        ("All".equals(selected) ? "" : selected.toLowerCase() + " ") +
+                        "past interviews.");
+                empty.setStyle("-fx-text-fill:gray;");
+                pastContainer.getChildren().add(empty);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }

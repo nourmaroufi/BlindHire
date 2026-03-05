@@ -12,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -23,6 +24,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -30,6 +32,9 @@ import model.Candidat;
 
 
 public class InterviewPageController {
+    @FXML private TextField searchField;
+
+    @FXML private ComboBox<String> pastStatusFilterComboBox;
     private VideoCallService videoCallService = new VideoCallService();
 
     @FXML private VBox candidateCardsContainer;
@@ -67,60 +72,81 @@ public class InterviewPageController {
     @FXML private VBox overviewContainer;
 
 
-    @FXML
+
     public void initialize() {
-        loadPastInterviews();
-        loadInterviews();
-        setupCalendar();
-        loadOverviewCards();
 
-
-
-        filterTypeComboBox.setOnAction(e -> loadInterviews());
+        // ── ComboBox setup ────────────────────────────────────────
         filterTypeComboBox.getItems().addAll("All", "Online", "In Person");
         filterTypeComboBox.setValue("All");
 
-// When selection changes
-        filterTypeComboBox.setOnAction(e -> loadInterviews());
-        datePicker = new DatePicker();
-        timeComboBox = new ComboBox<>();
-        typeComboBox = new ComboBox<>();
-        jobOfferField = new TextField();
-        interviewerField = new TextField();
-        // Block past dates
-        datePicker.setDayCellFactory(picker -> new DateCell() {
+        pastStatusFilterComboBox.setItems(FXCollections.observableArrayList(
+                "All", "Pending", "Accepted", "Rejected"
+        ));
+        pastStatusFilterComboBox.setValue("All");
 
-        });
+        // ── Listeners ─────────────────────────────────────────────
+        searchField.textProperty().addListener((obs, oldVal, newVal) -> applyFilters());
+        filterTypeComboBox.setOnAction(e -> applyFilters());
+        pastStatusFilterComboBox.setOnAction(e -> filterPastInterviews());
 
+        // ── Calendar MUST be before loadInterviews ─────────────────
+        setupCalendar();
 
+        // ── Load data ─────────────────────────────────────────────
+        loadInterviews(); // calls applyFilters + loadOverviewCards + loadPastInterviews inside
     }
 
 
+    private List<Interview> allInterviews = new ArrayList<>();
+
     private void loadInterviews() {
-
-        interviewContainer.getChildren().clear();
-
         try {
-            List<Interview> interviews = interviewService.afficherAll();
-
-            String selectedType = filterTypeComboBox.getValue();
-
-            for (Interview interview : interviews) {
-
-                // If "All" → show everything
-                if (selectedType == null || selectedType.equals("All")) {
-                    interviewContainer.getChildren().add(createInterviewCard(interview));
-                }
-
-                // If filtering → only add matching type
-                else if (interview.getType().equalsIgnoreCase(selectedType)) {
-                    interviewContainer.getChildren().add(createInterviewCard(interview));
-                }
-            }
-
+            allInterviews = interviewService.afficherAll();
         } catch (SQLException e) {
             e.printStackTrace();
             showAlert("Error", "Failed to load interviews: " + e.getMessage());
+        }
+        applyFilters();
+        loadOverviewCards();
+        loadPastInterviews();
+        markInterviewDates();
+    }
+
+    private void applyFilters() {
+        interviewContainer.getChildren().clear();
+
+        String searchText = searchField.getText() != null
+                ? searchField.getText().toLowerCase().trim() : "";
+        String selectedType = filterTypeComboBox.getValue();
+
+        boolean found = false;
+
+        for (Interview interview : allInterviews) {
+
+            // Type filter
+            boolean matchesType = selectedType == null
+                    || selectedType.equals("All")
+                    || interview.getType().equalsIgnoreCase(selectedType);
+
+            // Search filter — match against multiple fields
+            boolean matchesSearch = searchText.isEmpty()
+                    || interview.getJob_offer().toLowerCase().contains(searchText)
+                    || interview.getInterviewer().toLowerCase().contains(searchText)
+                    || interview.getType().toLowerCase().contains(searchText)
+                    || (interview.getStatus() != null &&
+                    interview.getStatus().toLowerCase().contains(searchText))
+                    || String.valueOf(interview.getId_candidat()).contains(searchText);
+
+            if (matchesType && matchesSearch) {
+                interviewContainer.getChildren().add(createInterviewCard(interview));
+                found = true;
+            }
+        }
+
+        if (!found) {
+            Label empty = new Label("No interviews match your search.");
+            empty.setStyle("-fx-text-fill:#888; -fx-font-size:13px; -fx-padding:10;");
+            interviewContainer.getChildren().add(empty);
         }
     }
 
@@ -384,6 +410,10 @@ public class InterviewPageController {
                 empty.setStyle("-fx-text-fill: #888; -fx-font-size: 14px;");
                 pastInterviewContainer.getChildren().add(empty);
             }
+            if (pastStatusFilterComboBox != null) {
+                pastStatusFilterComboBox.setValue("All");
+            }
+            filterPastInterviews();
 
         } catch (SQLException e) {
             showAlert("Error", "Failed to load past interviews: " + e.getMessage());
@@ -627,6 +657,55 @@ public class InterviewPageController {
         actionRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
         actionRow.getChildren().addAll(notesBtn, acceptBtn, rejectBtn);
 
+// Add chat button for Accepted or Pending interviews
+        if ("Accepted".equals(status) || "Pending".equals(status)) {
+            Button chatBtn = new Button("💬 Chat");
+            chatBtn.setStyle(
+                    "-fx-background-color:#4CAF50;" +
+                            "-fx-text-fill:white;" +
+                            "-fx-background-radius:8;" +
+                            "-fx-padding: 5 12;"
+            );
+
+            int unread = 0;
+            try {
+                unread = messageService.countUnread(interview.getId(), "RECRUITER");
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+
+            StackPane chatStack = new StackPane(chatBtn);
+
+            if (unread > 0) {
+                Label badge = new Label(String.valueOf(unread));
+                badge.setStyle(
+                        "-fx-background-color:#e74c3c;" +
+                                "-fx-text-fill:white;" +
+                                "-fx-background-radius:10;" +
+                                "-fx-font-size:10px;" +
+                                "-fx-padding: 1 5;" +
+                                "-fx-font-weight:bold;"
+                );
+                StackPane.setAlignment(badge, javafx.geometry.Pos.TOP_RIGHT);
+                StackPane.setMargin(badge, new javafx.geometry.Insets(-5, -5, 0, 0));
+                chatStack.getChildren().add(badge);
+
+                chatBtn.setOnAction(e -> {
+                    try {
+                        messageService.markAsRead(interview.getId(), "RECRUITER");
+                        badge.setVisible(false);
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                    openChat(interview);
+                });
+            } else {
+                chatBtn.setOnAction(e -> openChat(interview));
+            }
+
+            actionRow.getChildren().add(chatStack);
+        }
+
         details.getChildren().addAll(
                 jobLabel, interviewerLabel, notesLabel,
                 sentimentLabel, sentimentBarBox, actionRow
@@ -853,5 +932,40 @@ public class InterviewPageController {
         card.getChildren().addAll(bottomSpacer, sep, btnRow);
 
         return card;
+    }
+    private void filterPastInterviews() {
+        pastInterviewContainer.getChildren().clear();
+        String selected = pastStatusFilterComboBox.getValue();
+
+        try {
+            List<Interview> all = interviewService.afficherAll();
+            LocalDateTime now = LocalDateTime.now();
+            boolean found = false;
+
+            for (Interview interview : all) {
+                if (interview.getDate().isBefore(now)) {
+                    String status = interview.getStatus() != null
+                            ? interview.getStatus() : "Pending";
+
+                    if ("All".equals(selected) || status.equals(selected)) {
+                        pastInterviewContainer.getChildren().add(
+                                createPastInterviewCard(interview)
+                        );
+                        found = true;
+                    }
+                }
+            }
+
+            if (!found) {
+                Label empty = new Label("No " +
+                        ("All".equals(selected) ? "" : selected.toLowerCase() + " ") +
+                        "past interviews.");
+                empty.setStyle("-fx-text-fill:#888; -fx-font-size:14px;");
+                pastInterviewContainer.getChildren().add(empty);
+            }
+
+        } catch (SQLException e) {
+            showAlert("Error", "Failed to filter interviews: " + e.getMessage());
+        }
     }
 }

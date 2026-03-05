@@ -10,14 +10,12 @@ import services.CandidatService;
 import services.InterviewService;
 import services.NominatimService;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import javafx.scene.web.WebView;
-import javafx.scene.web.WebEngine;
+
 public class AddInterviewController {
 
     @FXML private ComboBox<Candidat> candidateComboBox;
@@ -28,22 +26,17 @@ public class AddInterviewController {
     @FXML private TextField interviewerField;
     @FXML private TextField locationField;
     @FXML private Label locationLabel;
-   // @FXML private Button generateMapBtn;
+    @FXML private Button searchMapBtn;
     @FXML private WebView mapView;
     @FXML private Label mapLabel;
-    private NominatimService nominatimService = new NominatimService();
-    private double[] currentCoords = null; // stores [lat, lon]
 
+    private NominatimService nominatimService = new NominatimService();
     private InterviewService interviewService = new InterviewService();
     private CandidatService candidatService = new CandidatService();
+    private double[] currentCoords = null;
 
     @FXML
     public void initialize() {
-        mapView.setVisible(false);
-        mapView.setManaged(false);
-        mapLabel.setVisible(false);
-        mapLabel.setManaged(false);
-
         typeComboBox.setItems(FXCollections.observableArrayList("Online", "In Person"));
         timeComboBox.setItems(FXCollections.observableArrayList(
                 "09:00","09:30","10:00","10:30","11:00","11:30",
@@ -52,62 +45,103 @@ public class AddInterviewController {
         ));
         loadCandidates();
 
-        // Hide location row initially
-        locationField.setVisible(false);
-        locationField.setManaged(false);
-        locationLabel.setVisible(false);
-        locationLabel.setManaged(false);
-       // generateMapBtn.setVisible(false);
-       // generateMapBtn.setManaged(false);
+        // Block past dates
+        datePicker.setDayCellFactory(picker -> new DateCell() {
+            @Override
+            public void updateItem(LocalDate date, boolean empty) {
+                super.updateItem(date, empty);
+                setDisable(empty || date.isBefore(LocalDate.now()));
+                if (date.isBefore(LocalDate.now())) {
+                    setStyle("-fx-background-color:#f0f0f0; -fx-text-fill:#ccc;");
+                }
+            }
+        });
 
+        // Hide all location fields initially
+        hideLocationRow();
 
         // Show/hide based on type selection
         typeComboBox.setOnAction(e -> {
             String selected = typeComboBox.getValue();
             if ("Online".equals(selected)) {
-                // Hide location row entirely for online
-                locationLabel.setVisible(false);
-                locationLabel.setManaged(false);
-                locationField.setVisible(false);
-                locationField.setManaged(false);
-               // searchMapBtn.setVisible(false);
-                //searchMapBtn.setManaged(false);
-                mapView.setVisible(false);
-                mapView.setManaged(false);
-                mapLabel.setVisible(false);
-                mapLabel.setManaged(false);
+                // Online: no location needed
+                hideLocationRow();
                 locationField.clear();
             } else if ("In Person".equals(selected)) {
-                locationLabel.setText("Address:");
-                locationField.setPromptText("Type an address...");
+                // In Person: show address + search + map
+                locationLabel.setText("Address");
+                locationField.setPromptText("Type an address to search...");
                 locationField.clear();
                 showLocationRow();
             }
         });
     }
 
-    private void showLocationRow() {
-        locationField.setVisible(true);
-        locationField.setManaged(true);
-        locationLabel.setVisible(true);
-        locationLabel.setManaged(true);
+    private void hideLocationRow() {
+        locationLabel.setVisible(false);
+        locationLabel.setManaged(false);
+        locationField.setVisible(false);
+        locationField.setManaged(false);
+        searchMapBtn.setVisible(false);
+        searchMapBtn.setManaged(false);
+        mapView.setVisible(false);
+        mapView.setManaged(false);
+        mapLabel.setVisible(false);
+        mapLabel.setManaged(false);
     }
 
-    // Called when recruiter clicks 📍 Generate for in-person
+    private void showLocationRow() {
+        locationLabel.setVisible(true);
+        locationLabel.setManaged(true);
+        locationField.setVisible(true);
+        locationField.setManaged(true);
+        searchMapBtn.setVisible(true);
+        searchMapBtn.setManaged(true);
+        // map stays hidden until search is done
+    }
+
     @FXML
-    private void handleGenerateMap() {
+    private void handleSearchLocation() {
         String address = locationField.getText().trim();
         if (address.isEmpty()) {
             showAlert("Error", "Please type an address first.");
             return;
         }
-        try {
-            String encoded = URLEncoder.encode(address, "UTF-8");
-            String mapLink = "https://www.openstreetmap.org/search?query=" + encoded;
-            locationField.setText(mapLink);
-        } catch (UnsupportedEncodingException e) {
-            showAlert("Error", "Could not generate map link.");
-        }
+
+        new Thread(() -> {
+            double[] coords = nominatimService.searchLocation(address);
+            javafx.application.Platform.runLater(() -> {
+                if (coords == null) {
+                    showAlert("Not Found", "Address not found. Try being more specific.");
+                    return;
+                }
+
+                currentCoords = coords;
+                double lat = coords[0];
+                double lon = coords[1];
+
+                double offset = 0.005;
+                String mapUrl = String.format(
+                        "https://www.openstreetmap.org/export/embed.html" +
+                                "?bbox=%.6f,%.6f,%.6f,%.6f&layer=mapnik&marker=%.6f,%.6f",
+                        lon - offset, lat - offset,
+                        lon + offset, lat + offset,
+                        lat, lon
+                );
+
+                mapView.getEngine().load(mapUrl);
+                mapView.setVisible(true);
+                mapView.setManaged(true);
+                mapLabel.setVisible(true);
+                mapLabel.setManaged(true);
+
+                String locationLink = String.format(
+                        "https://www.openstreetmap.org/?mlat=%.6f&mlon=%.6f#map=17/%.6f/%.6f",
+                        lat, lon, lat, lon
+                );
+                locationField.setText(locationLink);
+            });
+        }).start();
     }
 
     @FXML
@@ -124,21 +158,30 @@ public class AddInterviewController {
             String type = typeComboBox.getValue();
             if (type == null) { showAlert("Error", "Please select a type."); return; }
 
-            // Validate link for online
-            String locationLink = locationField.getText().trim();
-            if ("Online".equals(type) && !locationLink.startsWith("http")) {
-                showAlert("Error", "Please paste a valid meeting link (must start with http)."); return;
+            if (jobOfferField.getText().trim().isEmpty()) {
+                showAlert("Error", "Please enter a job offer."); return;
+            }
+            if (interviewerField.getText().trim().isEmpty()) {
+                showAlert("Error", "Please enter an interviewer name."); return;
+            }
+
+            // Location only required for In Person
+            String locationLink = null;
+            if ("In Person".equals(type)) {
+                locationLink = locationField.getText().trim();
+                if (locationLink.isEmpty()) locationLink = null;
             }
 
             LocalDateTime dateTime = LocalDateTime.of(date, LocalTime.parse(timeComboBox.getValue()));
             Interview interview = new Interview(
                     selected.getId_candidat(), dateTime, type,
-                    jobOfferField.getText(), interviewerField.getText(),
-                    locationLink.isEmpty() ? null : locationLink
+                    jobOfferField.getText().trim(),
+                    interviewerField.getText().trim(),
+                    locationLink
             );
 
             interviewService.ajouter(interview);
-            showAlert("Success", "Interview added successfully!");
+            showAlert("Success", "Interview scheduled successfully!");
             closeWindow();
 
         } catch (SQLException e) {
@@ -167,59 +210,5 @@ public class AddInterviewController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
-    }
-    @FXML
-    private void handleSearchLocation() {
-        String address = locationField.getText().trim();
-        if (address.isEmpty()) {
-            showAlert("Error", "Please type an address first.");
-            return;
-        }
-
-        // Run in background so UI doesn't freeze
-        new Thread(() -> {
-            double[] coords = nominatimService.searchLocation(address);
-
-            javafx.application.Platform.runLater(() -> {
-                if (coords == null) {
-                    showAlert("Not Found", "Address not found. Try being more specific.");
-                    return;
-                }
-
-                currentCoords = coords;
-                double lat = coords[0];
-                double lon = coords[1];
-
-                // Build OpenStreetMap embed URL
-                double offset = 0.005;
-                String mapUrl = String.format(
-                        "https://www.openstreetmap.org/export/embed.html" +
-                                "?bbox=%.6f,%.6f,%.6f,%.6f&layer=mapnik&marker=%.6f,%.6f",
-                        lon - offset, lat - offset,
-                        lon + offset, lat + offset,
-                        lat, lon
-                );
-
-                // Load map in WebView
-                mapView.getEngine().load("about:blank");
-                javafx.animation.PauseTransition pause = new javafx.animation.PauseTransition(
-                        javafx.util.Duration.millis(100)
-                );
-                pause.setOnFinished(ev -> mapView.getEngine().load(mapUrl));
-                pause.play();
-                mapView.setVisible(true);
-                mapView.setManaged(true);
-                mapLabel.setVisible(true);
-                mapView.setZoom(1.5);
-                mapLabel.setManaged(true);
-
-                // Save the direct link to the location
-                String locationLink = String.format(
-                        "https://www.openstreetmap.org/?mlat=%.6f&mlon=%.6f#map=17/%.6f/%.6f",
-                        lat, lon, lat, lon
-                );
-                locationField.setText(locationLink);
-            });
-        }).start();
     }
 }
