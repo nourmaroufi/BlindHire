@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.geometry.Insets?>
+
+<ScrollPane fitToWidth="true"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="Controller.BackOffice.DashboardContentController"
+            style="-fx-background-color: #f1f5f9; -fx-border-width: 0; -fx-background: #f1f5f9;">
+
+    <VBox spacing="28" style="-fx-padding: 36 40 40 40; -fx-background-color: #f1f5f9;">
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             HEADER ROW
+        ════════════════════════════════════════════════════════════════ -->
+        <HBox alignment="CENTER_LEFT">
+            <VBox spacing="5">
+                <Label fx:id="greetingLabel"
+                       text="Good morning 👋"
+                       style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #0f172a;"/>
+                <Label fx:id="subtitleLabel"
+                       text="Here's what's happening on BlindHire today."
+                       style="-fx-font-size: 13px; -fx-text-fill: #64748b;"/>
+            </VBox>
+            <Region HBox.hgrow="ALWAYS"/>
+            <VBox alignment="CENTER" spacing="2"
+                  style="-fx-background-color: white; -fx-background-radius: 16;
+                         -fx-border-color: #e2e8f0; -fx-border-radius: 16; -fx-border-width: 1;
+                         -fx-padding: 12 24;
+                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 2);">
+                <Label fx:id="dayNumLabel" text="—"
+                       style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #6366f1;"/>
+                <Label fx:id="monthYearLabel" text="— —"
+                       style="-fx-font-size: 11px; -fx-text-fill: #64748b; -fx-font-weight: bold;"/>
+            </VBox>
+        </HBox>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             4 KPI CARDS
+        ════════════════════════════════════════════════════════════════ -->
+        <HBox spacing="18">
+
+            <VBox spacing="12" HBox.hgrow="ALWAYS"
+                  style="-fx-background-color: white; -fx-background-radius: 20;
+                         -fx-border-color: #f1f5f9; -fx-border-width: 1; -fx-border-radius: 20;
+                         -fx-padding: 24 26;
+                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.07), 14, 0, 0, 4);">
+                <StackPane prefWidth="46" prefHeight="46" maxWidth="46" maxHeight="46"
+                           style="-fx-background-color: #ede9fe; -fx-background-radius: 14;">
+                    <Label text="👥" style="-fx-font-size: 22px;"/>
+                </StackPane>
+                <Label fx:id="kpiTotalUsers" text="—"
+                       style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: #6366f1;"/>
+                <Label text="Total Users" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #334155;"/>
+                <Label text="all roles combined" style="-fx-font-size: 11px; -fx-text-fill: #94a3b8;"/>
+            </VBox>
+
+            <VBox spacing="12" HBox.hgrow="ALWAYS"
+                  style="-fx-background-color: white; -fx-background-radius: 20;
+                         -fx-border-color: #f1f5f9; -fx-border-width: 1; -fx-border-radius: 20;
+                         -fx-padding: 24 26;
+                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.07), 14, 0, 0, 4);">
+                <StackPane prefWidth="46" prefHeight="46" maxWidth="46" maxHeight="46"
+                           style="-fx-background-color: #ecfeff; -fx-background-radius: 14;">
+                    <Label text="💼" style="-fx-font-size: 22px;"/>
+                </StackPane>
+                <Label fx:id="kpiTotalJobs" text="—"
+                       style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: #06b6d4;"/>
+                <Label text="Job Offers" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #334155;"/>
+                <Label text="active listings" style="-fx-font-size: 11px; -fx-text-fill: #94a3b8;"/>
+            </VBox>
+
+            <VBox spacing="12" HBox.hgrow="ALWAYS"
+                  style="-fx-background-color: white; -fx-background-radius: 20;
+                         -fx-border-color: #f1f5f9; -fx-border-width: 1; -fx-border-radius: 20;
+                         -fx-padding: 24 26;
+                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.07), 14, 0, 0, 4);">
+                <StackPane prefWidth="46" prefHeight="46" maxWidth="46" maxHeight="46"
+                           style="-fx-background-color: #d1fae5; -fx-background-radius: 14;">
+                    <Label text="📋" style="-fx-font-size: 22px;"/>
+                </StackPane>
+                <Label fx:id="kpiTotalApps" text="—"
+                       style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: #10b981;"/>
+                <Label text="Applications" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #334155;"/>
+                <Label text="all time" style="-fx-font-size: 11px; -fx-text-fill: #94a3b8;"/>
+            </VBox>
+
+            <VBox spacing="12" HBox.hgrow="ALWAYS"
+                  style="-fx-background-color: white; -fx-background-radius: 20;
+                         -fx-border-color: #f1f5f9; -fx-border-width: 1; -fx-border-radius: 20;
+                         -fx-padding: 24 26;
+                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.07), 14, 0, 0, 4);">
+                <StackPane prefWidth="46" prefHeight="46" maxWidth="46" maxHeight="46"
+                           style="-fx-background-color: #fef3c7; -fx-background-radius: 14;">
+                    <Label text="⏳" style="-fx-font-size: 22px;"/>
+                </StackPane>
+                <Label fx:id="kpiPending" text="—"
+                       style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: #f59e0b;"/>
+                <Label text="Pending Review" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #334155;"/>
+                <Label text="awaiting decision" style="-fx-font-size: 11px; -fx-text-fill: #94a3b8;"/>
+            </VBox>
+
+        </HBox>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             SECONDARY ROW
+        ════════════════════════════════════════════════════════════════ -->
+        <HBox spacing="18">
+
+            <!-- User Breakdown -->
+            <VBox spacing="16" HBox.hgrow="ALWAYS"
+                  style="-fx-background-color: white; -fx-background-radius: 20;
+                         -fx-border-color: #f1f5f9; -fx-border-width: 1; -fx-border-radius: 20;
+                         -fx-padding: 24 26;
+                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.07), 14, 0, 0, 4);">
+                <Label text="👥  User Breakdown"
+                       style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #0f172a;"/>
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="Admins" style="-fx-font-size: 13px; -fx-text-fill: #475569; -fx-pref-width: 90;"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="breakAdmins" text="—"
+                           style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #6366f1;"/>
+                </HBox>
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="Recruiters" style="-fx-font-size: 13px; -fx-text-fill: #475569; -fx-pref-width: 90;"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="breakRecruiters" text="—"
+                           style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #06b6d4;"/>
+                </HBox>
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="Clients" style="-fx-font-size: 13px; -fx-text-fill: #475569; -fx-pref-width: 90;"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="breakClients" text="—"
+                           style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #10b981;"/>
+                </HBox>
+            </VBox>
+
+            <!-- Application Status -->
+            <VBox spacing="16" HBox.hgrow="ALWAYS"
+                  style="-fx-background-color: white; -fx-background-radius: 20;
+                         -fx-border-color: #f1f5f9; -fx-border-width: 1; -fx-border-radius: 20;
+                         -fx-padding: 24 26;
+                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.07), 14, 0, 0, 4);">
+                <Label text="📊  Application Status"
+                       style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #0f172a;"/>
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="Accepted" style="-fx-font-size: 13px; -fx-text-fill: #475569; -fx-pref-width: 90;"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="statAccepted" text="—"
+                           style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #10b981;"/>
+                </HBox>
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="Pending" style="-fx-font-size: 13px; -fx-text-fill: #475569; -fx-pref-width: 90;"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="statPending" text="—"
+                           style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #f59e0b;"/>
+                </HBox>
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="Rejected" style="-fx-font-size: 13px; -fx-text-fill: #475569; -fx-pref-width: 90;"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="statRejected" text="—"
+                           style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #f43f5e;"/>
+                </HBox>
+            </VBox>
+
+            <!-- System Status -->
+            <VBox spacing="16" HBox.hgrow="ALWAYS"
+                  style="-fx-background-color: white; -fx-background-radius: 20;
+                         -fx-border-color: #f1f5f9; -fx-border-width: 1; -fx-border-radius: 20;
+                         -fx-padding: 24 26;
+                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.07), 14, 0, 0, 4);">
+                <Label text="📡  System Status"
+                       style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #0f172a;"/>
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="Database" style="-fx-font-size: 12px; -fx-text-fill: #475569;"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label text="Connected"
+                           style="-fx-background-color: rgba(16,185,129,0.12); -fx-text-fill: #10b981;
+                                  -fx-font-size: 11px; -fx-font-weight: bold;
+                                  -fx-padding: 3 10; -fx-background-radius: 8;"/>
+                </HBox>
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="Email Service" style="-fx-font-size: 12px; -fx-text-fill: #475569;"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label text="Active"
+                           style="-fx-background-color: rgba(16,185,129,0.12); -fx-text-fill: #10b981;
+                                  -fx-font-size: 11px; -fx-font-weight: bold;
+                                  -fx-padding: 3 10; -fx-background-radius: 8;"/>
+                </HBox>
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="AI Matching" style="-fx-font-size: 12px; -fx-text-fill: #475569;"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label text="Ready"
+                           style="-fx-background-color: rgba(6,182,212,0.12); -fx-text-fill: #06b6d4;
+                                  -fx-font-size: 11px; -fx-font-weight: bold;
+                                  -fx-padding: 3 10; -fx-background-radius: 8;"/>
+                </HBox>
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="Notifications" style="-fx-font-size: 12px; -fx-text-fill: #475569;"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label text="Enabled"
+                           style="-fx-background-color: rgba(16,185,129,0.12); -fx-text-fill: #10b981;
+                                  -fx-font-size: 11px; -fx-font-weight: bold;
+                                  -fx-padding: 3 10; -fx-background-radius: 8;"/>
+                </HBox>
+            </VBox>
+
+        </HBox>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             BOTTOM ROW — Acceptance Rate + Indigo Glance Banner
+        ════════════════════════════════════════════════════════════════ -->
+        <HBox spacing="18">
+
+            <VBox spacing="12" HBox.hgrow="ALWAYS"
+                  style="-fx-background-color: white; -fx-background-radius: 20;
+                         -fx-border-color: #f1f5f9; -fx-border-width: 1; -fx-border-radius: 20;
+                         -fx-padding: 24 26;
+                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.07), 14, 0, 0, 4);">
+                <Label text="✅  Acceptance Rate"
+                       style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #0f172a;"/>
+                <Label fx:id="acceptanceRateLabel" text="—%"
+                       style="-fx-font-size: 40px; -fx-font-weight: bold; -fx-text-fill: #10b981;"/>
+                <Label fx:id="acceptanceSubLabel" text="Loading..."
+                       style="-fx-font-size: 12px; -fx-text-fill: #94a3b8;"/>
+            </VBox>
+
+            <VBox spacing="14" HBox.hgrow="ALWAYS"
+                  style="-fx-background-color: linear-gradient(to bottom right, #6366f1, #818cf8);
+                         -fx-background-radius: 20;
+                         -fx-padding: 24 26;
+                         -fx-effect: dropshadow(gaussian, rgba(99,102,241,0.35), 20, 0, 0, 6);">
+                <Label text="🚀  Platform at a Glance"
+                       style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="Total Users"
+                           style="-fx-font-size: 13px; -fx-text-fill: rgba(255,255,255,0.75);"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="glanceTotalUsers" text="—"
+                           style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                </HBox>
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="Job Offers"
+                           style="-fx-font-size: 13px; -fx-text-fill: rgba(255,255,255,0.75);"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="glanceTotalJobs" text="—"
+                           style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                </HBox>
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="Applications"
+                           style="-fx-font-size: 13px; -fx-text-fill: rgba(255,255,255,0.75);"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="glanceTotalApps" text="—"
+                           style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                </HBox>
+            </VBox>
+
+        </HBox>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             QUICK ACCESS
+        ════════════════════════════════════════════════════════════════ -->
+        <VBox spacing="14">
+            <Label text="Quick Access"
+                   style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #0f172a;"/>
+            <HBox spacing="14">
+                <Button text="👥  Manage Users" HBox.hgrow="ALWAYS" maxWidth="Infinity"
+                        style="-fx-background-color: white; -fx-text-fill: #334155;
+                               -fx-font-size: 13px; -fx-font-weight: bold;
+                               -fx-background-radius: 14; -fx-border-color: #e2e8f0;
+                               -fx-border-width: 1; -fx-border-radius: 14;
+                               -fx-padding: 16 20; -fx-cursor: hand;
+                               -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 8, 0, 0, 2);"/>
+                <Button text="💼  Job Offers" HBox.hgrow="ALWAYS" maxWidth="Infinity"
+                        style="-fx-background-color: white; -fx-text-fill: #334155;
+                               -fx-font-size: 13px; -fx-font-weight: bold;
+                               -fx-background-radius: 14; -fx-border-color: #e2e8f0;
+                               -fx-border-width: 1; -fx-border-radius: 14;
+                               -fx-padding: 16 20; -fx-cursor: hand;
+                               -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 8, 0, 0, 2);"/>
+                <Button text="📋  Applications" HBox.hgrow="ALWAYS" maxWidth="Infinity"
+                        style="-fx-background-color: white; -fx-text-fill: #334155;
+                               -fx-font-size: 13px; -fx-font-weight: bold;
+                               -fx-background-radius: 14; -fx-border-color: #e2e8f0;
+                               -fx-border-width: 1; -fx-border-radius: 14;
+                               -fx-padding: 16 20; -fx-cursor: hand;
+                               -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 8, 0, 0, 2);"/>
+                <Button text="➕  Add User" HBox.hgrow="ALWAYS" maxWidth="Infinity"
+                        style="-fx-background-color: white; -fx-text-fill: #334155;
+                               -fx-font-size: 13px; -fx-font-weight: bold;
+                               -fx-background-radius: 14; -fx-border-color: #e2e8f0;
+                               -fx-border-width: 1; -fx-border-radius: 14;
+                               -fx-padding: 16 20; -fx-cursor: hand;
+                               -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 8, 0, 0, 2);"/>
+            </HBox>
+        </VBox>
+
+    </VBox>
+</ScrollPane>

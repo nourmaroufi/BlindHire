@@ -1,0 +1,414 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="Controller.BackOffice.HomeController"
+            style="-fx-background-color: #f1f5f9;">
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         LEFT SIDEBAR
+    ═══════════════════════════════════════════════════════════════════════════ -->
+    <left>
+        <VBox prefWidth="255"
+              style="-fx-background-color: #0f172a;
+                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 20, 0, 4, 0);">
+
+            <!-- ── LOGO SECTION ──────────────────────────────────────────── -->
+            <VBox alignment="CENTER"
+                  spacing="0"
+                  style="-fx-padding: 28 20 22 20;
+                         -fx-border-color: rgba(255,255,255,0.07);
+                         -fx-border-width: 0 0 1 0;">
+
+                <HBox alignment="CENTER_LEFT" spacing="12">
+
+                    <!-- Logo image with gradient fallback -->
+                    <StackPane prefWidth="52" prefHeight="52" minWidth="52" minHeight="52"
+                               style="-fx-background-color: linear-gradient(to bottom right, #6366f1, #06b6d4);
+                                      -fx-background-radius: 14;">
+                        <ImageView fitWidth="38" fitHeight="38" preserveRatio="true">
+                            <image>
+                                <Image url="@/images/blindhire_logo.png"/>
+                            </image>
+                        </ImageView>
+                    </StackPane>
+
+                    <VBox spacing="2" alignment="CENTER_LEFT">
+                        <Label text="BlindHire"
+                               style="-fx-text-fill: white;
+                                      -fx-font-size: 20px;
+                                      -fx-font-weight: bold;
+                                      -fx-font-family: 'Segoe UI Semibold', 'Helvetica Neue', Arial;"/>
+                        <Label text="Admin Console"
+                               style="-fx-text-fill: rgba(255,255,255,0.35);
+                                      -fx-font-size: 11px;"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+
+            <!-- ── LOGGED-IN USER PROFILE ────────────────────────────────── -->
+            <VBox style="-fx-padding: 14 14 0 14;">
+                <HBox spacing="12" alignment="CENTER_LEFT"
+                      style="-fx-background-color: rgba(99,102,241,0.12);
+                             -fx-background-radius: 14;
+                             -fx-border-color: rgba(99,102,241,0.25);
+                             -fx-border-radius: 14;
+                             -fx-border-width: 1;
+                             -fx-padding: 14 14 14 14;">
+
+                    <!-- Avatar circle with initials (populated by controller) -->
+                    <StackPane prefWidth="42" prefHeight="42" minWidth="42" minHeight="42">
+                        <StackPane prefWidth="42" prefHeight="42"
+                                   style="-fx-background-color: linear-gradient(to bottom right, #6366f1, #06b6d4);
+                                          -fx-background-radius: 50;">
+                            <Label fx:id="sidebarInitials"
+                                   text="?"
+                                   style="-fx-text-fill: white;
+                                          -fx-font-size: 16px;
+                                          -fx-font-weight: bold;"/>
+                        </StackPane>
+                        <!-- Online green dot -->
+
+                    </StackPane>
+
+                    <VBox spacing="4" alignment="CENTER_LEFT">
+                        <Label fx:id="sidebarUsername"
+                               text="Loading..."
+                               style="-fx-text-fill: white;
+                                      -fx-font-size: 13px;
+                                      -fx-font-weight: bold;
+                                      -fx-max-width: 145;"/>
+                        <Label fx:id="sidebarRole"
+                               text=""
+                               style="-fx-background-color: rgba(99,102,241,0.3);
+                                      -fx-text-fill: #a5b4fc;
+                                      -fx-font-size: 10px;
+                                      -fx-font-weight: bold;
+                                      -fx-padding: 2 8;
+                                      -fx-background-radius: 8;"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+
+            <!-- ── NAV LABEL ─────────────────────────────────────────────── -->
+            <Label text="NAVIGATION"
+                   style="-fx-text-fill: rgba(255,255,255,0.22);
+                          -fx-font-size: 10px;
+                          -fx-font-weight: bold;
+                          -fx-padding: 20 18 6 18;"/>
+
+            <!-- ── NAV BUTTONS ───────────────────────────────────────────── -->
+            <VBox spacing="3" style="-fx-padding: 0 12 0 12;">
+
+                <Button fx:id="btnDashboard"
+                        text="📊   Dashboard"
+                        maxWidth="Infinity"
+                        onAction="#goToDashboard"
+                        style="-fx-background-color: linear-gradient(to right, #6366f1, #6366f1cc);
+                               -fx-background-radius: 11;
+                               -fx-text-fill: white;
+                               -fx-font-size: 13.5px;
+                               -fx-font-weight: bold;
+                               -fx-padding: 11 16;
+                               -fx-alignment: CENTER_LEFT;
+                               -fx-cursor: hand;
+                               -fx-effect: dropshadow(gaussian, rgba(99,102,241,0.4), 10, 0, 0, 3);"/>
+
+                <Button text="👥   Users"
+                        maxWidth="Infinity"
+                        onAction="#goToUsers"
+                        style="-fx-background-color: transparent;
+                               -fx-background-radius: 11;
+                               -fx-text-fill: rgba(255,255,255,0.55);
+                               -fx-font-size: 13.5px;
+                               -fx-padding: 11 16;
+                               -fx-alignment: CENTER_LEFT;
+                               -fx-cursor: hand;"/>
+
+                <Button text="💼   Job Offers"
+                        maxWidth="Infinity"
+                        onAction="#goToJobOffers"
+                        style="-fx-background-color: transparent;
+                               -fx-background-radius: 11;
+                               -fx-text-fill: rgba(255,255,255,0.55);
+                               -fx-font-size: 13.5px;
+                               -fx-padding: 11 16;
+                               -fx-alignment: CENTER_LEFT;
+                               -fx-cursor: hand;"/>
+
+                <Button text="📋   Applications"
+                        maxWidth="Infinity"
+                        onAction="#goToApplications"
+                        style="-fx-background-color: transparent;
+                               -fx-background-radius: 11;
+                               -fx-text-fill: rgba(255,255,255,0.55);
+                               -fx-font-size: 13.5px;
+                               -fx-padding: 11 16;
+                               -fx-alignment: CENTER_LEFT;
+                               -fx-cursor: hand;"/>
+
+                <Button text="💬   Messages"
+                        maxWidth="Infinity"
+                        onAction="#goToMessages"
+                        style="-fx-background-color: transparent;
+                               -fx-background-radius: 11;
+                               -fx-text-fill: rgba(255,255,255,0.55);
+                               -fx-font-size: 13.5px;
+                               -fx-padding: 11 16;
+                               -fx-alignment: CENTER_LEFT;
+                               -fx-cursor: hand;"/>
+
+                <Button text="👤   Profile"
+                        maxWidth="Infinity"
+                        onAction="#goToProfile"
+                        style="-fx-background-color: transparent;
+                               -fx-background-radius: 11;
+                               -fx-text-fill: rgba(255,255,255,0.55);
+                               -fx-font-size: 13.5px;
+                               -fx-padding: 11 16;
+                               -fx-alignment: CENTER_LEFT;
+                               -fx-cursor: hand;"/>
+
+                <Button text="⚙   Settings"
+                        maxWidth="Infinity"
+                        onAction="#goToSettings"
+                        style="-fx-background-color: transparent;
+                               -fx-background-radius: 11;
+                               -fx-text-fill: rgba(255,255,255,0.55);
+                               -fx-font-size: 13.5px;
+                               -fx-padding: 11 16;
+                               -fx-alignment: CENTER_LEFT;
+                               -fx-cursor: hand;"/>
+            </VBox>
+
+            <!-- Spacer pushes logout to the bottom -->
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <!-- ── LOGOUT ─────────────────────────────────────────────────── -->
+            <VBox style="-fx-padding: 0 12 20 12;">
+                <Button text="🚪   Logout"
+                        maxWidth="Infinity"
+                        onAction="#logout"
+                        style="-fx-background-color: rgba(244,63,94,0.12);
+                               -fx-background-radius: 10;
+                               -fx-text-fill: rgba(244,63,94,0.85);
+                               -fx-font-size: 13px;
+                               -fx-font-weight: bold;
+                               -fx-padding: 10 16;
+                               -fx-alignment: CENTER_LEFT;
+                               -fx-cursor: hand;"/>
+            </VBox>
+
+        </VBox>
+    </left>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         CENTER — dynamic content area
+    ═══════════════════════════════════════════════════════════════════════════ -->
+    <center>
+        <StackPane fx:id="contentArea"
+                   style="-fx-background-color: #f1f5f9;">
+            <!-- DashboardContent.fxml loads here on initialize() -->
+        </StackPane>
+    </center>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         RIGHT SIDEBAR — decorative calendar + activity
+    ═══════════════════════════════════════════════════════════════════════════ -->
+    <right>
+        <VBox prefWidth="230" spacing="18"
+              style="-fx-background-color: #0f172a;
+                     -fx-padding: 28 16 28 16;
+                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 20, 0, -4, 0);">
+
+            <!-- ── CALENDAR WIDGET ───────────────────────────────────────── -->
+            <VBox spacing="12"
+                  style="-fx-background-color: rgba(99,102,241,0.10);
+                         -fx-background-radius: 18;
+                         -fx-border-color: rgba(99,102,241,0.22);
+                         -fx-border-radius: 18;
+                         -fx-border-width: 1;
+                         -fx-padding: 18 16 16 16;">
+
+                <!-- Month header -->
+                <HBox alignment="CENTER">
+                    <Label text="◀"
+                           style="-fx-text-fill: rgba(255,255,255,0.3); -fx-font-size: 11px; -fx-cursor: hand;"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label text="MARCH  2026"
+                           style="-fx-text-fill: white;
+                                  -fx-font-size: 13px;
+                                  -fx-font-weight: bold;"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label text="▶"
+                           style="-fx-text-fill: rgba(255,255,255,0.3); -fx-font-size: 11px; -fx-cursor: hand;"/>
+                </HBox>
+
+                <!-- Day-of-week header -->
+                <GridPane hgap="4" vgap="0">
+                    <Label text="Mo" style="-fx-text-fill: rgba(255,255,255,0.35); -fx-font-size: 10px; -fx-font-weight: bold;" GridPane.columnIndex="0" GridPane.rowIndex="0" prefWidth="26" alignment="CENTER"/>
+                    <Label text="Tu" style="-fx-text-fill: rgba(255,255,255,0.35); -fx-font-size: 10px; -fx-font-weight: bold;" GridPane.columnIndex="1" GridPane.rowIndex="0" prefWidth="26" alignment="CENTER"/>
+                    <Label text="We" style="-fx-text-fill: rgba(255,255,255,0.35); -fx-font-size: 10px; -fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.rowIndex="0" prefWidth="26" alignment="CENTER"/>
+                    <Label text="Th" style="-fx-text-fill: rgba(255,255,255,0.35); -fx-font-size: 10px; -fx-font-weight: bold;" GridPane.columnIndex="3" GridPane.rowIndex="0" prefWidth="26" alignment="CENTER"/>
+                    <Label text="Fr" style="-fx-text-fill: rgba(255,255,255,0.35); -fx-font-size: 10px; -fx-font-weight: bold;" GridPane.columnIndex="4" GridPane.rowIndex="0" prefWidth="26" alignment="CENTER"/>
+                    <Label text="Sa" style="-fx-text-fill: rgba(255,255,255,0.22); -fx-font-size: 10px; -fx-font-weight: bold;" GridPane.columnIndex="5" GridPane.rowIndex="0" prefWidth="26" alignment="CENTER"/>
+                    <Label text="Su" style="-fx-text-fill: rgba(255,255,255,0.22); -fx-font-size: 10px; -fx-font-weight: bold;" GridPane.columnIndex="6" GridPane.rowIndex="0" prefWidth="26" alignment="CENTER"/>
+
+                    <!-- Week 1: Mar starts on Sunday (col 6) -->
+                    <Label text="1" style="-fx-text-fill: white; -fx-font-size: 11px;" GridPane.columnIndex="6" GridPane.rowIndex="1" prefWidth="26" alignment="CENTER"/>
+
+                    <!-- Week 2 -->
+                    <Label text="2"  style="-fx-text-fill: white; -fx-font-size: 11px;" GridPane.columnIndex="0" GridPane.rowIndex="2" prefWidth="26" alignment="CENTER"/>
+                    <Label text="3"  style="-fx-text-fill: white; -fx-font-size: 11px;" GridPane.columnIndex="1" GridPane.rowIndex="2" prefWidth="26" alignment="CENTER"/>
+                    <Label text="4"  style="-fx-text-fill: white; -fx-font-size: 11px;" GridPane.columnIndex="2" GridPane.rowIndex="2" prefWidth="26" alignment="CENTER"/>
+                    <Label text="5"  style="-fx-text-fill: white; -fx-font-size: 11px;" GridPane.columnIndex="3" GridPane.rowIndex="2" prefWidth="26" alignment="CENTER"/>
+                    <Label text="6"  style="-fx-text-fill: white; -fx-font-size: 11px;" GridPane.columnIndex="4" GridPane.rowIndex="2" prefWidth="26" alignment="CENTER"/>
+                    <Label text="7"  style="-fx-text-fill: rgba(255,255,255,0.4); -fx-font-size: 11px;" GridPane.columnIndex="5" GridPane.rowIndex="2" prefWidth="26" alignment="CENTER"/>
+                    <Label text="8"  style="-fx-text-fill: rgba(255,255,255,0.4); -fx-font-size: 11px;" GridPane.columnIndex="6" GridPane.rowIndex="2" prefWidth="26" alignment="CENTER"/>
+
+                    <!-- Week 3 -->
+                    <Label text="9"  style="-fx-text-fill: white; -fx-font-size: 11px;" GridPane.columnIndex="0" GridPane.rowIndex="3" prefWidth="26" alignment="CENTER"/>
+                    <Label text="10" style="-fx-text-fill: white; -fx-font-size: 11px;" GridPane.columnIndex="1" GridPane.rowIndex="3" prefWidth="26" alignment="CENTER"/>
+                    <Label text="11" style="-fx-text-fill: white; -fx-font-size: 11px;" GridPane.columnIndex="2" GridPane.rowIndex="3" prefWidth="26" alignment="CENTER"/>
+                    <Label text="12" style="-fx-text-fill: white; -fx-font-size: 11px;" GridPane.columnIndex="3" GridPane.rowIndex="3" prefWidth="26" alignment="CENTER"/>
+                    <Label text="13" style="-fx-text-fill: white; -fx-font-size: 11px;" GridPane.columnIndex="4" GridPane.rowIndex="3" prefWidth="26" alignment="CENTER"/>
+                    <Label text="14" style="-fx-text-fill: rgba(255,255,255,0.4); -fx-font-size: 11px;" GridPane.columnIndex="5" GridPane.rowIndex="3" prefWidth="26" alignment="CENTER"/>
+                    <Label text="15" style="-fx-text-fill: rgba(255,255,255,0.4); -fx-font-size: 11px;" GridPane.columnIndex="6" GridPane.rowIndex="3" prefWidth="26" alignment="CENTER"/>
+
+                    <!-- Week 4 -->
+                    <Label text="16" style="-fx-text-fill: white; -fx-font-size: 11px;" GridPane.columnIndex="0" GridPane.rowIndex="4" prefWidth="26" alignment="CENTER"/>
+                    <Label text="17" style="-fx-text-fill: white; -fx-font-size: 11px;" GridPane.columnIndex="1" GridPane.rowIndex="4" prefWidth="26" alignment="CENTER"/>
+                    <Label text="18" style="-fx-text-fill: white; -fx-font-size: 11px;" GridPane.columnIndex="2" GridPane.rowIndex="4" prefWidth="26" alignment="CENTER"/>
+                    <Label text="19" style="-fx-text-fill: white; -fx-font-size: 11px;" GridPane.columnIndex="3" GridPane.rowIndex="4" prefWidth="26" alignment="CENTER"/>
+                    <Label text="20" style="-fx-text-fill: white; -fx-font-size: 11px;" GridPane.columnIndex="4" GridPane.rowIndex="4" prefWidth="26" alignment="CENTER"/>
+                    <Label text="21" style="-fx-text-fill: rgba(255,255,255,0.4); -fx-font-size: 11px;" GridPane.columnIndex="5" GridPane.rowIndex="4" prefWidth="26" alignment="CENTER"/>
+                    <Label text="22" style="-fx-text-fill: rgba(255,255,255,0.4); -fx-font-size: 11px;" GridPane.columnIndex="6" GridPane.rowIndex="4" prefWidth="26" alignment="CENTER"/>
+
+                    <!-- Week 5 -->
+                    <Label text="23" style="-fx-text-fill: white; -fx-font-size: 11px;" GridPane.columnIndex="0" GridPane.rowIndex="5" prefWidth="26" alignment="CENTER"/>
+                    <Label text="24" style="-fx-text-fill: white; -fx-font-size: 11px;" GridPane.columnIndex="1" GridPane.rowIndex="5" prefWidth="26" alignment="CENTER"/>
+                    <Label text="25" style="-fx-text-fill: white; -fx-font-size: 11px;" GridPane.columnIndex="2" GridPane.rowIndex="5" prefWidth="26" alignment="CENTER"/>
+                    <Label text="26" style="-fx-text-fill: white; -fx-font-size: 11px;" GridPane.columnIndex="3" GridPane.rowIndex="5" prefWidth="26" alignment="CENTER"/>
+                    <Label text="27" style="-fx-text-fill: white; -fx-font-size: 11px;" GridPane.columnIndex="4" GridPane.rowIndex="5" prefWidth="26" alignment="CENTER"/>
+                    <Label text="28" style="-fx-text-fill: rgba(255,255,255,0.4); -fx-font-size: 11px;" GridPane.columnIndex="5" GridPane.rowIndex="5" prefWidth="26" alignment="CENTER"/>
+                    <Label text="29" style="-fx-text-fill: rgba(255,255,255,0.4); -fx-font-size: 11px;" GridPane.columnIndex="6" GridPane.rowIndex="5" prefWidth="26" alignment="CENTER"/>
+
+                    <!-- Week 6 -->
+                    <Label text="30" style="-fx-text-fill: white; -fx-font-size: 11px;" GridPane.columnIndex="0" GridPane.rowIndex="6" prefWidth="26" alignment="CENTER"/>
+                    <Label text="31" style="-fx-text-fill: white; -fx-font-size: 11px;" GridPane.columnIndex="1" GridPane.rowIndex="6" prefWidth="26" alignment="CENTER"/>
+
+                    <!-- TODAY highlight: March 2, 2026 (Monday col 0, row 2) -->
+                    <StackPane GridPane.columnIndex="0" GridPane.rowIndex="2" prefWidth="26" prefHeight="26">
+
+                        <Label text="2"
+                               style="-fx-text-fill: white; -fx-font-size: 11px; -fx-font-weight: bold;"/>
+                    </StackPane>
+
+                </GridPane>
+
+            </VBox>
+
+            <!-- ── UPCOMING EVENTS ───────────────────────────────────────── -->
+            <VBox spacing="10">
+                <Label text="UPCOMING"
+                       style="-fx-text-fill: rgba(255,255,255,0.22);
+                              -fx-font-size: 10px;
+                              -fx-font-weight: bold;"/>
+
+                <!-- Event 1 -->
+                <HBox spacing="10" alignment="CENTER_LEFT"
+                      style="-fx-background-color: rgba(99,102,241,0.10);
+                             -fx-background-radius: 12;
+                             -fx-border-color: rgba(99,102,241,0.20);
+                             -fx-border-radius: 12;
+                             -fx-border-width: 1;
+                             -fx-padding: 10 12;">
+                    <StackPane prefWidth="8" prefHeight="8">
+                    </StackPane>
+                    <VBox spacing="2">
+                        <Label text="Interview Review"
+                               style="-fx-text-fill: white; -fx-font-size: 11px; -fx-font-weight: bold;"/>
+                        <Label text="Mar 5 · 10:00 AM"
+                               style="-fx-text-fill: rgba(255,255,255,0.38); -fx-font-size: 10px;"/>
+                    </VBox>
+                </HBox>
+
+                <!-- Event 2 -->
+                <HBox spacing="10" alignment="CENTER_LEFT"
+                      style="-fx-background-color: rgba(6,182,212,0.10);
+                             -fx-background-radius: 12;
+                             -fx-border-color: rgba(6,182,212,0.20);
+                             -fx-border-radius: 12;
+                             -fx-border-width: 1;
+                             -fx-padding: 10 12;">
+                    <StackPane prefWidth="8" prefHeight="8">
+                    </StackPane>
+                    <VBox spacing="2">
+                        <Label text="Offer Deadline"
+                               style="-fx-text-fill: white; -fx-font-size: 11px; -fx-font-weight: bold;"/>
+                        <Label text="Mar 10 · All day"
+                               style="-fx-text-fill: rgba(255,255,255,0.38); -fx-font-size: 10px;"/>
+                    </VBox>
+                </HBox>
+
+                <!-- Event 3 -->
+                <HBox spacing="10" alignment="CENTER_LEFT"
+                      style="-fx-background-color: rgba(16,185,129,0.10);
+                             -fx-background-radius: 12;
+                             -fx-border-color: rgba(16,185,129,0.20);
+                             -fx-border-radius: 12;
+                             -fx-border-width: 1;
+                             -fx-padding: 10 12;">
+                    <StackPane prefWidth="8" prefHeight="8">
+                    </StackPane>
+                    <VBox spacing="2">
+                        <Label text="Team Standup"
+                               style="-fx-text-fill: white; -fx-font-size: 11px; -fx-font-weight: bold;"/>
+                        <Label text="Mar 14 · 9:30 AM"
+                               style="-fx-text-fill: rgba(255,255,255,0.38); -fx-font-size: 10px;"/>
+                    </VBox>
+                </HBox>
+
+            </VBox>
+
+            <!-- ── ACTIVITY FEED ─────────────────────────────────────────── -->
+            <VBox spacing="10">
+                <Label text="RECENT ACTIVITY"
+                       style="-fx-text-fill: rgba(255,255,255,0.22);
+                              -fx-font-size: 10px;
+                              -fx-font-weight: bold;"/>
+
+                <HBox spacing="10" alignment="TOP_LEFT">
+                    <Label text="New recruiter joined" wrapText="true"
+                           style="-fx-text-fill: rgba(255,255,255,0.55); -fx-font-size: 11px; -fx-max-width: 160;"/>
+                </HBox>
+                <HBox spacing="10" alignment="TOP_LEFT">
+                    <Label text="3 applications accepted" wrapText="true"
+                           style="-fx-text-fill: rgba(255,255,255,0.55); -fx-font-size: 11px; -fx-max-width: 160;"/>
+                </HBox>
+                <HBox spacing="10" alignment="TOP_LEFT">
+                    <Label text="2 new job offers posted" wrapText="true"
+                           style="-fx-text-fill: rgba(255,255,255,0.55); -fx-font-size: 11px; -fx-max-width: 160;"/>
+                </HBox>
+
+            </VBox>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <!-- ── VERSION BADGE ─────────────────────────────────────────── -->
+            <Label text="BlindHire v1.0"
+                   style="-fx-text-fill: rgba(255,255,255,0.18);
+                          -fx-font-size: 10px;
+                          -fx-alignment: CENTER;"
+                   maxWidth="Infinity" alignment="CENTER"/>
+
+        </VBox>
+    </right>
+
+</BorderPane>

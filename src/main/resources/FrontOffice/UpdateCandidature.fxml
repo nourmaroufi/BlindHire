@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.effect.DropShadow?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="Controller.FrontOffice.UpdateCandidatureController"
+            prefWidth="580" prefHeight="660"
+            style="-fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #0fafdd 0%, #057995 100%);">
+
+    <!-- Background decorative circles -->
+    <Circle fill="#ffffff12" radius="180" layoutX="-30" layoutY="-30"/>
+    <Circle fill="#ffffff08" radius="140" layoutX="560" layoutY="500"/>
+
+    <children>
+        <!-- Main white card -->
+        <VBox spacing="22"
+              AnchorPane.topAnchor="25" AnchorPane.bottomAnchor="25"
+              AnchorPane.leftAnchor="25" AnchorPane.rightAnchor="25"
+              style="-fx-background-color: white; -fx-background-radius: 24;
+                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.22), 30, 0, 0, 10);">
+
+            <padding>
+                <Insets top="30" right="35" bottom="30" left="35"/>
+            </padding>
+
+            <!-- ── HEADER ─────────────────────────────────────────────── -->
+            <VBox alignment="CENTER" spacing="6">
+                <Label text="✏️"
+                       style="-fx-font-size: 34px;"/>
+                <Label text="Update Application"
+                       style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #0f172a;
+                              -fx-font-family: 'Segoe UI Semibold', Arial;"/>
+                <Label text="Edit your application details below"
+                       style="-fx-font-size: 13px; -fx-text-fill: #94a3b8;"/>
+            </VBox>
+
+            <!-- Divider accent -->
+            <Region prefHeight="3" maxWidth="1.7976931348623157E308"
+                    style="-fx-background-color: linear-gradient(to right, #0fafdd, #057995, #a5b4fc);
+                           -fx-background-radius: 2;"/>
+
+            <!-- ── JOB INFO (read-only) ───────────────────────────────── -->
+            <VBox spacing="5">
+                <Label text="📋  Position"
+                       style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #64748b;"/>
+                <Label fx:id="jobTitleLabel"
+                       text="—"
+                       maxWidth="Infinity"
+                       style="-fx-background-color: #f8fafc; -fx-border-color: #e2e8f0;
+                              -fx-border-width: 1; -fx-border-radius: 12; -fx-background-radius: 12;
+                              -fx-padding: 11 15; -fx-font-size: 14px; -fx-text-fill: #475569;
+                              -fx-font-style: italic;"/>
+            </VBox>
+
+            <!-- ── EXPECTED SALARY ────────────────────────────────────── -->
+            <VBox spacing="5">
+                <Label text="💰  Expected Salary (TND/month)"
+                       style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #0f172a;"/>
+                <TextField fx:id="salaryField"
+                           promptText="e.g. 2500"
+                           style="-fx-background-radius: 12; -fx-border-radius: 12;
+                                  -fx-border-color: #e2e8f0; -fx-border-width: 1.5;
+                                  -fx-background-color: white; -fx-padding: 12 15;
+                                  -fx-font-size: 14px; -fx-text-fill: #0f172a;"/>
+            </VBox>
+
+            <!-- ── COVER LETTER ───────────────────────────────────────── -->
+            <VBox spacing="5" VBox.vgrow="ALWAYS">
+                <Label text="📝  Cover Letter"
+                       style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #0f172a;"/>
+                <TextArea fx:id="coverLetterArea"
+                          promptText="Describe why you're a great fit for this role..."
+                          prefRowCount="4"
+                          wrapText="true"
+                          style="-fx-background-radius: 12; -fx-border-radius: 12;
+                                 -fx-border-color: #e2e8f0; -fx-border-width: 1.5;
+                                 -fx-background-color: white; -fx-font-size: 14px;
+                                 -fx-padding: 12;" VBox.vgrow="ALWAYS"/>
+            </VBox>
+
+            <!-- ── CV UPLOAD ──────────────────────────────────────────── -->
+            <VBox spacing="8">
+                <Label text="📄  CV / Resume"
+                       style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #0f172a;"/>
+
+                <!-- File display row -->
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <VBox HBox.hgrow="ALWAYS" spacing="2">
+                        <!-- shows filename once chosen, or "current file kept" -->
+                        <Label fx:id="cvFileNameLabel"
+                               text="No file selected — current CV will be kept"
+                               style="-fx-font-size: 12px; -fx-text-fill: #94a3b8; -fx-font-style: italic;"
+                               wrapText="true"/>
+                        <!-- hidden field that stores the actual full path -->
+                        <TextField fx:id="cvPathField"
+                                   visible="false" managed="false"/>
+                    </VBox>
+
+                    <Button fx:id="browseBtn"
+                            text="📂  Browse…"
+                            onAction="#handleBrowseCV"
+                            style="-fx-background-color: white;
+                                   -fx-text-fill: #0fafdd;
+                                   -fx-border-color: #0fafdd; -fx-border-width: 2;
+                                   -fx-border-radius: 12; -fx-background-radius: 12;
+                                   -fx-padding: 10 20; -fx-font-size: 13px;
+                                   -fx-font-weight: bold; -fx-cursor: hand;"/>
+
+                    <Button text="📥 From Profile"
+                            onAction="#handleLoadCvFromProfile"
+                            style="-fx-background-color: linear-gradient(to right, #0fafdd, #057995);
+                                   -fx-text-fill: white;
+                                   -fx-border-width: 0;
+                                   -fx-border-radius: 12; -fx-background-radius: 12;
+                                   -fx-padding: 10 20; -fx-font-size: 13px;
+                                   -fx-font-weight: bold; -fx-cursor: hand;"/>
+                </HBox>
+
+                <!-- Drop-zone hint box -->
+                <VBox alignment="CENTER" spacing="4"
+                      style="-fx-background-color: #f8fafc; -fx-border-color: #a5e9f5;
+                             -fx-border-width: 1.5; -fx-border-radius: 12;
+                             -fx-background-radius: 12; -fx-padding: 14;">
+                    <Label text="📎"
+                           style="-fx-font-size: 22px;"/>
+                    <Label text="Click 'Browse…' to select a PDF or Word document"
+                           style="-fx-font-size: 12px; -fx-text-fill: #94a3b8;"/>
+                    <Label text="If you don't choose a file, your existing CV will be kept"
+                           style="-fx-font-size: 11px; -fx-text-fill: #c4c9d4; -fx-font-style: italic;"/>
+                </VBox>
+            </VBox>
+
+            <!-- ── BUTTONS ────────────────────────────────────────────── -->
+            <HBox spacing="15" alignment="CENTER">
+                <Button text="Cancel"
+                        onAction="#handleCancel"
+                        style="-fx-background-color: white; -fx-text-fill: #64748b;
+                               -fx-border-color: #e2e8f0; -fx-border-width: 1.5;
+                               -fx-border-radius: 14; -fx-background-radius: 14;
+                               -fx-padding: 12 35; -fx-font-size: 14px;
+                               -fx-font-weight: bold; -fx-cursor: hand;"/>
+
+                <Button text="💾  Save Changes"
+                        onAction="#handleSave"
+                        style="-fx-background-color: linear-gradient(to right, #0fafdd, #057995);
+                               -fx-text-fill: white; -fx-background-radius: 14;
+                               -fx-padding: 12 35; -fx-font-size: 14px;
+                               -fx-font-weight: bold; -fx-cursor: hand;
+                               -fx-effect: dropshadow(gaussian, rgba(15,175,221,0.30), 12, 0, 0, 4);"/>
+            </HBox>
+
+        </VBox>
+    </children>
+</AnchorPane>

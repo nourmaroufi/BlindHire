@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="Controller.FrontOffice.jobController"
+      spacing="20"
+      style="-fx-background-color: linear-gradient(to bottom right, #e8f5f3, #d5edf4, #e2eef8); -fx-padding: 30 50;">
+
+    <!-- TITLE SECTION WITH DECORATIVE ELEMENTS -->
+    <HBox alignment="CENTER_LEFT" spacing="15">
+        <Rectangle width="5" height="40" fill="#0fafdd" style="-fx-arc-width: 5; -fx-arc-height: 5;"/>
+        <VBox spacing="5">
+            <Label text="Available Job Offers"
+                   style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #0f172a;
+                          -fx-font-family: 'Segoe UI Semibold';"/>
+            <Label text="Find your next career opportunity"
+                   style="-fx-font-size: 14px; -fx-text-fill: #64748b; -fx-font-family: 'Segoe UI';"/>
+        </VBox>
+        <Region HBox.hgrow="ALWAYS"/>
+
+        <!-- AI MATCHING BUTTON -->
+        <Button fx:id="aiMatchButton"
+                text="🤖 AI Matching"
+                onAction="#handleAiMatching"
+                style="-fx-background-color: linear-gradient(to right, #0fafdd, #057995);
+                       -fx-text-fill: white;
+                       -fx-background-radius: 25;
+                       -fx-border-radius: 25;
+                       -fx-padding: 10 25;
+                       -fx-font-size: 14px;
+                       -fx-font-weight: bold;
+                       -fx-cursor: hand;
+                       -fx-effect: dropshadow(gaussian, rgba(124,58,237,0.35), 10,0,0,3);"
+        />
+
+        <!-- MY APPLICATIONS BUTTON -->
+        <Button text="📋 My Applications"
+                onAction="#handleMyApplications"
+                style="-fx-background-color: white;
+                       -fx-text-fill: #0fafdd;
+                       -fx-border-color: #0fafdd;
+                       -fx-border-width: 2;
+                       -fx-background-radius: 25;
+                       -fx-border-radius: 25;
+                       -fx-padding: 10 25;
+                       -fx-font-size: 14px;
+                       -fx-font-weight: bold;
+                       -fx-cursor: hand;
+                       -fx-effect: dropshadow(gaussian, rgba(79,70,229,0.2), 10,0,0,2);"
+        />
+
+        <!-- SAVED JOBS BUTTON -->
+        <Button text="⭐ Saved Jobs"
+                onAction="#handleSavedJobs"
+                style="-fx-background-color: linear-gradient(to right, #0fafdd, #057995);
+                       -fx-text-fill: white;
+                       -fx-border-width: 0;
+                       -fx-background-radius: 25;
+                       -fx-border-radius: 25;
+                       -fx-padding: 10 25;
+                       -fx-font-size: 14px;
+                       -fx-font-weight: bold;
+                       -fx-cursor: hand;
+                       -fx-effect: dropshadow(gaussian, rgba(15,175,221,0.35), 10,0,0,3);"
+        />
+
+        <Label text="💼" style="-fx-font-size: 40px; -fx-opacity: 0.5;"/>
+    </HBox>
+
+    <!-- SEARCH BAR WITH MODERN DESIGN -->
+    <HBox spacing="15" alignment="CENTER_LEFT">
+        <!-- BACK TO ALL JOBS BUTTON (only visible after AI Matching) -->
+        <Button fx:id="backToAllButton"
+                text="← All Jobs"
+                onAction="#handleBackToAll"
+                visible="false"
+                managed="false"
+                style="-fx-background-color: white;
+                       -fx-text-fill: #057995;
+                       -fx-border-color: #057995;
+                       -fx-border-width: 2;
+                       -fx-background-radius: 25;
+                       -fx-border-radius: 25;
+                       -fx-padding: 10 20;
+                       -fx-font-size: 13px;
+                       -fx-font-weight: bold;
+                       -fx-cursor: hand;"/>
+
+        <TextField fx:id="searchField"
+                   promptText="Search jobs by title or description..."
+                   prefWidth="350"
+                   style="-fx-background-radius: 25; -fx-padding: 12 20;
+                          -fx-background-color: white; -fx-border-color: #e2e8f0;
+                          -fx-border-radius: 25; -fx-font-size: 14px;"/>
+
+        <Button text="🔍 Search"
+                onAction="#handleSearch"
+                style="-fx-background-color: #0fafdd;
+                       -fx-text-fill: white;
+                       -fx-background-radius: 25;
+                       -fx-padding: 12 30;
+                       -fx-font-size: 14px;
+                       -fx-font-weight: bold;
+                       -fx-cursor: hand;"
+                onMouseEntered="#handleSearchHover"
+                onMouseExited="#handleSearchExit"/>
+
+        <Region HBox.hgrow="ALWAYS"/>
+
+        <!-- JOB COUNT INDICATOR -->
+        <Label fx:id="jobCountLabel"
+               text="Showing 0 jobs"
+               style="-fx-font-size: 14px; -fx-text-fill: #64748b; -fx-font-style: italic;"/>
+    </HBox>
+
+    <!-- CAROUSEL CONTAINER -->
+    <VBox spacing="30" VBox.vgrow="ALWAYS" alignment="CENTER">
+
+        <!-- CARDS CONTAINER WITH FIXED HEIGHT -->
+        <StackPane VBox.vgrow="ALWAYS" alignment="CENTER">
+            <HBox fx:id="cardsContainer"
+                  spacing="30"
+                  alignment="CENTER"
+                  style="-fx-padding: 20 0;">
+                <!-- Cards will be added dynamically here -->
+            </HBox>
+        </StackPane>
+
+        <!-- NAVIGATION CONTROLS -->
+        <HBox spacing="40" alignment="CENTER">
+            <!-- LEFT ARROW BUTTON -->
+            <Button fx:id="prevButton"
+                    text="←"
+                    onAction="#handlePrevious"
+                    style="-fx-background-color: rgba(15,175,221,0.10);
+               -fx-text-fill: #0fafdd;
+               -fx-font-size: 24px;
+               -fx-font-weight: bold;
+               -fx-min-width: 50;
+               -fx-min-height: 50;
+               -fx-max-width: 50;
+               -fx-max-height: 50;
+               -fx-background-radius: 25;
+               -fx-border-color: #e2e8f0;
+               -fx-border-radius: 25;
+               -fx-cursor: hand;
+               -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10,0,0,2);"
+            />
+
+
+            <!-- PAGE INDICATOR DOTS -->
+            <HBox fx:id="pageIndicator" spacing="10" alignment="CENTER">
+                <!-- Dots will be added dynamically -->
+            </HBox>
+
+            <!-- RIGHT ARROW BUTTON -->
+            <Button fx:id="nextButton"
+                    text="→ "
+                    onAction="#handleNext"
+                    style="-fx-background-color: rgba(15,175,221,0.10);
+               -fx-text-fill: #0fafdd;
+
+               -fx-cursor: hand;
+               -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10,0,0,2);"/>
+        </HBox>
+    </VBox>
+
+</VBox>

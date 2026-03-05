@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.shape.Circle?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="Controller.BackOffice.joboffer.JobOfferController"
+            prefHeight="600.0"
+            prefWidth="900.0"
+            style="-fx-background-color: #0f172a;">
+
+    <children>
+
+
+        <!-- Top header bar -->
+        <VBox spacing="0"
+              style="-fx-background-color: rgba(255,255,255,0.04);
+                     -fx-border-color: rgba(255,255,255,0.08); -fx-border-width: 0 0 1 0;"
+              AnchorPane.topAnchor="0.0"
+              AnchorPane.leftAnchor="0.0"
+              AnchorPane.rightAnchor="0.0">
+
+            <padding><Insets top="20" right="32" bottom="0" left="32"/></padding>
+
+            <!-- Title + Add button -->
+            <HBox alignment="CENTER_LEFT" spacing="16">
+                <Label text="💼  Job Offers"
+                       style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: white;
+                              -fx-font-family: 'Segoe UI';"/>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <Button fx:id="addJobButton"
+                        text="➕  Post a Job"
+                        onAction="#handleAddJob"
+                        style="-fx-background-color: linear-gradient(to right, #6366f1, #818cf8);
+                               -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 13px;
+                               -fx-background-radius: 12; -fx-padding: 10 22; -fx-cursor: hand;
+                               -fx-font-family: 'Segoe UI';
+                               -fx-effect: dropshadow(gaussian, rgba(99,102,241,0.45), 10, 0, 0, 3);"/>
+            </HBox>
+
+            <!-- Nav row -->
+            <HBox spacing="28" alignment="CENTER_LEFT">
+                <padding><Insets top="14" bottom="0"/></padding>
+
+                <Label fx:id="dashboardNav" text="Dashboard"
+                       style="-fx-font-size: 13px; -fx-font-weight: bold;
+                              -fx-text-fill: #64748b; -fx-cursor: hand; -fx-font-family: 'Segoe UI';"
+                       onMouseClicked="#handleDashboard"/>
+
+                <Label fx:id="allJobsNav" text="All Jobs"
+                       style="-fx-font-size: 13px; -fx-font-weight: bold;
+                              -fx-text-fill: #64748b; -fx-cursor: hand; -fx-font-family: 'Segoe UI';"
+                       onMouseClicked="#handleAllJobs"/>
+
+                <Label fx:id="myJobsNav" text="My Jobs"
+                       style="-fx-font-size: 13px; -fx-font-weight: bold;
+                              -fx-text-fill: #64748b; -fx-cursor: hand; -fx-font-family: 'Segoe UI';"
+                       onMouseClicked="#handleMyJobs"/>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+
+            </HBox>
+
+            <!-- Underline tab bar -->
+            <HBox style="-fx-padding: 10 0 0 0;">
+                <Region prefWidth="1" prefHeight="1" HBox.hgrow="ALWAYS"
+                        style="-fx-background-color: rgba(255,255,255,0.07);
+                               -fx-pref-height: 1; -fx-max-height: 1;"/>
+            </HBox>
+        </VBox>
+
+        <!-- Content Area -->
+        <StackPane fx:id="contentArea"
+                   AnchorPane.topAnchor="116.0"
+                   AnchorPane.leftAnchor="0.0"
+                   AnchorPane.rightAnchor="0.0"
+                   AnchorPane.bottomAnchor="0.0"
+                   style="-fx-background-color: transparent;"/>
+    </children>
+</AnchorPane>

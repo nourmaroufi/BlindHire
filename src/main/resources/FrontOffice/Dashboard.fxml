@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      spacing="0"
+      style="-fx-background-color: transparent;">
+
+    <!-- ── Greeting header ─────────────────────────────────────────────────── -->
+    <HBox alignment="CENTER_LEFT"
+          style="-fx-background-color: transparent; -fx-padding: 26 30 10 30;">
+        <VBox spacing="2">
+            <Label text="Welcome back 👋"
+                   style="-fx-font-size: 12px; -fx-font-weight: bold;
+                          -fx-text-fill: #0d9488; -fx-font-family: Segoe UI;"/>
+            <Label text="Dashboard"
+                   style="-fx-font-size: 28px; -fx-font-weight: bold;
+                          -fx-text-fill: #0f172a; -fx-font-family: Segoe UI;"/>
+        </VBox>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="Browse Jobs  →"
+                onAction="#gotoBO"
+                fx:id="backOfficeButton"
+                style="-fx-background-color: #0d9488; -fx-text-fill: white;
+                       -fx-font-weight: bold; -fx-font-size: 13px;
+                       -fx-font-family: Segoe UI;
+                       -fx-background-radius: 20; -fx-padding: 10 22;
+                       -fx-cursor: hand; -fx-border-width: 0;
+                       -fx-effect: dropshadow(gaussian,rgba(13,148,136,0.35),10,0,0,3);"/>
+    </HBox>
+
+    <!-- ── 4 stat tiles ───────────────────────────────────────────────────── -->
+    <HBox spacing="14" style="-fx-padding: 10 30 0 30;">
+
+        <HBox spacing="12" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS"
+              style="-fx-background-color: white; -fx-background-radius: 16;
+                     -fx-border-color: #f1f5f9; -fx-border-width: 1; -fx-border-radius: 16;
+                     -fx-padding: 16 18;
+                     -fx-effect: dropshadow(gaussian,rgba(0,0,0,0.05),10,0,0,2);">
+            <StackPane minWidth="40" minHeight="40" maxWidth="40" maxHeight="40"
+                       style="-fx-background-color: #f0fdfa; -fx-background-radius: 11;">
+                <Label text="💼" style="-fx-font-size: 18px;"/>
+            </StackPane>
+            <VBox spacing="2">
+                <Label text="128"
+                       style="-fx-font-size: 22px; -fx-font-weight: bold;
+                              -fx-text-fill: #0d9488; -fx-font-family: Segoe UI;"/>
+                <Label text="Open Jobs"
+                       style="-fx-font-size: 11px; -fx-text-fill: #94a3b8; -fx-font-family: Segoe UI;"/>
+            </VBox>
+        </HBox>
+
+        <HBox spacing="12" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS"
+              style="-fx-background-color: white; -fx-background-radius: 16;
+                     -fx-border-color: #f1f5f9; -fx-border-width: 1; -fx-border-radius: 16;
+                     -fx-padding: 16 18;
+                     -fx-effect: dropshadow(gaussian,rgba(0,0,0,0.05),10,0,0,2);">
+            <StackPane minWidth="40" minHeight="40" maxWidth="40" maxHeight="40"
+                       style="-fx-background-color: #f0f9ff; -fx-background-radius: 11;">
+                <Label text="📝" style="-fx-font-size: 18px;"/>
+            </StackPane>
+            <VBox spacing="2">
+                <Label text="6"
+                       style="-fx-font-size: 22px; -fx-font-weight: bold;
+                              -fx-text-fill: #0891b2; -fx-font-family: Segoe UI;"/>
+                <Label text="Applications"
+                       style="-fx-font-size: 11px; -fx-text-fill: #94a3b8; -fx-font-family: Segoe UI;"/>
+            </VBox>
+        </HBox>
+
+        <HBox spacing="12" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS"
+              style="-fx-background-color: white; -fx-background-radius: 16;
+                     -fx-border-color: #f1f5f9; -fx-border-width: 1; -fx-border-radius: 16;
+                     -fx-padding: 16 18;
+                     -fx-effect: dropshadow(gaussian,rgba(0,0,0,0.05),10,0,0,2);">
+            <StackPane minWidth="40" minHeight="40" maxWidth="40" maxHeight="40"
+                       style="-fx-background-color: #faf5ff; -fx-background-radius: 11;">
+                <Label text="📅" style="-fx-font-size: 18px;"/>
+            </StackPane>
+            <VBox spacing="2">
+                <Label text="2"
+                       style="-fx-font-size: 22px; -fx-font-weight: bold;
+                              -fx-text-fill: #7c3aed; -fx-font-family: Segoe UI;"/>
+                <Label text="Interviews"
+                       style="-fx-font-size: 11px; -fx-text-fill: #94a3b8; -fx-font-family: Segoe UI;"/>
+            </VBox>
+        </HBox>
+
+        <HBox spacing="12" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS"
+              style="-fx-background-color: white; -fx-background-radius: 16;
+                     -fx-border-color: #f1f5f9; -fx-border-width: 1; -fx-border-radius: 16;
+                     -fx-padding: 16 18;
+                     -fx-effect: dropshadow(gaussian,rgba(0,0,0,0.05),10,0,0,2);">
+            <StackPane minWidth="40" minHeight="40" maxWidth="40" maxHeight="40"
+                       style="-fx-background-color: #fffbeb; -fx-background-radius: 11;">
+                <Label text="🏆" style="-fx-font-size: 18px;"/>
+            </StackPane>
+            <VBox spacing="2">
+                <Label text="1"
+                       style="-fx-font-size: 22px; -fx-font-weight: bold;
+                              -fx-text-fill: #d97706; -fx-font-family: Segoe UI;"/>
+                <Label text="Offers"
+                       style="-fx-font-size: 11px; -fx-text-fill: #94a3b8; -fx-font-family: Segoe UI;"/>
+            </VBox>
+        </HBox>
+    </HBox>
+
+    <!-- ── Main 2-column grid ─────────────────────────────────────────────── -->
+    <HBox spacing="18" VBox.vgrow="ALWAYS"
+          style="-fx-padding: 18 30 30 30;">
+
+        <!-- LEFT COLUMN -->
+        <VBox spacing="18" HBox.hgrow="ALWAYS">
+
+            <!-- Teal hero card -->
+            <VBox spacing="12"
+                  style="-fx-background-color: linear-gradient(to right, #0d9488, #0891b2);
+                         -fx-background-radius: 18; -fx-padding: 26 28;
+                         -fx-effect: dropshadow(gaussian,rgba(13,148,136,0.28),14,0,0,4);">
+                <Label text="Find Your Dream Job  ✦"
+                       style="-fx-font-size: 21px; -fx-font-weight: bold;
+                              -fx-text-fill: white; -fx-font-family: Segoe UI;"/>
+                <Label text="Connect with top companies and opportunities that match your skills and aspirations."
+                       wrapText="true"
+                       style="-fx-font-size: 13px; -fx-text-fill: rgba(255,255,255,0.80);
+                              -fx-font-family: Segoe UI;"/>
+                <Button text="Explore Opportunities  →"
+                        onAction="#gotoBO"
+                        style="-fx-background-color: white; -fx-text-fill: #0d9488;
+                               -fx-font-weight: bold; -fx-font-size: 12px;
+                               -fx-background-radius: 20; -fx-padding: 9 20;
+                               -fx-cursor: hand; -fx-border-width: 0;"/>
+            </VBox>
+
+            <!-- Recent Applications card -->
+            <VBox spacing="14" VBox.vgrow="ALWAYS"
+                  style="-fx-background-color: white; -fx-background-radius: 18;
+                         -fx-border-color: #f1f5f9; -fx-border-width: 1; -fx-border-radius: 18;
+                         -fx-padding: 22 24;
+                         -fx-effect: dropshadow(gaussian,rgba(0,0,0,0.06),12,0,0,3);">
+                <HBox alignment="CENTER_LEFT">
+                    <Label text="Recent Applications"
+                           style="-fx-font-size: 14px; -fx-font-weight: bold;
+                                  -fx-text-fill: #0f172a; -fx-font-family: Segoe UI;"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label text="View all  →"
+                           style="-fx-font-size: 12px; -fx-text-fill: #0d9488;
+                                  -fx-font-weight: 600; -fx-cursor: hand;"/>
+                </HBox>
+                <Region prefHeight="1" maxHeight="1" style="-fx-background-color: #f1f5f9;"/>
+
+                <!-- Row 1 -->
+                <HBox spacing="14" alignment="CENTER_LEFT"
+                      style="-fx-padding: 6; -fx-background-radius: 10; -fx-cursor: hand;">
+                    <StackPane minWidth="38" minHeight="38" maxWidth="38" maxHeight="38"
+                               style="-fx-background-color: #f0fdfa; -fx-background-radius: 10;">
+                        <Label text="💻" style="-fx-font-size: 16px;"/>
+                    </StackPane>
+                    <VBox spacing="2" HBox.hgrow="ALWAYS">
+                        <Label text="Senior Developer"
+                               style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #0f172a;"/>
+                        <Label text="TechCorp"
+                               style="-fx-font-size: 11px; -fx-text-fill: #94a3b8;"/>
+                    </VBox>
+                    <Label text="Interview"
+                           style="-fx-background-color: #f0fdfa; -fx-text-fill: #0d9488;
+                                  -fx-font-size: 10px; -fx-font-weight: bold;
+                                  -fx-background-radius: 20; -fx-padding: 4 12;"/>
+                </HBox>
+
+                <!-- Row 2 -->
+                <HBox spacing="14" alignment="CENTER_LEFT"
+                      style="-fx-padding: 6; -fx-background-radius: 10; -fx-cursor: hand;">
+                    <StackPane minWidth="38" minHeight="38" maxWidth="38" maxHeight="38"
+                               style="-fx-background-color: #f0f9ff; -fx-background-radius: 10;">
+                        <Label text="🎨" style="-fx-font-size: 16px;"/>
+                    </StackPane>
+                    <VBox spacing="2" HBox.hgrow="ALWAYS">
+                        <Label text="UX Designer"
+                               style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #0f172a;"/>
+                        <Label text="DesignStudio"
+                               style="-fx-font-size: 11px; -fx-text-fill: #94a3b8;"/>
+                    </VBox>
+                    <Label text="Applied"
+                           style="-fx-background-color: #f0f9ff; -fx-text-fill: #0891b2;
+                                  -fx-font-size: 10px; -fx-font-weight: bold;
+                                  -fx-background-radius: 20; -fx-padding: 4 12;"/>
+                </HBox>
+
+                <!-- Row 3 -->
+                <HBox spacing="14" alignment="CENTER_LEFT"
+                      style="-fx-padding: 6; -fx-background-radius: 10; -fx-cursor: hand;">
+                    <StackPane minWidth="38" minHeight="38" maxWidth="38" maxHeight="38"
+                               style="-fx-background-color: #faf5ff; -fx-background-radius: 10;">
+                        <Label text="📊" style="-fx-font-size: 16px;"/>
+                    </StackPane>
+                    <VBox spacing="2" HBox.hgrow="ALWAYS">
+                        <Label text="Data Analyst"
+                               style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #0f172a;"/>
+                        <Label text="Analytics Co"
+                               style="-fx-font-size: 11px; -fx-text-fill: #94a3b8;"/>
+                    </VBox>
+                    <Label text="Reviewing"
+                           style="-fx-background-color: #faf5ff; -fx-text-fill: #7c3aed;
+                                  -fx-font-size: 10px; -fx-font-weight: bold;
+                                  -fx-background-radius: 20; -fx-padding: 4 12;"/>
+                </HBox>
+            </VBox>
+        </VBox>
+
+        <!-- RIGHT COLUMN -->
+        <VBox spacing="18" prefWidth="280" minWidth="250" maxWidth="300">
+
+            <!-- Job Market Stats -->
+            <VBox spacing="16"
+                  style="-fx-background-color: white; -fx-background-radius: 18;
+                         -fx-border-color: #f1f5f9; -fx-border-width: 1; -fx-border-radius: 18;
+                         -fx-padding: 22 24;
+                         -fx-effect: dropshadow(gaussian,rgba(0,0,0,0.06),12,0,0,3);">
+                <HBox alignment="CENTER_LEFT">
+                    <Label text="Job Market Stats"
+                           style="-fx-font-size: 14px; -fx-font-weight: bold;
+                                  -fx-text-fill: #0f172a; -fx-font-family: Segoe UI;"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label text="View all  →"
+                           style="-fx-font-size: 12px; -fx-text-fill: #0d9488;
+                                  -fx-font-weight: 600; -fx-cursor: hand;"/>
+                </HBox>
+
+                <VBox spacing="5">
+                    <HBox><Label text="Technology" style="-fx-font-size:12px;-fx-text-fill:#475569;"/><Region HBox.hgrow="ALWAYS"/><Label text="45%" style="-fx-font-size:12px;-fx-font-weight:bold;-fx-text-fill:#0d9488;"/></HBox>
+                    <ProgressBar progress="0.45" maxWidth="Infinity" prefHeight="7"
+                                 style="-fx-accent:#0d9488; -fx-control-inner-background:#f1f5f9; -fx-background-radius:6;"/>
+                </VBox>
+                <VBox spacing="5">
+                    <HBox><Label text="Design" style="-fx-font-size:12px;-fx-text-fill:#475569;"/><Region HBox.hgrow="ALWAYS"/><Label text="25%" style="-fx-font-size:12px;-fx-font-weight:bold;-fx-text-fill:#0891b2;"/></HBox>
+                    <ProgressBar progress="0.25" maxWidth="Infinity" prefHeight="7"
+                                 style="-fx-accent:#0891b2; -fx-control-inner-background:#f1f5f9; -fx-background-radius:6;"/>
+                </VBox>
+                <VBox spacing="5">
+                    <HBox><Label text="Marketing" style="-fx-font-size:12px;-fx-text-fill:#475569;"/><Region HBox.hgrow="ALWAYS"/><Label text="18%" style="-fx-font-size:12px;-fx-font-weight:bold;-fx-text-fill:#7c3aed;"/></HBox>
+                    <ProgressBar progress="0.18" maxWidth="Infinity" prefHeight="7"
+                                 style="-fx-accent:#7c3aed; -fx-control-inner-background:#f1f5f9; -fx-background-radius:6;"/>
+                </VBox>
+                <VBox spacing="5">
+                    <HBox><Label text="Finance" style="-fx-font-size:12px;-fx-text-fill:#475569;"/><Region HBox.hgrow="ALWAYS"/><Label text="12%" style="-fx-font-size:12px;-fx-font-weight:bold;-fx-text-fill:#d97706;"/></HBox>
+                    <ProgressBar progress="0.12" maxWidth="Infinity" prefHeight="7"
+                                 style="-fx-accent:#d97706; -fx-control-inner-background:#f1f5f9; -fx-background-radius:6;"/>
+                </VBox>
+            </VBox>
+
+            <!-- Don't Forget CTA card -->
+            <VBox spacing="10"
+                  style="-fx-background-color: linear-gradient(to bottom right, #0d9488, #0c4a6e);
+                         -fx-background-radius: 18; -fx-padding: 22 24;">
+                <Label text="DON'T FORGET"
+                       style="-fx-font-size: 9px; -fx-font-weight: bold;
+                              -fx-text-fill: rgba(255,255,255,0.55); -fx-font-family: Segoe UI;"/>
+                <Label text="Complete your profile for better job matches"
+                       wrapText="true"
+                       style="-fx-font-size: 16px; -fx-font-weight: bold;
+                              -fx-text-fill: white; -fx-font-family: Segoe UI;"/>
+                <Button text="Update Profile  →"
+                        style="-fx-background-color: rgba(255,255,255,0.18); -fx-text-fill: white;
+                               -fx-font-weight: bold; -fx-font-size: 12px; -fx-background-radius: 20;
+                               -fx-padding: 8 18; -fx-cursor: hand; -fx-border-width: 0;"/>
+            </VBox>
+        </VBox>
+    </HBox>
+
+</VBox>

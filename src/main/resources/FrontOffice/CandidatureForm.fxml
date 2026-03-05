@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<ScrollPane fitToWidth="true"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="Controller.FrontOffice.AddCandidatureController"
+            style="-fx-background: linear-gradient(to bottom right, #0fafdd, #057995);">
+
+    <content>
+        <VBox spacing="25" alignment="TOP_CENTER"
+              style="-fx-padding:40 20;">
+
+            <!-- FORM CARD -->
+            <VBox spacing="20"
+                  maxWidth="700"
+                  style="-fx-background-color:rgba(255,255,255,0.95);
+                         -fx-background-radius:30;
+                         -fx-padding:35;
+                         -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.25),20,0,0,8);
+                         -fx-border-color:rgba(255,255,255,0.5);
+                         -fx-border-width:1;
+                         -fx-border-radius:30;">
+
+                <!-- Back Button Row -->
+                <HBox alignment="CENTER_LEFT">
+                    <Button text="← Back"
+                            onAction="#handleBack"
+                            style="-fx-background-color:transparent;
+                                   -fx-text-fill:#0fafdd;
+                                   -fx-font-size:14px;
+                                   -fx-font-weight:700;
+                                   -fx-cursor:hand;
+                                   -fx-padding:8 14;
+                                   -fx-border-color:#0fafdd;
+                                   -fx-border-width:2;
+                                   -fx-border-radius:20;
+                                   -fx-background-radius:20;"/>
+                </HBox>
+
+                <!-- Title with Icon Effect -->
+                <Label text="✨ Apply for Job"
+                       style="-fx-font-size:28px;
+                              -fx-font-weight:800;
+                              -fx-text-fill:#0f172a;
+                              -fx-font-family:'Segoe UI', Helvetica, Arial, sans-serif;
+                              -fx-padding:0 0 10 0;
+                              -fx-border-width:0 0 3 0;
+                              -fx-border-color:linear-gradient(to right, #0fafdd, #057995);"/>
+
+                <!-- Cover Letter with Floating Label Effect -->
+                <VBox spacing="6">
+                    <Label text="Cover Letter"
+                           style="-fx-font-weight:600;
+                                  -fx-text-fill:#475569;
+                                  -fx-font-size:14px;
+                                  -fx-font-family:'Segoe UI', Helvetica, Arial, sans-serif;"/>
+                    <TextArea fx:id="coverLetterField"
+                              prefRowCount="6"
+                              wrapText="true"
+                              promptText="Write your motivation..."
+                              style="-fx-background-radius:15;
+                                     -fx-border-radius:15;
+                                     -fx-border-color:#e2e8f0;
+                                     -fx-border-width:2;
+                                     -fx-background-color:white;
+                                     -fx-padding:12;
+                                     -fx-font-size:13px;
+                                     -fx-focus-color:#0fafdd;"/>
+                </VBox>
+
+                <!-- CV Upload with Modern Style -->
+                <VBox spacing="6">
+                    <Label text="Upload CV"
+                           style="-fx-font-weight:600;
+                                  -fx-text-fill:#475569;
+                                  -fx-font-size:14px;
+                                  -fx-font-family:'Segoe UI', Helvetica, Arial, sans-serif;"/>
+                    <HBox spacing="12">
+                        <TextField fx:id="cvField"
+                                   editable="false"
+                                   HBox.hgrow="ALWAYS"
+                                   promptText="No file selected"
+                                   style="-fx-background-radius:12;
+                                          -fx-border-radius:12;
+                                          -fx-border-color:#e2e8f0;
+                                          -fx-border-width:2;
+                                          -fx-background-color:#f8fafc;
+                                          -fx-padding:10;"/>
+                        <Button text="📂 Browse Files"
+                                onAction="#handleBrowseCV"
+                                style="-fx-background-color:linear-gradient(to bottom, #f8fafc, #e2e8f0);
+                                       -fx-text-fill:#0f172a;
+                                       -fx-font-weight:600;
+                                       -fx-background-radius:12;
+                                       -fx-padding:10 20;
+                                       -fx-cursor:hand;
+                                       -fx-border-color:#e2e8f0;
+                                       -fx-border-width:1;
+                                       -fx-border-radius:12;"/>
+                        <Button text="📥 From Profile"
+                                onAction="#handleLoadCvFromProfile"
+                                style="-fx-background-color: linear-gradient(to right, #0fafdd, #057995);
+                                       -fx-text-fill: white;
+                                       -fx-font-weight: 600;
+                                       -fx-background-radius: 12;
+                                       -fx-padding: 10 20;
+                                       -fx-cursor: hand;
+                                       -fx-border-width: 0;
+                                       -fx-border-radius: 12;"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Portfolio URL -->
+                <VBox spacing="6">
+                    <Label text="Portfolio URL"
+                           style="-fx-font-weight:600;
+                                  -fx-text-fill:#475569;
+                                  -fx-font-size:14px;
+                                  -fx-font-family:'Segoe UI', Helvetica, Arial, sans-serif;"/>
+                    <TextField fx:id="portfolioField"
+                               promptText="https://yourportfolio.com"
+                               style="-fx-background-radius:12;
+                                      -fx-border-radius:12;
+                                      -fx-border-color:#e2e8f0;
+                                      -fx-border-width:2;
+                                      -fx-background-color:white;
+                                      -fx-padding:12;
+                                      -fx-font-size:13px;"/>
+                </VBox>
+
+                <!-- Expected Salary -->
+                <VBox spacing="6">
+                    <Label text="Expected Salary"
+                           style="-fx-font-weight:600;
+                                  -fx-text-fill:#475569;
+                                  -fx-font-size:14px;
+                                  -fx-font-family:'Segoe UI', Helvetica, Arial, sans-serif;"/>
+                    <TextField fx:id="salaryField"
+                               promptText="Enter expected salary"
+                               style="-fx-background-radius:12;
+                                      -fx-border-radius:12;
+                                      -fx-border-color:#e2e8f0;
+                                      -fx-border-width:2;
+                                      -fx-background-color:white;
+                                      -fx-padding:12;
+                                      -fx-font-size:13px;"/>
+                </VBox>
+
+                <!-- Terms with Custom Checkbox Style -->
+                <CheckBox fx:id="termsCheckBox"
+                          text="I confirm that the information provided is accurate."
+                          style="-fx-font-size:13px;
+                                 -fx-text-fill:#475569;
+                                 -fx-padding:10 0;"/>
+
+                <!-- Modern Gradient Submit Button -->
+                <Button fx:id="submitButton"
+                        text="Submit Application"
+                        onAction="#handleSubmit"
+                        maxWidth="Infinity"
+                        style="-fx-background-color:linear-gradient(to right, #0fafdd, #057995);
+                               -fx-text-fill:white;
+                               -fx-font-size:16px;
+                               -fx-font-weight:700;
+                               -fx-background-radius:15;
+                               -fx-padding:15;
+                               -fx-cursor:hand;
+                               -fx-effect:dropshadow(gaussian, rgba(102,126,234,0.4),10,0,0,4);"/>
+
+            </VBox>
+
+            <!-- Optional Footer Text -->
+            <Label text="All fields are required"
+                   style="-fx-text-fill:white;
+                          -fx-font-size:12px;
+                          -fx-opacity:0.9;
+                          -fx-font-family:'Segoe UI', Helvetica, Arial, sans-serif;"/>
+
+        </VBox>
+    </content>
+</ScrollPane>

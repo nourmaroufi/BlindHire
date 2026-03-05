@@ -4,45 +4,55 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class MyDB {
-    private final String URL = "jdbc:mysql://localhost:3306/blindhire?autoReconnect=true&useSSL=false";
-    private final String USERNAME = "root";
-    private final String PASSWORD = "";
+/**
+ * Singleton database connection utility.
+ * Place this file at: src/main/java/Utils/Mydb.java
+ *
+ * Usage: Connection cnx = Mydb.getInstance().getConnection();
+ */
+public class Mydb {
 
+    // ── Configure your database here ─────────────────────────────────────────
+    private static final String URL      = "jdbc:mysql://localhost:3306/blindhire";
+    private static final String USER     = "root";
+    private static final String PASSWORD = "";
+    // ─────────────────────────────────────────────────────────────────────────
+
+    private static Mydb instance;
     private Connection connection;
-    private static MyDB instance;
 
-    private MyDB() {
-        connect();
-    }
-
-    private void connect() {
+    /** Private constructor — loads the JDBC driver and opens the connection. */
+    private Mydb() {
         try {
-            connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-            System.out.println("DB connected.");
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            this.connection = DriverManager.getConnection(URL, USER, PASSWORD);
+            System.out.println("✅ Database connected successfully.");
+        } catch (ClassNotFoundException e) {
+            System.err.println("❌ MySQL JDBC Driver not found: " + e.getMessage());
+            throw new RuntimeException(e);
         } catch (SQLException e) {
-            System.err.println("DB connection failed: " + e.getMessage());
+            System.err.println("❌ Database connection failed: " + e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
-    public static MyDB getInstance() {
-        if (instance == null) {
-            instance = new MyDB();
+    /**
+     * Returns the singleton instance.
+     * Re-opens the connection automatically if it was closed or lost.
+     */
+    public static Mydb getInstance() {
+        try {
+            if (instance == null || instance.connection == null || instance.connection.isClosed()) {
+                instance = new Mydb();
+            }
+        } catch (SQLException e) {
+            instance = new Mydb();
         }
         return instance;
     }
 
+    /** Returns the active JDBC connection. */
     public Connection getConnection() {
-        try {
-            // If connection is closed or invalid, reconnect
-            if (connection == null || connection.isClosed() || !connection.isValid(2)) {
-                System.out.println("Connection lost, reconnecting...");
-                connect();
-            }
-        } catch (SQLException e) {
-            System.err.println("Error checking connection: " + e.getMessage());
-            connect();
-        }
         return connection;
     }
 }

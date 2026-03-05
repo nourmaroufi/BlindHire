@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.shape.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="Controller.FrontOffice.MyApplicationsController"
+      spacing="25"
+      style="-fx-background-color: linear-gradient(to bottom right, #e8f5f3, #d5edf4, #e2eef8); -fx-padding: 30 50;">
+
+    <!-- HEADER -->
+    <HBox alignment="CENTER_LEFT" spacing="15">
+        <Button text="← Back"
+                onAction="#handleBack"
+                style="-fx-background-color: white;
+                       -fx-text-fill: #0fafdd;
+                       -fx-border-color: #0fafdd;
+                       -fx-border-radius: 20;
+                       -fx-background-radius: 20;
+                       -fx-padding: 8 20;
+                       -fx-font-weight: bold;
+                       -fx-cursor: hand;
+                       -fx-effect: dropshadow(gaussian, rgba(15,175,221,0.12), 5,0,0,2);"/>
+
+        <Rectangle width="5" height="35" fill="#0fafdd"
+                   style="-fx-arc-width: 5; -fx-arc-height: 5;"/>
+
+        <VBox spacing="5">
+            <Label text="My Applications"
+                   style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #0f172a;"/>
+            <Label text="Track your submitted job applications"
+                   style="-fx-font-size: 14px; -fx-text-fill: #64748b;"/>
+        </VBox>
+
+        <Region HBox.hgrow="ALWAYS"/>
+
+        <!-- NOTIFICATION BELL (SVG icon) -->
+        <StackPane>
+            <Button fx:id="notifBellBtn"
+                    onAction="#handleToggleNotifications"
+                    style="-fx-background-color: white;
+                           -fx-background-radius: 50;
+                           -fx-border-radius: 50;
+                           -fx-border-color: #e2e8f0;
+                           -fx-border-width: 1.5;
+                           -fx-min-width: 44; -fx-min-height: 44;
+                           -fx-max-width: 44; -fx-max-height: 44;
+                           -fx-cursor: hand;
+                           -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 6,0,0,2);">
+                <graphic>
+                    <SVGPath fill="#0fafdd"
+                             content="M10 2a6 6 0 0 0-6 6v3.586l-.707.707A1 1 0 0 0 4 14h12a1 1 0 0 0 .707-1.707L16 11.586V8a6 6 0 0 0-6-6zm0 18a2 2 0 0 1-2-2h4a2 2 0 0 1-2 2z"
+                             style="-fx-scale-x: 1.1; -fx-scale-y: 1.1;"/>
+                </graphic>
+            </Button>
+            <!-- Unread badge -->
+            <Label fx:id="notifBadge"
+                   text="0"
+                   visible="false"
+                   managed="false"
+                   style="-fx-background-color: #ef4444;
+                          -fx-text-fill: white;
+                          -fx-font-size: 10px;
+                          -fx-font-weight: bold;
+                          -fx-background-radius: 10;
+                          -fx-padding: 1 5;
+                          -fx-min-width: 18;"
+                   StackPane.alignment="TOP_RIGHT"
+                   translateX="4" translateY="-4"/>
+        </StackPane>
+
+        <Label fx:id="countLabel"
+               text="0 Applications"
+               style="-fx-font-size: 14px; -fx-text-fill: #64748b;
+                      -fx-font-style: italic; -fx-background-color: white;
+                      -fx-padding: 8 15; -fx-background-radius: 20;
+                      -fx-border-color: #e2e8f0; -fx-border-radius: 20;"/>
+    </HBox>
+
+    <!-- FILTER BAR -->
+    <HBox spacing="12" alignment="CENTER_LEFT">
+        <Label text="Filter:"
+               style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #64748b;"/>
+
+        <Button fx:id="filterAll"
+                text="All"
+                onAction="#handleFilterAll"
+                style="-fx-background-color: #0fafdd; -fx-text-fill: white;
+                       -fx-background-radius: 20; -fx-border-radius: 20;
+                       -fx-padding: 7 20; -fx-font-size: 13px; -fx-font-weight: bold;
+                       -fx-cursor: hand;"/>
+
+        <Button fx:id="filterPending"
+                text="⏳ Pending"
+                onAction="#handleFilterPending"
+                style="-fx-background-color: #fef3c7; -fx-text-fill: #d97706;
+                       -fx-background-radius: 20; -fx-border-radius: 20;
+                       -fx-padding: 7 20; -fx-font-size: 13px; -fx-font-weight: bold;
+                       -fx-cursor: hand; -fx-border-color: #fcd34d; -fx-border-width: 1.5;"/>
+
+        <Button fx:id="filterAccepted"
+                text="✅ Accepted"
+                onAction="#handleFilterAccepted"
+                style="-fx-background-color: #d1fae5; -fx-text-fill: #059669;
+                       -fx-background-radius: 20; -fx-border-radius: 20;
+                       -fx-padding: 7 20; -fx-font-size: 13px; -fx-font-weight: bold;
+                       -fx-cursor: hand; -fx-border-color: #6ee7b7; -fx-border-width: 1.5;"/>
+
+        <Button fx:id="filterRejected"
+                text="❌ Rejected"
+                onAction="#handleFilterRejected"
+                style="-fx-background-color: #fee2e2; -fx-text-fill: #dc2626;
+                       -fx-background-radius: 20; -fx-border-radius: 20;
+                       -fx-padding: 7 20; -fx-font-size: 13px; -fx-font-weight: bold;
+                       -fx-cursor: hand; -fx-border-color: #fca5a5; -fx-border-width: 1.5;"/>
+    </HBox>
+
+    <!-- APPLICATIONS LIST -->
+    <ScrollPane fitToWidth="true"
+                VBox.vgrow="ALWAYS"
+                style="-fx-background-color: transparent; -fx-border-width: 0;">
+
+        <VBox fx:id="applicationsContainer"
+              spacing="20"
+              style="-fx-padding: 10;">
+            <!-- Application cards will be added dynamically -->
+        </VBox>
+
+    </ScrollPane>
+
+</VBox>

@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.geometry.Insets?>
+
+<ScrollPane fitToWidth="true"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="Controller.BackOffice.joboffer.JobDashboardController"
+            style="-fx-background-color: transparent; -fx-background: transparent; -fx-border-width: 0;">
+
+    <VBox spacing="24" style="-fx-padding: 32 36 40 36; -fx-background-color: transparent;">
+
+        <!-- ═══════════ HEADER ═══════════ -->
+        <HBox alignment="CENTER_LEFT">
+            <VBox spacing="5">
+                <Label text="💼  Job Offers Dashboard"
+                       style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: white;
+                              -fx-font-family: 'Segoe UI';"/>
+                <Label text="Monitor listings, applications and recruiter activity."
+                       style="-fx-font-size: 13px; -fx-text-fill: rgba(255,255,255,0.38);
+                              -fx-font-family: 'Segoe UI';"/>
+            </VBox>
+            <Region HBox.hgrow="ALWAYS"/>
+            <!-- Date widget -->
+            <VBox alignment="CENTER" spacing="2"
+                  style="-fx-background-color: rgba(255,255,255,0.07);
+                         -fx-background-radius: 16;
+                         -fx-border-color: rgba(255,255,255,0.10); -fx-border-radius: 16; -fx-border-width: 1;
+                         -fx-padding: 12 24;">
+                <Label fx:id="dayNumLabel" text="—"
+                       style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #818cf8;"/>
+                <Label fx:id="monthYearLabel" text="— —"
+                       style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.40); -fx-font-weight: bold;"/>
+            </VBox>
+        </HBox>
+
+        <!-- ═══════════ 4 KPI CARDS ═══════════ -->
+        <HBox spacing="16">
+
+            <!-- Total Jobs -->
+            <VBox spacing="12" HBox.hgrow="ALWAYS"
+                  style="-fx-background-color: rgba(255,255,255,0.05); -fx-background-radius: 20;
+                         -fx-border-color: rgba(255,255,255,0.09); -fx-border-width: 1; -fx-border-radius: 20;
+                         -fx-padding: 22 24;">
+                <StackPane prefWidth="44" prefHeight="44" maxWidth="44" maxHeight="44"
+                           style="-fx-background-color: rgba(6,182,212,0.15); -fx-background-radius: 12;">
+                    <Label text="💼" style="-fx-font-size: 20px;"/>
+                </StackPane>
+                <Label fx:id="totalJobsLabel" text="—"
+                       style="-fx-font-size: 34px; -fx-font-weight: bold; -fx-text-fill: #06b6d4;"/>
+                <Label text="Total Job Offers"
+                       style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: white; -fx-font-family: 'Segoe UI';"/>
+                <Label text="all listings"
+                       style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.30); -fx-font-family: 'Segoe UI';"/>
+            </VBox>
+
+            <!-- Active Jobs -->
+            <VBox spacing="12" HBox.hgrow="ALWAYS"
+                  style="-fx-background-color: rgba(255,255,255,0.05); -fx-background-radius: 20;
+                         -fx-border-color: rgba(255,255,255,0.09); -fx-border-width: 1; -fx-border-radius: 20;
+                         -fx-padding: 22 24;">
+                <StackPane prefWidth="44" prefHeight="44" maxWidth="44" maxHeight="44"
+                           style="-fx-background-color: rgba(16,185,129,0.15); -fx-background-radius: 12;">
+                    <Label text="✅" style="-fx-font-size: 20px;"/>
+                </StackPane>
+                <Label fx:id="activeJobsLabel" text="—"
+                       style="-fx-font-size: 34px; -fx-font-weight: bold; -fx-text-fill: #10b981;"/>
+                <Label text="Active Listings"
+                       style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: white; -fx-font-family: 'Segoe UI';"/>
+                <Label text="open for applications"
+                       style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.30); -fx-font-family: 'Segoe UI';"/>
+            </VBox>
+
+            <!-- Total Applications -->
+            <VBox spacing="12" HBox.hgrow="ALWAYS"
+                  style="-fx-background-color: rgba(255,255,255,0.05); -fx-background-radius: 20;
+                         -fx-border-color: rgba(255,255,255,0.09); -fx-border-width: 1; -fx-border-radius: 20;
+                         -fx-padding: 22 24;">
+                <StackPane prefWidth="44" prefHeight="44" maxWidth="44" maxHeight="44"
+                           style="-fx-background-color: rgba(99,102,241,0.18); -fx-background-radius: 12;">
+                    <Label text="📋" style="-fx-font-size: 20px;"/>
+                </StackPane>
+                <Label fx:id="totalAppsLabel" text="—"
+                       style="-fx-font-size: 34px; -fx-font-weight: bold; -fx-text-fill: #818cf8;"/>
+                <Label text="Applications"
+                       style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: white; -fx-font-family: 'Segoe UI';"/>
+                <Label text="submitted total"
+                       style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.30); -fx-font-family: 'Segoe UI';"/>
+            </VBox>
+
+            <!-- Pending Review -->
+            <VBox spacing="12" HBox.hgrow="ALWAYS"
+                  style="-fx-background-color: rgba(255,255,255,0.05); -fx-background-radius: 20;
+                         -fx-border-color: rgba(255,255,255,0.09); -fx-border-width: 1; -fx-border-radius: 20;
+                         -fx-padding: 22 24;">
+                <StackPane prefWidth="44" prefHeight="44" maxWidth="44" maxHeight="44"
+                           style="-fx-background-color: rgba(245,158,11,0.15); -fx-background-radius: 12;">
+                    <Label text="⏳" style="-fx-font-size: 20px;"/>
+                </StackPane>
+                <Label fx:id="pendingAppsLabel" text="—"
+                       style="-fx-font-size: 34px; -fx-font-weight: bold; -fx-text-fill: #f59e0b;"/>
+                <Label text="Pending Review"
+                       style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: white; -fx-font-family: 'Segoe UI';"/>
+                <Label text="awaiting decision"
+                       style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.30); -fx-font-family: 'Segoe UI';"/>
+            </VBox>
+
+        </HBox>
+
+        <!-- ═══════════ SECONDARY ROW ═══════════ -->
+        <HBox spacing="16">
+
+            <!-- Job Status Breakdown -->
+            <VBox spacing="16" HBox.hgrow="ALWAYS"
+                  style="-fx-background-color: rgba(255,255,255,0.05); -fx-background-radius: 20;
+                         -fx-border-color: rgba(255,255,255,0.09); -fx-border-width: 1; -fx-border-radius: 20;
+                         -fx-padding: 22 24;">
+                <Label text="💼  Job Status Breakdown"
+                       style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: white;
+                              -fx-font-family: 'Segoe UI';"/>
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="Active"
+                           style="-fx-font-size: 13px; -fx-text-fill: rgba(255,255,255,0.55); -fx-pref-width: 90;
+                                  -fx-font-family: 'Segoe UI';"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="jobStatusActiveLabel" text="—"
+                           style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #10b981;"/>
+                </HBox>
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="Pending"
+                           style="-fx-font-size: 13px; -fx-text-fill: rgba(255,255,255,0.55); -fx-pref-width: 90;
+                                  -fx-font-family: 'Segoe UI';"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="jobStatusPendingLabel" text="—"
+                           style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #f59e0b;"/>
+                </HBox>
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="Closed"
+                           style="-fx-font-size: 13px; -fx-text-fill: rgba(255,255,255,0.55); -fx-pref-width: 90;
+                                  -fx-font-family: 'Segoe UI';"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="jobStatusClosedLabel" text="—"
+                           style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #f43f5e;"/>
+                </HBox>
+            </VBox>
+
+            <!-- Application Status -->
+            <VBox spacing="16" HBox.hgrow="ALWAYS"
+                  style="-fx-background-color: rgba(255,255,255,0.05); -fx-background-radius: 20;
+                         -fx-border-color: rgba(255,255,255,0.09); -fx-border-width: 1; -fx-border-radius: 20;
+                         -fx-padding: 22 24;">
+                <Label text="📊  Application Status"
+                       style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: white;
+                              -fx-font-family: 'Segoe UI';"/>
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="Accepted"
+                           style="-fx-font-size: 13px; -fx-text-fill: rgba(255,255,255,0.55); -fx-pref-width: 90;"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="appAcceptedLabel" text="—"
+                           style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #10b981;"/>
+                </HBox>
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="Pending"
+                           style="-fx-font-size: 13px; -fx-text-fill: rgba(255,255,255,0.55); -fx-pref-width: 90;"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="appPendingLabel" text="—"
+                           style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #f59e0b;"/>
+                </HBox>
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="Rejected"
+                           style="-fx-font-size: 13px; -fx-text-fill: rgba(255,255,255,0.55); -fx-pref-width: 90;"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="appRejectedLabel" text="—"
+                           style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #f43f5e;"/>
+                </HBox>
+            </VBox>
+
+            <!-- Acceptance Rate -->
+            <VBox spacing="12" HBox.hgrow="ALWAYS"
+                  style="-fx-background-color: rgba(255,255,255,0.05); -fx-background-radius: 20;
+                         -fx-border-color: rgba(255,255,255,0.09); -fx-border-width: 1; -fx-border-radius: 20;
+                         -fx-padding: 22 24;">
+                <Label text="✅  Acceptance Rate"
+                       style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: white;
+                              -fx-font-family: 'Segoe UI';"/>
+                <Label fx:id="acceptanceRateLabel" text="—%"
+                       style="-fx-font-size: 38px; -fx-font-weight: bold; -fx-text-fill: #10b981;"/>
+                <Label fx:id="acceptanceSubLabel" text="Loading..."
+                       style="-fx-font-size: 12px; -fx-text-fill: rgba(255,255,255,0.35);
+                              -fx-font-family: 'Segoe UI';"/>
+            </VBox>
+
+        </HBox>
+
+        <!-- ═══════════ BOTTOM ROW — Glance Banner + Quick Actions ═══════════ -->
+        <HBox spacing="16">
+
+            <!-- Indigo glance banner — matches LeaderboardPanel's indigo gradient feel -->
+            <VBox spacing="14" HBox.hgrow="ALWAYS"
+                  style="-fx-background-color: linear-gradient(to bottom right, #4338ca, #6366f1);
+                         -fx-background-radius: 20;
+                         -fx-padding: 22 24;
+                         -fx-effect: dropshadow(gaussian, rgba(99,102,241,0.40), 20, 0, 0, 6);">
+                <Label text="🚀  Job Offers at a Glance"
+                       style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: white;
+                              -fx-font-family: 'Segoe UI';"/>
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="Total Listings"
+                           style="-fx-font-size: 13px; -fx-text-fill: rgba(255,255,255,0.70);"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="glanceTotalJobs" text="—"
+                           style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                </HBox>
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="Applications"
+                           style="-fx-font-size: 13px; -fx-text-fill: rgba(255,255,255,0.70);"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="glanceTotalApps" text="—"
+                           style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                </HBox>
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="Acceptance Rate"
+                           style="-fx-font-size: 13px; -fx-text-fill: rgba(255,255,255,0.70);"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="glanceAcceptanceRate" text="—"
+                           style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                </HBox>
+            </VBox>
+
+            <!-- Quick Actions -->
+            <VBox spacing="14" HBox.hgrow="ALWAYS"
+                  style="-fx-background-color: rgba(255,255,255,0.05); -fx-background-radius: 20;
+                         -fx-border-color: rgba(255,255,255,0.09); -fx-border-width: 1; -fx-border-radius: 20;
+                         -fx-padding: 22 24;">
+                <Label text="⚡  Quick Actions"
+                       style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: white;
+                              -fx-font-family: 'Segoe UI';"/>
+                <Button text="➕  Post a Job Offer" maxWidth="Infinity"
+                        style="-fx-background-color: linear-gradient(to right, #6366f1, #818cf8);
+                               -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold;
+                               -fx-background-radius: 12; -fx-padding: 12 20; -fx-cursor: hand;
+                               -fx-effect: dropshadow(gaussian, rgba(99,102,241,0.35), 8, 0, 0, 2);"/>
+                <Button text="📋  View All Applications" maxWidth="Infinity"
+                        style="-fx-background-color: rgba(255,255,255,0.07); -fx-text-fill: rgba(255,255,255,0.80);
+                               -fx-font-size: 13px; -fx-font-weight: bold;
+                               -fx-background-radius: 12; -fx-border-color: rgba(255,255,255,0.10);
+                               -fx-border-width: 1; -fx-border-radius: 12;
+                               -fx-padding: 12 20; -fx-cursor: hand;"/>
+                <Button text="🔍  Browse All Jobs" maxWidth="Infinity"
+                        style="-fx-background-color: rgba(255,255,255,0.07); -fx-text-fill: rgba(255,255,255,0.80);
+                               -fx-font-size: 13px; -fx-font-weight: bold;
+                               -fx-background-radius: 12; -fx-border-color: rgba(255,255,255,0.10);
+                               -fx-border-width: 1; -fx-border-radius: 12;
+                               -fx-padding: 12 20; -fx-cursor: hand;"/>
+            </VBox>
+
+        </HBox>
+
+    </VBox>
+</ScrollPane>

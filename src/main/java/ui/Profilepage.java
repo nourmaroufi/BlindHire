@@ -19,7 +19,7 @@ import java.util.Optional;
 
 public class Profilepage {
 
-    private BorderPane root;
+    private ScrollPane root;
     private User currentUser;
     private userservice userService;
 
@@ -61,97 +61,7 @@ public class Profilepage {
     }
 
     private void createUI() {
-        root = new BorderPane();
-        root.setStyle("-fx-background-color: #f0f0f5;");
-        root.setLeft(createSidebar());
-        root.setCenter(createMainContent());
-    }
-
-    // ─── SIDEBAR ──────────────────────────────────────────────────────────────
-
-    private VBox createSidebar() {
-        VBox sidebar = new VBox(0);
-        sidebar.setStyle("-fx-background-color: white; -fx-pref-width: 240;" +
-                "-fx-effect: dropshadow(gaussian,rgba(0,0,0,0.08),10,0,2,0);");
-
-        HBox logoBox = new HBox(10);
-        logoBox.setAlignment(Pos.CENTER_LEFT);
-        logoBox.setPadding(new Insets(24, 20, 24, 20));
-        Rectangle logoIcon = new Rectangle(36, 36);
-        logoIcon.setArcWidth(10); logoIcon.setArcHeight(10);
-        logoIcon.setFill(Color.web("#4A6CF7"));
-        Text logoText = new Text("BlindHire");
-        logoText.setFont(Font.font("System", FontWeight.BOLD, 20));
-        logoText.setFill(Color.web("#1a1a2e"));
-        logoBox.getChildren().addAll(logoIcon, logoText);
-
-        Separator sep1 = new Separator();
-
-        VBox userBox = new VBox(8);
-        userBox.setAlignment(Pos.CENTER);
-        userBox.setPadding(new Insets(24, 20, 16, 20));
-        Circle avatar = new Circle(40);
-        avatar.setFill(Color.web("#4A6CF7"));
-        Text nameText = new Text(currentUser.getDisplayName());
-        nameText.setFont(Font.font("System", FontWeight.BOLD, 14));
-        nameText.setFill(Color.web("#1a1a2e"));
-        Text roleText = new Text(currentUser.getRole().name());
-        roleText.setFont(Font.font("System", 12));
-        roleText.setFill(Color.web("#888"));
-        userBox.getChildren().addAll(avatar, nameText, roleText);
-
-        Separator sep2 = new Separator();
-
-        VBox menuBox = new VBox(4);
-        menuBox.setPadding(new Insets(20, 12, 20, 12));
-        Label menuLabel = new Label("MAIN MENU");
-        menuLabel.setStyle("-fx-text-fill: #aaa; -fx-font-size: 11px; -fx-padding: 0 8 8 8;");
-
-        Button homeBtn      = createNavButton("🏠  Home",       false);
-        Button jobsBtn      = createNavButton("💼  Jobs",       false);
-        Button companiesBtn = createNavButton("🏢  Companies",  false);
-        Button profileBtn   = createNavButton("👤  My Profile", true);
-
-        homeBtn.setOnAction(e      -> BlindHireApp.loadScene(new HomePage(currentUser).getRoot(), 960, 540));
-        jobsBtn.setOnAction(e      -> showComingSoon("Jobs"));
-        companiesBtn.setOnAction(e -> showComingSoon("Companies"));
-
-        menuBox.getChildren().addAll(menuLabel, homeBtn, jobsBtn, companiesBtn, profileBtn);
-
-        Region spacer = new Region();
-        VBox.setVgrow(spacer, Priority.ALWAYS);
-
-        Button logoutBtn = createNavButton("🚪  Logout", false);
-        logoutBtn.setOnAction(e -> {
-            Utils.SessionManager.clearSession();
-            userService.setCurrentUser(null);
-            BlindHireApp.loadScene(new WelcomePage().getRoot(), 960, 540);
-        });
-        VBox bottomBox = new VBox(8);
-        bottomBox.setPadding(new Insets(0, 12, 20, 12));
-        bottomBox.getChildren().addAll(new Separator(), logoutBtn);
-
-        sidebar.getChildren().addAll(logoBox, sep1, userBox, sep2, menuBox, spacer, bottomBox);
-        return sidebar;
-    }
-
-    private Button createNavButton(String text, boolean active) {
-        Button btn = new Button(text);
-        btn.setMaxWidth(Double.MAX_VALUE);
-        if (active) {
-            btn.setStyle("-fx-background-color: #eef0fe; -fx-text-fill: #4A6CF7;" +
-                    "-fx-font-size: 14px; -fx-alignment: center-left;" +
-                    "-fx-background-radius: 10; -fx-padding: 12 16; -fx-cursor: hand; -fx-font-weight: bold;");
-        } else {
-            String n = "-fx-background-color: transparent; -fx-text-fill: #555; -fx-font-size: 14px;" +
-                    "-fx-alignment: center-left; -fx-background-radius: 10; -fx-padding: 12 16; -fx-cursor: hand;";
-            String h = "-fx-background-color: #f5f5f5; -fx-text-fill: #333; -fx-font-size: 14px;" +
-                    "-fx-alignment: center-left; -fx-background-radius: 10; -fx-padding: 12 16; -fx-cursor: hand;";
-            btn.setStyle(n);
-            btn.setOnMouseEntered(e -> btn.setStyle(h));
-            btn.setOnMouseExited(e  -> btn.setStyle(n));
-        }
-        return btn;
+        root = createMainContent();
     }
 
     // ─── MAIN CONTENT ─────────────────────────────────────────────────────────
@@ -159,11 +69,11 @@ public class Profilepage {
     private ScrollPane createMainContent() {
         VBox content = new VBox(28);
         content.setPadding(new Insets(50, 60, 50, 60));
-        content.setStyle("-fx-background-color: #f0f0f5;");
+        content.setStyle("-fx-background-color: linear-gradient(to bottom right, #e8f5f3, #d5edf4, #e2eef8);");
 
         Text pageTitle = new Text("My Profile");
         pageTitle.setFont(Font.font("System", FontWeight.BOLD, 32));
-        pageTitle.setFill(Color.web("#1a1a2e"));
+        pageTitle.setFill(Color.web("#0f172a"));
 
         // ── Card ──
         VBox card = new VBox(0);
@@ -174,10 +84,10 @@ public class Profilepage {
         HBox cardHeader = new HBox(20);
         cardHeader.setAlignment(Pos.CENTER_LEFT);
         cardHeader.setPadding(new Insets(28, 30, 28, 30));
-        cardHeader.setStyle("-fx-background-color: #4A6CF7; -fx-background-radius: 16 16 0 0;");
+        cardHeader.setStyle("-fx-background-color: linear-gradient(to right, #0fafdd, #057995); -fx-background-radius: 16 16 0 0;");
 
         Circle bigAvatar = new Circle(45);
-        bigAvatar.setFill(Color.web("#ffffff", 0.25));
+        bigAvatar.setFill(Color.web("#14aab8", 0.35));
         bigAvatar.setStroke(Color.WHITE);
         bigAvatar.setStrokeWidth(2.5);
         Text initials = new Text(getInitials());
@@ -283,7 +193,7 @@ public class Profilepage {
         HBox actions = new HBox(12);
         actions.setAlignment(Pos.CENTER_RIGHT);
 
-        Button editBtn   = actionBtn("✏️  Edit Profile",   "#4A6CF7", "white");
+        Button editBtn   = actionBtn("✏️  Edit Profile",   "#0fafdd", "white");
         Button saveBtn   = actionBtn("💾  Save Changes",   "#27ae60", "white");
         Button cancelBtn = actionBtn("✕  Cancel",          "#888",    "white");
         Button deleteBtn = actionBtn("🗑️  Delete Account", "#e74c3c", "white");
@@ -312,7 +222,7 @@ public class Profilepage {
 
         ScrollPane scroll = new ScrollPane(content);
         scroll.setFitToWidth(true);
-        scroll.setStyle("-fx-background-color: #f0f0f5; -fx-background: #f0f0f5;");
+        scroll.setStyle("-fx-background-color: transparent; -fx-background: transparent;");
         return scroll;
     }
 
@@ -324,9 +234,9 @@ public class Profilepage {
         row.setPadding(new Insets(14, 0, 14, 0));
         Text lbl = new Text(label);
         lbl.setFont(Font.font("System", 13));
-        lbl.setFill(Color.web("#999"));
+        lbl.setFill(Color.web("#94a3b8"));
         value.setFont(Font.font("System", FontWeight.BOLD, 14));
-        value.setFill(Color.web("#1a1a2e"));
+        value.setFill(Color.web("#0f172a"));
         value.setWrappingWidth(340);
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
@@ -336,14 +246,14 @@ public class Profilepage {
 
     private Separator divider() {
         Separator s = new Separator();
-        s.setStyle("-fx-background-color: #f0f0f5;");
+        s.setStyle("-fx-background-color: linear-gradient(to bottom right, #e8f5f3, #d5edf4, #e2eef8);");
         return s;
     }
 
     private Label sectionHeader(String text) {
         Label l = new Label(text);
         l.setFont(Font.font("System", FontWeight.BOLD, 13));
-        l.setStyle("-fx-text-fill: #4A6CF7; -fx-padding: 10 0 2 0;");
+        l.setStyle("-fx-text-fill: #0FAFDD; -fx-padding: 10 0 2 0;");
         return l;
     }
 
@@ -376,7 +286,7 @@ public class Profilepage {
     private VBox fieldGroup(String label, Control field) {
         VBox g = new VBox(5);
         Label lbl = new Label(label);
-        lbl.setStyle("-fx-text-fill: #666; -fx-font-size: 12px; -fx-font-weight: bold;");
+        lbl.setStyle("-fx-text-fill: #64748b; -fx-font-size: 12px; -fx-font-weight: bold;");
         g.getChildren().addAll(lbl, field);
         return g;
     }

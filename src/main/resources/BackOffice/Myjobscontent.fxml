@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="Controller.BackOffice.joboffer.JobOfferListController"
+      spacing="20"
+      style="-fx-padding: 28 36; -fx-background-color: transparent;"
+      fx:id="allJobsRoot"
+      alignment="TOP_CENTER">
+
+    <!-- Section Header -->
+    <HBox alignment="CENTER_LEFT" spacing="14">
+        <VBox spacing="4">
+            <Label text="My Jobs"
+                   style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: white;
+                          -fx-font-family: 'Segoe UI';"/>
+            <Label text="Job offers posted by your recruiter account"
+                   style="-fx-font-size: 12px; -fx-text-fill: rgba(255,255,255,0.38);
+                          -fx-font-family: 'Segoe UI';"/>
+        </VBox>
+        <Region HBox.hgrow="ALWAYS"/>
+    </HBox>
+
+    <!-- Filter Bar -->
+    <HBox spacing="12" alignment="CENTER_LEFT"
+          style="-fx-background-color: rgba(255,255,255,0.05);
+                 -fx-background-radius: 14;
+                 -fx-border-color: rgba(255,255,255,0.09); -fx-border-radius: 14; -fx-border-width: 1;
+                 -fx-padding: 12 18;">
+
+        <Label text="Filter by:"
+               style="-fx-font-weight: bold; -fx-text-fill: rgba(255,255,255,0.50);
+                      -fx-font-size: 12px; -fx-font-family: 'Segoe UI';"/>
+
+        <MenuButton fx:id="timeFilter" text="Time ▼"
+                    style="-fx-background-color: rgba(255,255,255,0.92);
+                                             -fx-background-radius: 12; -fx-border-radius: 12;
+                                             -fx-border-color: rgba(255,255,255,0.15); -fx-border-width: 1;
+                                             -fx-padding: 5; -fx-font-size: 13px; -fx-text-fill: #1e293b;"
+                    maxWidth="Infinity"/>
+        <MenuButton fx:id="typeFilter" text="Type ▼"
+                    style="-fx-background-color: rgba(255,255,255,0.92);
+                                             -fx-background-radius: 12; -fx-border-radius: 12;
+                                             -fx-border-color: rgba(255,255,255,0.15); -fx-border-width: 1;
+                                             -fx-padding: 5; -fx-font-size: 13px; -fx-text-fill: #1e293b;"
+                    maxWidth="Infinity"/>
+
+        <Region HBox.hgrow="ALWAYS"/>
+
+        <TextField fx:id="searchField"
+                   promptText="🔍  Search jobs..."
+                   style="-fx-background-color: rgba(255,255,255,0.07);
+                          -fx-border-color: rgba(255,255,255,0.12);
+                          -fx-border-radius: 10; -fx-background-radius: 10;
+                          -fx-pref-width: 240; -fx-padding: 8 14;
+                          -fx-text-fill: white; -fx-prompt-text-fill: rgba(255,255,255,0.35);
+                          -fx-font-family: 'Segoe UI'; -fx-font-size: 12px;"/>
+    </HBox>
+
+    <!-- Cards Container -->
+    <ScrollPane fitToWidth="true" fitToHeight="true"
+                style="-fx-background: transparent; -fx-background-color: transparent;
+                       -fx-border-width: 0;"
+                hbarPolicy="NEVER"
+                VBox.vgrow="ALWAYS">
+        <content>
+            <VBox alignment="TOP_CENTER" spacing="20">
+                <FlowPane fx:id="cardsContainer"
+                          hgap="22" vgap="22"
+                          prefWrapLength="1000"
+                          alignment="CENTER"
+                          style="-fx-padding: 8 0 24 0;"/>
+            </VBox>
+        </content>
+    </ScrollPane>
+</VBox>

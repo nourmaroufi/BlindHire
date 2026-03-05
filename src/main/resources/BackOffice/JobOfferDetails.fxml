@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.effect.*?>
+<?import java.lang.String?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="Controller.BackOffice.joboffer.JobOfferDetailsController"
+            prefWidth="860" prefHeight="760"
+            minWidth="720" minHeight="580"
+            style="-fx-background-color: #0f172a;">
+    <children>
+
+
+        <!-- Glass card surface -->
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER"
+                    AnchorPane.topAnchor="16" AnchorPane.leftAnchor="16"
+                    AnchorPane.rightAnchor="16" AnchorPane.bottomAnchor="16"
+                    style="-fx-background: transparent; -fx-background-color: transparent;
+                           -fx-border-color: transparent;">
+            <VBox spacing="20"
+                  style="-fx-background-color: rgba(255,255,255,0.05);
+                         -fx-background-radius: 20;
+                         -fx-border-color: rgba(255,255,255,0.10); -fx-border-radius: 20; -fx-border-width: 1;
+                         -fx-padding: 32 36 32 36;">
+
+                <!-- HEADER -->
+                <VBox spacing="12">
+                    <HBox alignment="CENTER_LEFT" spacing="16">
+                        <!-- Coloured accent bar -->
+                        <Rectangle width="5" height="44" arcWidth="5" arcHeight="5"
+                                   style="-fx-fill: linear-gradient(to bottom, #6366f1, #06b6d4);"/>
+                        <Label fx:id="titleLabel" text="Job Title"
+                               style="-fx-font-size: 26px; -fx-font-weight: bold;
+                                      -fx-text-fill: white; -fx-wrap-text: true;
+                                      -fx-font-family: 'Segoe UI';"/>
+                    </HBox>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label fx:id="statusBadge" text="Active"
+                               style="-fx-background-color: rgba(16,185,129,0.20);
+                                      -fx-text-fill: #10b981;
+                                      -fx-padding: 4 14; -fx-background-radius: 20;
+                                      -fx-font-size: 11px; -fx-font-weight: bold;"/>
+                    </HBox>
+                </VBox>
+
+                <!-- RECRUITER CARD -->
+                <VBox spacing="0"
+                      style="-fx-background-color: rgba(255,255,255,0.06);
+                             -fx-background-radius: 16;
+                             -fx-border-color: rgba(255,255,255,0.09); -fx-border-width: 1;
+                             -fx-border-radius: 16; -fx-padding: 16;">
+                    <HBox spacing="16" alignment="CENTER_LEFT">
+                        <StackPane style="-fx-background-color: linear-gradient(to bottom right, #4338ca, #6366f1);
+                                          -fx-background-radius: 12;
+                                          -fx-min-width: 48; -fx-min-height: 48;
+                                          -fx-max-width: 48; -fx-max-height: 48;">
+                            <Label text="&#x1F3E2;" style="-fx-font-size: 22px;"/>
+                        </StackPane>
+                        <VBox spacing="4">
+                            <Label text="Recruiter"
+                                   style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.40);
+                                          -fx-font-family: 'Segoe UI';"/>
+                            <Label fx:id="recruiterLabel" text="Recruiter Name"
+                                   style="-fx-font-size: 16px; -fx-font-weight: bold;
+                                          -fx-text-fill: white; -fx-font-family: 'Segoe UI';"/>
+                        </VBox>
+                    </HBox>
+                </VBox>
+
+                <!-- META GRID: Date · Type · Salary -->
+                <GridPane hgap="14" vgap="0">
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="33.3"/>
+                        <ColumnConstraints percentWidth="33.3"/>
+                        <ColumnConstraints percentWidth="33.4"/>
+                    </columnConstraints>
+
+                    <!-- Posting Date -->
+                    <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="0"
+                          style="-fx-background-color: rgba(99,102,241,0.12);
+                                 -fx-background-radius: 12;
+                                 -fx-border-color: rgba(99,102,241,0.22); -fx-border-width: 1;
+                                 -fx-border-radius: 12; -fx-padding: 14;">
+                        <Label text="&#x1F4C5;  Posting Date"
+                               style="-fx-font-size: 11px; -fx-font-weight: bold;
+                                      -fx-text-fill: rgba(255,255,255,0.50);"/>
+                        <HBox spacing="8" alignment="CENTER_LEFT">
+                            <Label fx:id="dateLabel" text="Recently"
+                                   style="-fx-font-size: 14px; -fx-font-weight: 600;
+                                          -fx-text-fill: white; -fx-font-family: 'Segoe UI';"/>
+                        </HBox>
+                    </VBox>
+
+                    <!-- Job Type -->
+                    <VBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="0"
+                          style="-fx-background-color: rgba(6,182,212,0.10);
+                                 -fx-background-radius: 12;
+                                 -fx-border-color: rgba(6,182,212,0.20); -fx-border-width: 1;
+                                 -fx-border-radius: 12; -fx-padding: 14;">
+                        <GridPane.margin><Insets left="7" right="7"/></GridPane.margin>
+                        <Label text="&#x23F0;  Job Type"
+                               style="-fx-font-size: 11px; -fx-font-weight: bold;
+                                      -fx-text-fill: rgba(255,255,255,0.50);"/>
+                        <HBox spacing="8" alignment="CENTER_LEFT">
+                            <Label fx:id="typeLabel" text="Full-time"
+                                   style="-fx-font-size: 14px; -fx-font-weight: 600;
+                                          -fx-text-fill: white; -fx-font-family: 'Segoe UI';"/>
+                        </HBox>
+                    </VBox>
+
+                    <!-- Salary -->
+                    <VBox spacing="6" GridPane.columnIndex="2" GridPane.rowIndex="0"
+                          style="-fx-background-color: rgba(16,185,129,0.10);
+                                 -fx-background-radius: 12;
+                                 -fx-border-color: rgba(16,185,129,0.20); -fx-border-width: 1;
+                                 -fx-border-radius: 12; -fx-padding: 14;">
+                        <Label text="&#x1F4B0;  Offered Salary"
+                               style="-fx-font-size: 11px; -fx-font-weight: bold;
+                                      -fx-text-fill: rgba(255,255,255,0.50);"/>
+                        <HBox spacing="8" alignment="CENTER_LEFT">
+                            <Label fx:id="salaryLabel" text="Competitive"
+                                   style="-fx-font-size: 14px; -fx-font-weight: 600;
+                                          -fx-text-fill: white; -fx-font-family: 'Segoe UI';"/>
+                        </HBox>
+                    </VBox>
+                </GridPane>
+
+                <!-- DESCRIPTION -->
+                <VBox spacing="10">
+                    <Label text="&#x1F4DD;  Job Description"
+                           style="-fx-font-size: 15px; -fx-font-weight: bold;
+                                  -fx-text-fill: white; -fx-font-family: 'Segoe UI';"/>
+                    <TextArea fx:id="descriptionArea" editable="false" wrapText="true"
+                              prefRowCount="6"
+                              style="-fx-background-color: rgba(255,255,255,0.04);
+                                     -fx-border-color: rgba(255,255,255,0.10);
+                                     -fx-border-width: 1; -fx-border-radius: 12; -fx-background-radius: 12;
+                                     -fx-padding: 14; -fx-font-size: 13px;
+                                     -fx-text-fill: rgba(255,255,255,0.80);
+                                     -fx-control-inner-background: transparent;
+                                     -fx-font-family: 'Segoe UI';"/>
+                </VBox>
+
+                <!-- REQUIRED SKILLS -->
+                <VBox spacing="10">
+                    <Label text="&#x1F527;  Required Skills"
+                           style="-fx-font-size: 15px; -fx-font-weight: bold;
+                                  -fx-text-fill: white; -fx-font-family: 'Segoe UI';"/>
+                    <FlowPane fx:id="skillsContainer" hgap="8" vgap="8"/>
+                </VBox>
+
+                <!-- ACTION BUTTONS -->
+                <HBox spacing="10" alignment="CENTER_RIGHT">
+
+                    <Button fx:id="deleteButton" text="Delete"
+                            onAction="#handleDelete"
+                            style="-fx-background-color: rgba(244,63,94,0.12);
+                                   -fx-text-fill: #f43f5e;
+                                   -fx-border-color: rgba(244,63,94,0.40); -fx-border-width: 1.5;
+                                   -fx-border-radius: 12; -fx-background-radius: 12;
+                                   -fx-padding: 11 24; -fx-font-size: 13px;
+                                   -fx-font-weight: bold; -fx-cursor: hand;"/>
+
+                    <Button fx:id="modifyButton" text="Modify"
+                            onAction="#goToModify"
+                            style="-fx-background-color: linear-gradient(to right, #4338ca, #6366f1);
+                                   -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 13px;
+                                   -fx-background-radius: 12; -fx-padding: 11 24; -fx-cursor: hand;
+                                   -fx-effect: dropshadow(gaussian, rgba(99,102,241,0.35), 8, 0, 0, 2);"/>
+
+                    <Button fx:id="editQuizButton" text="Edit Quiz"
+                            onAction="#handleEditQuiz"
+                            style="-fx-background-color: linear-gradient(to right, #7e22ce, #a855f7);
+                                   -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 13px;
+                                   -fx-background-radius: 12; -fx-padding: 11 24; -fx-cursor: hand;
+                                   -fx-effect: dropshadow(gaussian, rgba(126,34,206,0.35), 8, 0, 0, 2);"/>
+
+                    <Button fx:id="viewApplicationsButton" text="View Applications"
+                            onAction="#handleViewApplications"
+                            style="-fx-background-color: linear-gradient(to right, #0891b2, #06b6d4);
+                                   -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 13px;
+                                   -fx-background-radius: 12; -fx-padding: 11 24; -fx-cursor: hand;
+                                   -fx-effect: dropshadow(gaussian, rgba(6,182,212,0.35), 8, 0, 0, 2);"/>
+
+                    <Button text="Close" onAction="#handleClose"
+                            style="-fx-background-color: rgba(255,255,255,0.07);
+                                   -fx-text-fill: rgba(255,255,255,0.70);
+                                   -fx-border-color: rgba(255,255,255,0.12); -fx-border-width: 1.5;
+                                   -fx-border-radius: 12; -fx-background-radius: 12;
+                                   -fx-padding: 11 24; -fx-font-size: 13px;
+                                   -fx-font-weight: bold; -fx-cursor: hand;"/>
+                </HBox>
+
+            </VBox>
+        </ScrollPane>
+
+    </children>
+</AnchorPane>

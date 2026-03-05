@@ -1,6 +1,6 @@
 package DAO;
 
-import Utils.MyDB;
+import Utils.Mydb;
 import Model.Role;
 import Model.User;
 
@@ -47,7 +47,7 @@ public class userDAO {
         String sql = "INSERT INTO user(nom, prenom, mail, mdp, role, skills, diplomas, " +
                 "experience, bio, phone, is_verified, verification_code, face_data, username) " +
                 "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-        try (Connection conn = MyDB.getInstance().getConnection();
+        try (Connection conn = Mydb.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1,  user.getNom());
             ps.setString(2,  user.getPrenom());
@@ -73,7 +73,7 @@ public class userDAO {
     // ── GET ALL ───────────────────────────────────────────────────────────────
     public List<User> getAll() {
         List<User> list = new ArrayList<>();
-        try (Connection conn = MyDB.getInstance().getConnection();
+        try (Connection conn = Mydb.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement("SELECT * FROM user");
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) list.add(mapRow(rs));
@@ -86,7 +86,7 @@ public class userDAO {
 
     // ── FIND BY ID ────────────────────────────────────────────────────────────
     public User findById(int id) {
-        try (Connection conn = MyDB.getInstance().getConnection();
+        try (Connection conn = Mydb.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement("SELECT * FROM user WHERE id=?")) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
@@ -100,7 +100,7 @@ public class userDAO {
 
     // ── FIND BY EMAIL ─────────────────────────────────────────────────────────
     public User findByEmail(String email) {
-        try (Connection conn = MyDB.getInstance().getConnection();
+        try (Connection conn = Mydb.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement("SELECT * FROM user WHERE mail=?")) {
             ps.setString(1, email);
             try (ResultSet rs = ps.executeQuery()) {
@@ -115,7 +115,7 @@ public class userDAO {
 
     // ── FIND BY USERNAME ──────────────────────────────────────────────────────
     public User findByUsername(String username) {
-        try (Connection conn = MyDB.getInstance().getConnection();
+        try (Connection conn = Mydb.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement("SELECT * FROM user WHERE username=?")) {
             ps.setString(1, username);
             try (ResultSet rs = ps.executeQuery()) {
@@ -127,7 +127,7 @@ public class userDAO {
 
     // ── FIND BY PHONE ─────────────────────────────────────────────────────────
     public User findByPhone(String phone) {
-        try (Connection conn = MyDB.getInstance().getConnection();
+        try (Connection conn = Mydb.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement("SELECT * FROM user WHERE phone=?")) {
             ps.setString(1, phone);
             try (ResultSet rs = ps.executeQuery()) {
@@ -145,7 +145,7 @@ public class userDAO {
         String sql = "UPDATE user SET nom=?,prenom=?,mail=?,mdp=?,role=?," +
                 "skills=?,diplomas=?,experience=?,bio=?,phone=?," +
                 "is_verified=?,verification_code=?,face_data=?,username=? WHERE id=?";
-        try (Connection conn = MyDB.getInstance().getConnection();
+        try (Connection conn = Mydb.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1,  user.getNom());
             ps.setString(2,  user.getPrenom());
@@ -171,7 +171,7 @@ public class userDAO {
 
     // ── UPDATE face data only ─────────────────────────────────────────────────
     public void updateFaceData(int userId, String faceData) {
-        try (Connection conn = MyDB.getInstance().getConnection();
+        try (Connection conn = Mydb.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(
                      "UPDATE user SET face_data=? WHERE id=?")) {
             ps.setString(1, faceData);
@@ -185,7 +185,7 @@ public class userDAO {
 
     // ── UPDATE verification code only ─────────────────────────────────────────
     public void updateVerificationCode(int userId, String code) {
-        try (Connection conn = MyDB.getInstance().getConnection();
+        try (Connection conn = Mydb.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(
                      "UPDATE user SET verification_code=? WHERE id=?")) {
             ps.setString(1, code);
@@ -199,7 +199,7 @@ public class userDAO {
 
     // ── MARK AS VERIFIED ──────────────────────────────────────────────────────
     public void markVerified(int userId) {
-        try (Connection conn = MyDB.getInstance().getConnection();
+        try (Connection conn = Mydb.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(
                      "UPDATE user SET is_verified=1, verification_code=NULL WHERE id=?")) {
             ps.setInt(1, userId);
@@ -212,7 +212,7 @@ public class userDAO {
 
     // ── UPDATE PASSWORD ───────────────────────────────────────────────────────
     public void updatePassword(int userId, String newMdp) {
-        try (Connection conn = MyDB.getInstance().getConnection();
+        try (Connection conn = Mydb.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(
                      "UPDATE user SET mdp=?, verification_code=NULL WHERE id=?")) {
             ps.setString(1, newMdp);
@@ -226,7 +226,7 @@ public class userDAO {
 
     // ── DELETE ────────────────────────────────────────────────────────────────
     public void delete(int id) {
-        try (Connection conn = MyDB.getInstance().getConnection();
+        try (Connection conn = Mydb.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement("DELETE FROM user WHERE id=?")) {
             ps.setInt(1, id);
             ps.executeUpdate();

@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.effect.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="Controller.BackOffice.Candidature.CandidatureDetailsController"
+            prefWidth="720" prefHeight="740"
+            style="-fx-background-color: #0f172a;">
+
+    <children>
+
+        <!-- OUTER CARD -->
+        <VBox spacing="0"
+              AnchorPane.topAnchor="18" AnchorPane.bottomAnchor="18"
+              AnchorPane.leftAnchor="18" AnchorPane.rightAnchor="18"
+              style="-fx-background-color: rgba(255,255,255,0.05);
+                     -fx-background-radius: 26;
+                     -fx-border-color: rgba(255,255,255,0.09);
+                     -fx-border-width: 1; -fx-border-radius: 26;">
+            <effect>
+                <DropShadow color="rgba(0,0,0,0.55)" radius="44" spread="0.04" offsetY="8"/>
+            </effect>
+
+            <!-- HERO HEADER -->
+            <StackPane>
+                <VBox style="-fx-background-color: linear-gradient(to bottom right, #312e81, #1e3a5f, #0c4a6e);
+                             -fx-background-radius: 26 26 0 0;
+                             -fx-min-height: 190;"/>
+                <!-- Decorative glows inside header only -->
+                <Pane mouseTransparent="true" pickOnBounds="false"
+                      style="-fx-background-color: transparent;">
+                    <Ellipse centerX="600" centerY="50" radiusX="130" radiusY="90"
+                             style="-fx-fill: rgba(99,102,241,0.20);">
+                        <effect><GaussianBlur radius="50"/></effect>
+                    </Ellipse>
+                    <Ellipse centerX="80" centerY="160" radiusX="85" radiusY="65"
+                             style="-fx-fill: rgba(6,182,212,0.16);">
+                        <effect><GaussianBlur radius="45"/></effect>
+                    </Ellipse>
+                </Pane>
+                <!-- Header content -->
+                <VBox spacing="18" style="-fx-padding: 28 32 26 32;">
+                    <!-- Avatar + name + badge -->
+                    <HBox spacing="22" alignment="CENTER_LEFT">
+                        <!-- Avatar with glow ring -->
+                        <StackPane>
+                            <StackPane style="-fx-background-color: rgba(99,102,241,0.30);
+                                              -fx-background-radius: 46;
+                                              -fx-min-width: 92; -fx-min-height: 92;
+                                              -fx-max-width: 92; -fx-max-height: 92;">
+                                <effect><GaussianBlur radius="8"/></effect>
+                            </StackPane>
+                            <StackPane style="-fx-background-color: rgba(255,255,255,0.18);
+                                              -fx-background-radius: 38;
+                                              -fx-min-width: 80; -fx-min-height: 80;
+                                              -fx-max-width: 80; -fx-max-height: 80;
+                                              -fx-border-color: rgba(255,255,255,0.28);
+                                              -fx-border-width: 2; -fx-border-radius: 38;">
+                                <Label fx:id="avatarInitials" text="JD"
+                                       style="-fx-font-size: 32px; -fx-font-weight: bold;
+                                              -fx-text-fill: white; -fx-font-family: Segoe UI;"/>
+                            </StackPane>
+                        </StackPane>
+                        <!-- Name block -->
+                        <VBox spacing="7" HBox.hgrow="ALWAYS">
+                            <Label fx:id="candidateNameLabel" text="Candidate Name"
+                                   style="-fx-font-size: 26px; -fx-font-weight: bold;
+                                          -fx-text-fill: white; -fx-font-family: Segoe UI;"/>
+                            <HBox spacing="7" alignment="CENTER_LEFT">
+                                <Label text="💼" style="-fx-font-size: 12px;"/>
+                                <Label fx:id="jobTitleLabel" text="Applying for: Job Position"
+                                       style="-fx-font-size: 13px; -fx-text-fill: rgba(255,255,255,0.65);
+                                              -fx-font-weight: 500; -fx-font-family: Segoe UI;"/>
+                            </HBox>
+                        </VBox>
+                        <!-- Status pill -->
+                        <Label fx:id="statusBadge" text="Pending"
+                               style="-fx-background-color: rgba(255,255,255,0.15);
+                                      -fx-text-fill: white; -fx-padding: 8 22;
+                                      -fx-background-radius: 30; -fx-font-size: 12px;
+                                      -fx-font-weight: bold; -fx-font-family: Segoe UI;
+                                      -fx-border-color: rgba(255,255,255,0.25);
+                                      -fx-border-width: 1.5; -fx-border-radius: 30;"/>
+                    </HBox>
+
+                    <!-- Contact chips -->
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <HBox spacing="7" alignment="CENTER"
+                              style="-fx-background-color: rgba(255,255,255,0.10);
+                                     -fx-padding: 7 16; -fx-background-radius: 30;
+                                     -fx-border-color: rgba(255,255,255,0.12);
+                                     -fx-border-width: 1; -fx-border-radius: 30;">
+                            <Label text="📧" style="-fx-font-size: 11px;"/>
+                            <Label fx:id="emailLabel" text="email@example.com"
+                                   style="-fx-font-size: 12px; -fx-text-fill: rgba(255,255,255,0.88);
+                                          -fx-font-weight: 500; -fx-font-family: Segoe UI;"/>
+                        </HBox>
+                        <HBox spacing="7" alignment="CENTER"
+                              style="-fx-background-color: rgba(255,255,255,0.10);
+                                     -fx-padding: 7 16; -fx-background-radius: 30;
+                                     -fx-border-color: rgba(255,255,255,0.12);
+                                     -fx-border-width: 1; -fx-border-radius: 30;">
+                            <Label text="📱" style="-fx-font-size: 11px;"/>
+                            <Label fx:id="phoneLabel" text="+216 XX XXX XXX"
+                                   style="-fx-font-size: 12px; -fx-text-fill: rgba(255,255,255,0.88);
+                                          -fx-font-weight: 500; -fx-font-family: Segoe UI;"/>
+                        </HBox>
+                        <HBox spacing="7" alignment="CENTER"
+                              style="-fx-background-color: rgba(255,255,255,0.10);
+                                     -fx-padding: 7 16; -fx-background-radius: 30;
+                                     -fx-border-color: rgba(255,255,255,0.12);
+                                     -fx-border-width: 1; -fx-border-radius: 30;">
+                            <Label text="🎓" style="-fx-font-size: 11px;"/>
+                            <Label fx:id="educationLabel" text="Education"
+                                   style="-fx-font-size: 12px; -fx-text-fill: rgba(255,255,255,0.88);
+                                          -fx-font-weight: 500; -fx-font-family: Segoe UI;"/>
+                        </HBox>
+                    </HBox>
+                </VBox>
+            </StackPane>
+
+            <!-- SCROLLABLE BODY -->
+            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS"
+                        style="-fx-background: transparent;
+                               -fx-background-color: transparent;
+                               -fx-border-width: 0;">
+                <content>
+                    <VBox spacing="14"
+                          style="-fx-padding: 24 26 14 26; -fx-background-color: transparent;">
+
+                        <!-- 3 stat tiles -->
+                        <HBox spacing="12">
+                            <VBox spacing="6" HBox.hgrow="ALWAYS"
+                                  style="-fx-background-color: rgba(99,102,241,0.10);
+                                         -fx-background-radius: 16;
+                                         -fx-border-color: rgba(99,102,241,0.25);
+                                         -fx-border-width: 1; -fx-border-radius: 16;
+                                         -fx-padding: 16 18;">
+                                <Label text="📅  APPLICATION DATE"
+                                       style="-fx-font-size: 9px; -fx-font-weight: 800;
+                                              -fx-text-fill: #818cf8; -fx-font-family: Segoe UI;"/>
+                                <Label fx:id="applicationDateLabel" text="—"
+                                       style="-fx-font-size: 16px; -fx-font-weight: bold;
+                                              -fx-text-fill: white; -fx-font-family: Segoe UI;"/>
+                            </VBox>
+                            <VBox spacing="6" HBox.hgrow="ALWAYS"
+                                  style="-fx-background-color: rgba(6,182,212,0.10);
+                                         -fx-background-radius: 16;
+                                         -fx-border-color: rgba(6,182,212,0.25);
+                                         -fx-border-width: 1; -fx-border-radius: 16;
+                                         -fx-padding: 16 18;">
+                                <Label text="💼  EXPERIENCE"
+                                       style="-fx-font-size: 9px; -fx-font-weight: 800;
+                                              -fx-text-fill: #67e8f9; -fx-font-family: Segoe UI;"/>
+                                <Label fx:id="experienceLabel" text="—"
+                                       style="-fx-font-size: 16px; -fx-font-weight: bold;
+                                              -fx-text-fill: white; -fx-font-family: Segoe UI;"/>
+                            </VBox>
+                            <VBox spacing="6" HBox.hgrow="ALWAYS"
+                                  style="-fx-background-color: rgba(16,185,129,0.10);
+                                         -fx-background-radius: 16;
+                                         -fx-border-color: rgba(16,185,129,0.25);
+                                         -fx-border-width: 1; -fx-border-radius: 16;
+                                         -fx-padding: 16 18;">
+                                <Label text="💰  EXPECTED SALARY"
+                                       style="-fx-font-size: 9px; -fx-font-weight: 800;
+                                              -fx-text-fill: #6ee7b7; -fx-font-family: Segoe UI;"/>
+                                <Label fx:id="salaryLabel" text="—"
+                                       style="-fx-font-size: 16px; -fx-font-weight: bold;
+                                              -fx-text-fill: #10b981; -fx-font-family: Segoe UI;"/>
+                            </VBox>
+                        </HBox>
+
+                        <!-- Skills card -->
+                        <VBox spacing="12"
+                              style="-fx-background-color: rgba(255,255,255,0.04);
+                                     -fx-background-radius: 18;
+                                     -fx-border-color: rgba(255,255,255,0.08);
+                                     -fx-border-width: 1; -fx-border-radius: 18;
+                                     -fx-padding: 18 22;">
+                            <HBox spacing="10" alignment="CENTER_LEFT">
+                                <StackPane style="-fx-background-color: rgba(99,102,241,0.22);
+                                                  -fx-background-radius: 8; -fx-padding: 5 9;">
+                                    <Label text="⚡" style="-fx-font-size: 13px;"/>
+                                </StackPane>
+                                <Label text="Skills and Qualifications"
+                                       style="-fx-font-size: 13px; -fx-font-weight: bold;
+                                              -fx-text-fill: white; -fx-font-family: Segoe UI;"/>
+                            </HBox>
+                            <Region style="-fx-background-color: rgba(255,255,255,0.07);"
+                                    prefHeight="1" maxHeight="1"/>
+                            <FlowPane fx:id="skillsContainer" hgap="8" vgap="8"/>
+                        </VBox>
+
+                        <!-- Cover letter card -->
+                        <VBox spacing="12"
+                              style="-fx-background-color: rgba(255,255,255,0.04);
+                                     -fx-background-radius: 18;
+                                     -fx-border-color: rgba(255,255,255,0.08);
+                                     -fx-border-width: 1; -fx-border-radius: 18;
+                                     -fx-padding: 18 22;">
+                            <HBox spacing="10" alignment="CENTER_LEFT">
+                                <StackPane style="-fx-background-color: rgba(6,182,212,0.22);
+                                                  -fx-background-radius: 8; -fx-padding: 5 9;">
+                                    <Label text="✉" style="-fx-font-size: 13px;"/>
+                                </StackPane>
+                                <Label text="Cover Letter"
+                                       style="-fx-font-size: 13px; -fx-font-weight: bold;
+                                              -fx-text-fill: white; -fx-font-family: Segoe UI;"/>
+                            </HBox>
+                            <Region style="-fx-background-color: rgba(255,255,255,0.07);"
+                                    prefHeight="1" maxHeight="1"/>
+                            <TextArea fx:id="coverLetterArea" editable="false" wrapText="true"
+                                      prefRowCount="5"
+                                      promptText="No cover letter provided"
+                                      style="-fx-background-color: rgba(255,255,255,0.03);
+                                             -fx-control-inner-background: rgba(255,255,255,0.03);
+                                             -fx-border-color: rgba(255,255,255,0.08);
+                                             -fx-border-width: 1; -fx-border-radius: 12;
+                                             -fx-background-radius: 12; -fx-padding: 12;
+                                             -fx-font-size: 13px;
+                                             -fx-text-fill: rgba(255,255,255,0.75);
+                                             -fx-prompt-text-fill: rgba(255,255,255,0.25);
+                                             -fx-font-family: Segoe UI;"/>
+                        </VBox>
+
+                        <!-- Rejection reason (hidden by default) -->
+                        <VBox fx:id="rejectionReasonContainer" spacing="10"
+                              visible="false" managed="false"
+                              style="-fx-background-color: rgba(244,63,94,0.10);
+                                     -fx-background-radius: 18;
+                                     -fx-border-color: rgba(244,63,94,0.35);
+                                     -fx-border-width: 1.5; -fx-border-radius: 18;
+                                     -fx-padding: 18 22;">
+                            <HBox spacing="8" alignment="CENTER_LEFT">
+                                <Label text="❌" style="-fx-font-size: 14px;"/>
+                                <Label text="Rejection Reason"
+                                       style="-fx-font-size: 13px; -fx-font-weight: bold;
+                                              -fx-text-fill: #f43f5e; -fx-font-family: Segoe UI;"/>
+                            </HBox>
+                            <Label fx:id="rejectionReasonLabel" wrapText="true"
+                                   style="-fx-font-size: 13px; -fx-text-fill: #fda4af;
+                                          -fx-font-family: Segoe UI;"/>
+                        </VBox>
+
+                        <Region prefHeight="6"/>
+                    </VBox>
+                </content>
+            </ScrollPane>
+
+            <!-- STICKY FOOTER -->
+            <HBox spacing="10" alignment="CENTER_RIGHT"
+                  style="-fx-background-color: rgba(255,255,255,0.025);
+                         -fx-padding: 16 26;
+                         -fx-border-color: rgba(255,255,255,0.07);
+                         -fx-border-width: 1 0 0 0;
+                         -fx-background-radius: 0 0 26 26;">
+                <Button fx:id="viewResumeButton" text="View CV" onAction="#handleViewResume"
+                        style="-fx-background-color: rgba(99,102,241,0.15);
+                               -fx-text-fill: #818cf8;
+                               -fx-border-color: rgba(99,102,241,0.40);
+                               -fx-border-width: 1.5; -fx-border-radius: 12;
+                               -fx-background-radius: 12;
+                               -fx-padding: 10 22; -fx-font-size: 13px;
+                               -fx-font-weight: bold; -fx-cursor: hand;
+                               -fx-font-family: Segoe UI;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button fx:id="acceptButton" text="Accept" onAction="#handleAccept"
+                        style="-fx-background-color: linear-gradient(to bottom right, #059669, #10b981);
+                               -fx-text-fill: white; -fx-font-weight: bold;
+                               -fx-font-size: 13px; -fx-background-radius: 12;
+                               -fx-padding: 10 26; -fx-cursor: hand;
+                               -fx-border-width: 0; -fx-font-family: Segoe UI;">
+                    <effect>
+                        <DropShadow color="rgba(16,185,129,0.55)" radius="12" spread="0.08" offsetY="3"/>
+                    </effect>
+                </Button>
+                <Button fx:id="rejectButton" text="Reject" onAction="#handleReject"
+                        style="-fx-background-color: linear-gradient(to bottom right, #e11d48, #f43f5e);
+                               -fx-text-fill: white; -fx-font-weight: bold;
+                               -fx-font-size: 13px; -fx-background-radius: 12;
+                               -fx-padding: 10 26; -fx-cursor: hand;
+                               -fx-border-width: 0; -fx-font-family: Segoe UI;">
+                    <effect>
+                        <DropShadow color="rgba(244,63,94,0.55)" radius="12" spread="0.08" offsetY="3"/>
+                    </effect>
+                </Button>
+                <Button text="Close" onAction="#handleClose"
+                        style="-fx-background-color: rgba(255,255,255,0.07);
+                               -fx-text-fill: rgba(255,255,255,0.65);
+                               -fx-border-width: 1;
+                               -fx-border-color: rgba(255,255,255,0.12);
+                               -fx-border-radius: 12; -fx-background-radius: 12;
+                               -fx-padding: 10 20; -fx-font-size: 13px;
+                               -fx-font-weight: bold; -fx-cursor: hand;
+                               -fx-font-family: Segoe UI;"/>
+            </HBox>
+        </VBox>
+
+    </children>
+</AnchorPane>

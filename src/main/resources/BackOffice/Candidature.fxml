@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.shape.Rectangle?>
+
+<?import javafx.scene.effect.DropShadow?>
+<AnchorPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="Controller.BackOffice.Candidature.CandidatureController"
+            prefHeight="600.0"
+            prefWidth="900.0"
+            style="-fx-background-color: #0f172a;">
+
+    <children>
+
+        <VBox spacing="0"
+              AnchorPane.topAnchor="20"
+              AnchorPane.leftAnchor="20"
+              AnchorPane.rightAnchor="20"
+              AnchorPane.bottomAnchor="20"
+              style="-fx-background-color: rgba(255,255,255,0.05);
+                     -fx-background-radius: 22;
+                     -fx-border-color: rgba(255,255,255,0.09);
+                     -fx-border-width: 1;
+                     -fx-border-radius: 22;">
+            <effect>
+                <DropShadow xmlns:fx="http://javafx.com/fxml"
+                            color="rgba(0,0,0,0.45)" radius="36" spread="0.03" offsetY="6"/>
+            </effect>
+
+            <!-- ── Header bar ─────────────────────────────────────────── -->
+            <HBox alignment="CENTER_LEFT" spacing="16"
+                  style="-fx-background-color: rgba(255,255,255,0.04);
+                         -fx-background-radius: 22 22 0 0;
+                         -fx-border-color: rgba(255,255,255,0.07);
+                         -fx-border-width: 0 0 1 0;
+                         -fx-padding: 22 28 18 28;">
+
+                <Rectangle width="5" height="36" arcWidth="5" arcHeight="5"
+                           style="-fx-fill: linear-gradient(to bottom, #6366f1, #06b6d4);"/>
+                <Label text="📊  Job Applications"
+                       style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white;
+                              -fx-font-family: 'Segoe UI';"/>
+                <Region HBox.hgrow="ALWAYS"/>
+            </HBox>
+
+            <!-- ── Stats row ──────────────────────────────────────────── -->
+            <HBox spacing="14" style="-fx-padding: 20 28 0 28;">
+
+                <!-- Total -->
+                <VBox spacing="5" HBox.hgrow="ALWAYS"
+                      style="-fx-background-color: rgba(99,102,241,0.14);
+                             -fx-background-radius: 16;
+                             -fx-border-color: rgba(99,102,241,0.35);
+                             -fx-border-width: 1; -fx-border-radius: 16;
+                             -fx-padding: 14 20;">
+                    <Label text="TOTAL"
+                           style="-fx-font-size: 10px; -fx-font-weight: 800;
+                                  -fx-text-fill: #818cf8; -fx-font-family: 'Segoe UI';"/>
+                    <Label fx:id="totalApplicationsLabel" text="0"
+                           style="-fx-font-size: 30px; -fx-font-weight: bold; -fx-text-fill: white;
+                                  -fx-font-family: 'Segoe UI';"/>
+                    <Label text="Applications"
+                           style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.38);
+                                  -fx-font-family: 'Segoe UI';"/>
+                </VBox>
+
+                <!-- Pending -->
+                <VBox spacing="5" HBox.hgrow="ALWAYS"
+                      style="-fx-background-color: rgba(245,158,11,0.12);
+                             -fx-background-radius: 16;
+                             -fx-border-color: rgba(245,158,11,0.30);
+                             -fx-border-width: 1; -fx-border-radius: 16;
+                             -fx-padding: 14 20;">
+                    <Label text="PENDING"
+                           style="-fx-font-size: 10px; -fx-font-weight: 800;
+                                  -fx-text-fill: #f59e0b; -fx-font-family: 'Segoe UI';"/>
+                    <Label fx:id="pendingApplicationsLabel" text="0"
+                           style="-fx-font-size: 30px; -fx-font-weight: bold; -fx-text-fill: #f59e0b;
+                                  -fx-font-family: 'Segoe UI';"/>
+                    <Label text="Pending Review"
+                           style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.38);
+                                  -fx-font-family: 'Segoe UI';"/>
+                </VBox>
+
+                <!-- Accepted -->
+                <VBox spacing="5" HBox.hgrow="ALWAYS"
+                      style="-fx-background-color: rgba(16,185,129,0.12);
+                             -fx-background-radius: 16;
+                             -fx-border-color: rgba(16,185,129,0.30);
+                             -fx-border-width: 1; -fx-border-radius: 16;
+                             -fx-padding: 14 20;">
+                    <Label text="ACCEPTED"
+                           style="-fx-font-size: 10px; -fx-font-weight: 800;
+                                  -fx-text-fill: #10b981; -fx-font-family: 'Segoe UI';"/>
+                    <Label fx:id="acceptedApplicationsLabel" text="0"
+                           style="-fx-font-size: 30px; -fx-font-weight: bold; -fx-text-fill: #10b981;
+                                  -fx-font-family: 'Segoe UI';"/>
+                    <Label text="Accepted"
+                           style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.38);
+                                  -fx-font-family: 'Segoe UI';"/>
+                </VBox>
+
+                <!-- Rejected -->
+                <VBox spacing="5" HBox.hgrow="ALWAYS"
+                      style="-fx-background-color: rgba(244,63,94,0.12);
+                             -fx-background-radius: 16;
+                             -fx-border-color: rgba(244,63,94,0.30);
+                             -fx-border-width: 1; -fx-border-radius: 16;
+                             -fx-padding: 14 20;">
+                    <Label text="REJECTED"
+                           style="-fx-font-size: 10px; -fx-font-weight: 800;
+                                  -fx-text-fill: #f43f5e; -fx-font-family: 'Segoe UI';"/>
+                    <Label fx:id="rejectedApplicationsLabel" text="0"
+                           style="-fx-font-size: 30px; -fx-font-weight: bold; -fx-text-fill: #f43f5e;
+                                  -fx-font-family: 'Segoe UI';"/>
+                    <Label text="Rejected"
+                           style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.38);
+                                  -fx-font-family: 'Segoe UI';"/>
+                </VBox>
+            </HBox>
+
+            <!-- ── Search + filter bar ────────────────────────────────── -->
+            <HBox spacing="12" alignment="CENTER_LEFT"
+                  style="-fx-padding: 16 28 0 28;">
+
+                <!-- Search field -->
+                <HBox spacing="8" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS"
+                      style="-fx-background-color: rgba(255,255,255,0.05);
+                             -fx-border-color: rgba(255,255,255,0.10);
+                             -fx-border-width: 1;
+                             -fx-border-radius: 12; -fx-background-radius: 12;
+                             -fx-padding: 0 14;">
+                    <Label text="🔍" style="-fx-font-size: 14px;"/>
+                    <TextField fx:id="searchField"
+                               promptText="Search candidate, job title or email…"
+                               style="-fx-background-color: transparent;
+                                      -fx-text-fill: white;
+                                      -fx-prompt-text-fill: rgba(255,255,255,0.28);
+                                      -fx-font-size: 13px; -fx-padding: 10 5;
+                                      -fx-font-family: 'Segoe UI';"
+                               HBox.hgrow="ALWAYS"/>
+                </HBox>
+
+                <!-- Job filter -->
+                <ComboBox fx:id="jobPositionFilter" promptText="Job Position"
+                          style="-fx-background-color: rgba(255,255,255,0.07);
+                                 -fx-background-radius: 12; -fx-border-radius: 12;
+                                 -fx-border-color: rgba(255,255,255,0.12); -fx-border-width: 1;
+                                 -fx-text-fill: white; -fx-font-size: 13px; -fx-padding: 5;
+                                 -fx-pref-width: 155;"/>
+
+                <!-- Status filter -->
+                <ComboBox fx:id="statusFilter" promptText="Status"
+                          style="-fx-background-color: rgba(255,255,255,0.07);
+                                 -fx-background-radius: 12; -fx-border-radius: 12;
+                                 -fx-border-color: rgba(255,255,255,0.12); -fx-border-width: 1;
+                                 -fx-text-fill: white; -fx-font-size: 13px; -fx-padding: 5;
+                                 -fx-pref-width: 130;"/>
+            </HBox>
+
+            <!-- ── Table ──────────────────────────────────────────────── -->
+            <TableView fx:id="applicationsTable" VBox.vgrow="ALWAYS"
+                       style="-fx-background-color: transparent;
+                              -fx-background: transparent;
+                              -fx-table-cell-border-color: rgba(255,255,255,0.06);
+                              -fx-control-inner-background: rgba(255,255,255,0.04);
+                              -fx-control-inner-background-alt: rgba(255,255,255,0.02);
+                              -fx-border-width: 0;"
+                       xmlns:fx="http://javafx.com/fxml/1">
+                <padding><Insets top="10" right="28" bottom="0" left="28"/></padding>
+                <columns>
+                    <TableColumn fx:id="candidateNameColumn" prefWidth="195" text="Candidate"
+                                 style="-fx-text-fill: rgba(255,255,255,0.55); -fx-font-size: 11px; -fx-font-weight: bold;"/>
+                    <TableColumn fx:id="jobPositionColumn"   prefWidth="175" text="Job Position"
+                                 style="-fx-text-fill: rgba(255,255,255,0.55); -fx-font-size: 11px; -fx-font-weight: bold;"/>
+                    <TableColumn fx:id="appliedDateColumn"   prefWidth="115" text="Applied Date"
+                                 style="-fx-text-fill: rgba(255,255,255,0.55); -fx-font-size: 11px; -fx-font-weight: bold;"/>
+                    <TableColumn fx:id="statusColumn"        prefWidth="115" text="Status"
+                                 style="-fx-text-fill: rgba(255,255,255,0.55); -fx-font-size: 11px; -fx-font-weight: bold;"/>
+                    <TableColumn fx:id="experienceColumn"    prefWidth="100" text="Experience"
+                                 style="-fx-text-fill: rgba(255,255,255,0.55); -fx-font-size: 11px; -fx-font-weight: bold;"/>
+                    <TableColumn fx:id="actionsColumn"       prefWidth="148" text="Actions"
+                                 style="-fx-text-fill: rgba(255,255,255,0.55); -fx-font-size: 11px; -fx-font-weight: bold;"/>
+                </columns>
+                <placeholder>
+                    <Label text="No applications found"
+                           style="-fx-text-fill: rgba(255,255,255,0.30); -fx-font-size: 14px;
+                                  -fx-font-family: 'Segoe UI';"/>
+                </placeholder>
+            </TableView>
+
+            <!-- ── Footer / pagination ────────────────────────────────── -->
+            <HBox alignment="CENTER_RIGHT" spacing="10"
+                  style="-fx-background-color: rgba(255,255,255,0.02);
+                         -fx-border-color: rgba(255,255,255,0.06);
+                         -fx-border-width: 1 0 0 0;
+                         -fx-background-radius: 0 0 22 22;
+                         -fx-padding: 14 28;">
+
+                <Label fx:id="paginationInfoLabel" text="Showing 0-0 of 0 applications"
+                       style="-fx-text-fill: rgba(255,255,255,0.35); -fx-font-size: 12px;
+                              -fx-font-family: 'Segoe UI';"/>
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <HBox spacing="6">
+                    <Button fx:id="prevPageButton" text="←"
+                            style="-fx-background-color: rgba(255,255,255,0.07);
+                                   -fx-text-fill: rgba(255,255,255,0.70);
+                                   -fx-border-width: 0; -fx-background-radius: 8;
+                                   -fx-min-width: 34; -fx-min-height: 34;
+                                   -fx-cursor: hand; -fx-font-weight: bold;"/>
+                    <Button fx:id="page1Button" text="1"
+                            style="-fx-background-color: linear-gradient(to bottom right, #4338ca, #6366f1);
+                                   -fx-text-fill: white; -fx-border-width: 0;
+                                   -fx-background-radius: 8;
+                                   -fx-min-width: 34; -fx-min-height: 34;
+                                   -fx-cursor: hand; -fx-font-weight: bold;"/>
+                    <Button fx:id="page2Button" text="2"
+                            style="-fx-background-color: rgba(255,255,255,0.07);
+                                   -fx-text-fill: rgba(255,255,255,0.70);
+                                   -fx-border-width: 0; -fx-background-radius: 8;
+                                   -fx-min-width: 34; -fx-min-height: 34;
+                                   -fx-cursor: hand; -fx-font-weight: bold;"/>
+                    <Button fx:id="page3Button" text="3"
+                            style="-fx-background-color: rgba(255,255,255,0.07);
+                                   -fx-text-fill: rgba(255,255,255,0.70);
+                                   -fx-border-width: 0; -fx-background-radius: 8;
+                                   -fx-min-width: 34; -fx-min-height: 34;
+                                   -fx-cursor: hand; -fx-font-weight: bold;"/>
+                    <Button fx:id="nextPageButton" text="→"
+                            style="-fx-background-color: rgba(255,255,255,0.07);
+                                   -fx-text-fill: rgba(255,255,255,0.70);
+                                   -fx-border-width: 0; -fx-background-radius: 8;
+                                   -fx-min-width: 34; -fx-min-height: 34;
+                                   -fx-cursor: hand; -fx-font-weight: bold;"/>
+                </HBox>
+            </HBox>
+        </VBox>
+    </children>
+</AnchorPane>

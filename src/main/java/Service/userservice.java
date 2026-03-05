@@ -3,14 +3,21 @@ package Service;
 import DAO.userDAO;
 import Model.Role;
 import Model.User;
+import Utils.Mydb;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class userservice {
 
+    private final Connection cnx;
+
     private final userDAO userDAO = new userDAO();
-    private User currentUser;
+    private static User currentUser;
 
     // ── REGISTER ──────────────────────────────────────────────────────────────
 
@@ -19,6 +26,10 @@ public class userservice {
      * email AND SMS, then saves the user as unverified.
      * Returns the saved user (with id) so the UI can navigate to VerificationPage.
      */
+    public userservice() {
+        this.cnx = Mydb.getInstance().getConnection();
+    }
+
     public User register(User user) {
         validate(user);
         if (userDAO.findByEmail(user.getEmail()) != null)
@@ -198,6 +209,17 @@ public class userservice {
 
     // ── PRIVATE ───────────────────────────────────────────────────────────────
 
+    public int countByRole(String role) {
+        String sql = "SELECT COUNT(*) FROM user WHERE role = ?";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setString(1, role);
+            ResultSet rs = ps.executeQuery();
+            return rs.next() ? rs.getInt(1) : 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
     private void validate(User u) {
         if (u.getNom() == null || u.getNom().isEmpty()
                 || u.getPrenom() == null || u.getPrenom().isEmpty()
