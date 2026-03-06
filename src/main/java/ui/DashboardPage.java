@@ -63,6 +63,7 @@ public class DashboardPage {
     private Button navApplications;
     private Button navMessages;
     private Button navLeaderboard;
+    private Button navInterviews;
     private Button navProfile;
     private Button navSettings;
 
@@ -216,6 +217,7 @@ public class DashboardPage {
         navApplications = createNavBtn("📋", "Applications",  false);
         navMessages     = createNavBtn("💬", "Messages",      false);
         navLeaderboard  = createNavBtn("🏆", "Leaderboard",   false);
+        navInterviews   = createNavBtn("📅", "Interviews",     false);
         navProfile      = createNavBtn("👤", "Profile",       false);
         navSettings     = createNavBtn("⚙",  "Settings",      false);
 
@@ -225,12 +227,13 @@ public class DashboardPage {
         navApplications.setOnAction(e -> { setActiveNav(navApplications); handleComingSoon("Applications"); });
         navMessages.setOnAction(e     -> { setActiveNav(navMessages);     handleComingSoon("Messages"); });
         navLeaderboard.setOnAction(e  -> { setActiveNav(navLeaderboard);  handleLeaderboard(); });
+        navInterviews.setOnAction(e   -> { setActiveNav(navInterviews);   handleInterviews(); });
         navProfile.setOnAction(e      -> { setActiveNav(navProfile);      handleComingSoon("Profile"); });
         navSettings.setOnAction(e     -> { setActiveNav(navSettings);     handleComingSoon("Settings"); });
 
         VBox navBox = new VBox(3);
         navBox.setPadding(new Insets(0, 12, 0, 12));
-        navBox.getChildren().addAll(navDashboard, navUsers, navJobOffers, navApplications, navMessages, navLeaderboard, navProfile, navSettings);
+        navBox.getChildren().addAll(navDashboard, navUsers, navJobOffers, navApplications, navMessages, navLeaderboard, navInterviews, navProfile, navSettings);
 
         // ── SPACER ────────────────────────────────────────────────────────────
         Region spacer = new Region();
@@ -295,7 +298,7 @@ public class DashboardPage {
 
     private void setActiveNav(Button active) {
         activeNavBtn = active;
-        for (Button b : new Button[]{navDashboard, navUsers, navJobOffers, navApplications, navMessages, navLeaderboard, navProfile, navSettings})
+        for (Button b : new Button[]{navDashboard, navUsers, navJobOffers, navApplications, navMessages, navLeaderboard, navInterviews, navProfile, navSettings})
             applyNavStyle(b, b == active);
     }
 
@@ -903,6 +906,23 @@ public class DashboardPage {
         AddUserPage ap = new AddUserPage(this);
         Stage s = new Stage(); s.setTitle("Add New User");
         s.setScene(new Scene(ap.getRoot(), 600, 700)); s.show();
+    }
+
+    private void handleInterviews() {
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(
+                    getClass().getResource("/interview.fxml"));
+            javafx.scene.Parent fxmlRoot = loader.load();
+            Controller.InterviewPageController ctrl = loader.getController();
+            ctrl.setDashboardCenter(root);
+            root.setCenter(fxmlRoot);
+        } catch (Exception e) {
+            e.printStackTrace();
+            javafx.scene.control.Label err = new javafx.scene.control.Label(
+                    "Could not load Interviews page: " + e.getMessage());
+            err.setStyle("-fx-text-fill:#f43f5e; -fx-padding:20; -fx-font-size:14px;");
+            root.setCenter(err);
+        }
     }
 
     private void handleLeaderboard() {

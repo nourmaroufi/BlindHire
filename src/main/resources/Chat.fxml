@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
+
+<VBox spacing="0" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="Controller.ChatController"
+      stylesheets="/chat.css">
+
+    <!-- Chat Header -->
+    <HBox styleClass="chat-header" alignment="CENTER_LEFT" spacing="10">
+        <padding>
+            <Insets top="10" right="15" bottom="10" left="15"/>
+        </padding>
+        <ImageView fx:id="profileImage" fitHeight="40" fitWidth="40" styleClass="avatar"/>
+        <VBox spacing="2">
+            <!-- contactName now present so the other person's name shows up -->
+            <Label fx:id="contactName" text="" styleClass="contact-name"/>
+            <Label fx:id="contactStatus" text="" styleClass="contact-status"/>
+        </VBox>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button styleClass="header-button" text="⋯"/>
+    </HBox>
+
+    <!-- Message List -->
+    <ListView fx:id="messageListView" VBox.vgrow="ALWAYS"/>
+
+    <!-- Message Input Area -->
+    <HBox styleClass="input-area" spacing="10" alignment="CENTER_LEFT">
+        <padding>
+            <Insets top="10" right="15" bottom="10" left="15"/>
+        </padding>
+        <Button styleClass="emoji-button" text="😊" visible="false" managed="false"/>
+        <TextField fx:id="messageField" promptText="Type a message..." HBox.hgrow="ALWAYS"/>
+        <Button styleClass="attach-button" text="📎" visible="false" managed="false"/>
+        <Button styleClass="send-button" text="Send" onAction="#handleSend"/>
+    </HBox>
+
+</VBox>

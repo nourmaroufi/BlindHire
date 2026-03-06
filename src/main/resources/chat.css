@@ -1,0 +1,103 @@
+/* Root container */
+.root {
+    -fx-background-color: #f0f2f5;
+}
+
+/* Chat header */
+.chat-header {
+    -fx-background-color: white;
+    -fx-border-color: #e4e6eb;
+    -fx-border-width: 0 0 1 0;
+}
+
+.avatar {
+    -fx-background-radius: 50%;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);
+}
+
+.contact-name {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #050505;
+}
+
+.contact-status {
+    -fx-font-size: 12px;
+    -fx-text-fill: #65676b;
+}
+
+.header-button {
+    -fx-background-color: transparent;
+    -fx-font-size: 18px;
+    -fx-cursor: hand;
+}
+
+/* Message List */
+.list-view {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 5 15;
+}
+
+/* Message bubbles – applied in cell factory */
+.message-bubble {
+    -fx-background-radius: 18px;
+    -fx-padding: 8 12;
+    -fx-wrap-text: true;
+    -fx-max-width: 350px;
+    -fx-font-size: 14px;
+}
+
+.sent-message {
+    -fx-background-color: #0084ff;
+    -fx-text-fill: white;
+}
+
+.received-message {
+    -fx-background-color: #e4e6eb;
+    -fx-text-fill: black;
+}
+
+/* Timestamp label */
+.timestamp {
+    -fx-font-size: 11px;
+    -fx-text-fill: #8e8e8e;
+    -fx-padding: 0 5 0 5;
+}
+
+/* Input area */
+.input-area {
+    -fx-background-color: white;
+    -fx-border-color: #e4e6eb;
+    -fx-border-width: 1 0 0 0;
+}
+
+.text-field {
+    -fx-background-color: #f0f2f5;
+    -fx-background-radius: 20px;
+    -fx-padding: 8 15;
+    -fx-font-size: 14px;
+}
+
+.emoji-button, .attach-button {
+    -fx-background-color: transparent;
+    -fx-font-size: 20px;
+    -fx-cursor: hand;
+}
+
+.send-button {
+    -fx-background-color: #0084ff;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 20px;
+    -fx-padding: 8 20;
+    -fx-cursor: hand;
+}
+
+.send-button:hover {
+    -fx-background-color: #0073e6;
+}

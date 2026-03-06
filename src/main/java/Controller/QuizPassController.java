@@ -20,6 +20,7 @@ import Utils.Mydb;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.util.*;
+import Service.AiCandidateAnalysisService;
 import Service.TranslationService;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -33,6 +34,7 @@ public class QuizPassController {
     private final choiceqcmService choiceService    = new choiceqcmService();
     private final scoreService     scoreService     = new scoreService();
     private final TranslationService translationService = new TranslationService();
+    private final AiCandidateAnalysisService analysisService = new AiCandidateAnalysisService();
 
     private static final String SOURCE_LANG   = "en";
     private static final int    SECS_PER_Q    = 60;   // 1 minute per question
@@ -45,6 +47,7 @@ public class QuizPassController {
     private int        lastCorrect  = 0;
     private int        lastTotal    = 0;
     private String     lastJobTitle = "";
+    private String     lastSkills   = "";  // required_skills from job_offer, for AI analysis
 
     // Per-question answer tracking: questionId → chosen choiceqcm (null = skipped)
     private final Map<Integer, choiceqcm> answers = new LinkedHashMap<>();
@@ -167,6 +170,7 @@ public class QuizPassController {
                 lastJobTitle = rs.getString("title");
                 if (lastJobTitle == null) lastJobTitle = "Job #" + jobOfferId;
                 String reqSkills = rs.getString("required_skills");
+                lastSkills = (reqSkills != null) ? reqSkills : "";
                 view.lblJobTitle.setText("📋  " + lastJobTitle);
                 view.lblJobTitle.setVisible(true); view.lblJobTitle.setManaged(true);
                 if (reqSkills != null && !reqSkills.isBlank()) {
@@ -508,6 +512,8 @@ public class QuizPassController {
         view.lblTimer.setText("00:00");
 
         final boolean fTimesUp = timesUp;
+        final BigDecimal fPercent = lastPercent;
+        final String fSkills = lastSkills;
         // Capture stage NOW while view is still attached to a scene
         javafx.stage.Stage owner = (view.getScene() != null)
                 ? (javafx.stage.Stage) view.getScene().getWindow() : null;
@@ -517,8 +523,10 @@ public class QuizPassController {
                 w = (javafx.stage.Stage) view.getScene().getWindow();
             if (w == null) return;  // scene gone — silently skip popup
             ui.QuizResultPopup.show(w, lastJobTitle, currentUserId, currentJobOfferId,
-                    lastPercent, lastTotal, lastCorrect, fTimesUp,
-                    () -> view.btnBack.fire());
+                    fPercent, lastTotal, lastCorrect, fTimesUp,
+                    () -> view.btnBack.fire(),
+                    // AI analysis callback — only triggered if user clicks the button (score < 50)
+                    (p, s) -> runAiRemediation(p, fSkills));
         });
     }
 
@@ -540,4 +548,284 @@ public class QuizPassController {
         Alert a = new Alert(Alert.AlertType.ERROR);
         a.setTitle(title); a.setHeaderText(null); a.setContentText(msg); a.showAndWait();
     }
-}
+
+    // ── AI Remediation ────────────────────────────────────────────────────────
+
+    /**
+     * Runs Ollama AI analysis on a background thread, then shows the result dialog.
+     * Called when the candidate scored below 50% and clicks "Get AI Analysis" in the popup.
+     */
+    void runAiRemediation(BigDecimal percent, String skills) {
+        // Show a loading indicator while AI is thinking
+        javafx.stage.Stage loadingStage = new javafx.stage.Stage();
+        loadingStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+        loadingStage.setTitle("AI Analysis");
+        javafx.scene.control.Label loadingLbl = new javafx.scene.control.Label("🤖  Analyzing your results...\nThis may take a few seconds.");
+        loadingLbl.setStyle("-fx-font-size:14; -fx-font-family:'Segoe UI'; -fx-text-fill:#334155; -fx-padding:30;");
+        loadingLbl.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
+        loadingLbl.setWrapText(true);
+        loadingStage.setScene(new javafx.scene.Scene(new javafx.scene.layout.StackPane(loadingLbl), 340, 130));
+        loadingStage.show();
+
+        String prompt =
+                "YOUR RESPONSE MUST START WITH '{' — NO exceptions, no preamble, no 'Sure', no explanation.\n" +
+                        "Output ONLY a single raw JSON object. Nothing before '{'. Nothing after '}'.\n\n" +
+                        "Context:\n" +
+                        "- Candidate score: " + percent.toPlainString() + "% (FAILED, under 50%)\n" +
+                        "- Required job skills: " + (skills == null || skills.isBlank() ? "General technical skills" : skills) + "\n\n" +
+                        "Fill in this exact JSON (replace the placeholders):\n" +
+                        "{\n" +
+                        "  \"strength_summary\": \"...\",\n" +
+                        "  \"weakness_summary\": \"...\",\n" +
+                        "  \"hire_recommendation\": \"Borderline\",\n" +
+                        "  \"reasoning\": \"...\",\n" +
+                        "  \"resources\": [\n" +
+                        "    {\"title\": \"...\", \"type\": \"video\", \"url\": \"https://...\", \"why\": \"...\"},\n" +
+                        "    {\"title\": \"...\", \"type\": \"docs\",  \"url\": \"https://...\", \"why\": \"...\"}\n" +
+                        "  ]\n" +
+                        "}\n\n" +
+                        "Rules:\n" +
+                        "- hire_recommendation must be exactly one of: Hire, Borderline, No hire\n" +
+                        "- resources: 6-10 items, at least 3 videos and 2 official docs, all with real URLs\n" +
+                        "- Do NOT wrap in markdown. Do NOT add any text outside the JSON object.";
+
+        Thread t = new Thread(() -> {
+            try {
+                String json = analysisService.analyze(prompt);
+
+                // Debug: print raw JSON to console so you can see what the model returned
+                System.out.println("[AI RAW JSON]\n" + json);
+
+                // Normalize common alternative key names the model might use instead of the expected ones
+                json = json
+                        .replace("\"strengths\":",           "\"strength_summary\":")
+                        .replace("\"weaknesses\":",          "\"weakness_summary\":")
+                        .replace("\"strength\":",            "\"strength_summary\":")
+                        .replace("\"weakness\":",            "\"weakness_summary\":")
+                        .replace("\"recommendation\":",      "\"hire_recommendation\":")
+                        .replace("\"reason\":",              "\"reasoning\":")
+                        .replace("\"learning_resources\":",  "\"resources\":")
+                        .replace("\"suggested_resources\":", "\"resources\":")
+                        .replace("\"link\":",                "\"url\":")
+                        .replace("\"description\":",         "\"why\":");
+
+                com.google.gson.Gson gson = new com.google.gson.Gson();
+                dto.AiCandidateAnalysisDTO result = gson.fromJson(json, dto.AiCandidateAnalysisDTO.class);
+                javafx.application.Platform.runLater(() -> {
+                    loadingStage.close();
+                    showAnalysisDialog(result);
+                });
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                javafx.application.Platform.runLater(() -> {
+                    loadingStage.close();
+                    error("AI Analysis Error", "Could not get AI analysis:\n" + ex.getMessage());
+                });
+            }
+        });
+        t.setDaemon(true);
+        t.start();
+    }
+
+    private void showAnalysisDialog(dto.AiCandidateAnalysisDTO a) {
+        // ── Colours ───────────────────────────────────────────────────────────
+        String BG        = "#f0f8ff";   // alice blue page bg
+        String CARD_BG   = "#ffffff";
+        String CARD_BD   = "#bfdbfe";   // blue-200
+        String ACCENT    = "#3b82f6";   // blue-500
+        String ACCENT2   = "#0ea5e9";   // sky-500
+        String HEAD_BG   = "linear-gradient(to right,#3b82f6,#0ea5e9)";
+        String TEXT_DARK = "#1e3a5f";
+        String TEXT_MID  = "#475569";
+        String TEXT_LITE = "#64748b";
+
+        // ── Root scroll ───────────────────────────────────────────────────────
+        javafx.scene.layout.VBox root = new javafx.scene.layout.VBox(16);
+        root.setStyle("-fx-background-color:" + BG + "; -fx-padding:0;");
+        root.setPrefWidth(680);
+
+        // ── Header banner ─────────────────────────────────────────────────────
+        javafx.scene.layout.StackPane header = new javafx.scene.layout.StackPane();
+        header.setStyle("-fx-background-color:" + HEAD_BG + "; -fx-padding:22 28;");
+        javafx.scene.layout.VBox hContent = new javafx.scene.layout.VBox(4);
+        hContent.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+        javafx.scene.control.Label hTitle = new javafx.scene.control.Label("🤖  AI Candidate Analysis");
+        hTitle.setStyle("-fx-font-family:'Segoe UI'; -fx-font-size:20; -fx-font-weight:800; -fx-text-fill:white;");
+        javafx.scene.control.Label hSub = new javafx.scene.control.Label("Personalized insights based on your quiz performance");
+        hSub.setStyle("-fx-font-family:'Segoe UI'; -fx-font-size:12; -fx-text-fill:rgba(255,255,255,0.82);");
+        hContent.getChildren().addAll(hTitle, hSub);
+        header.getChildren().add(hContent);
+
+        // ── Body padding wrapper ───────────────────────────────────────────────
+        javafx.scene.layout.VBox body = new javafx.scene.layout.VBox(14);
+        body.setStyle("-fx-padding:18 24 10 24; -fx-background-color:" + BG + ";");
+
+        // ── Helper: section card ───────────────────────────────────────────────
+        // We'll build cards inline below
+
+        // ── Strengths card ────────────────────────────────────────────────────
+        body.getChildren().add(sectionCard("💪  Strengths", a.strength_summary,
+                "#dcfce7", "#16a34a", "#14532d"));
+
+        // ── Weaknesses card ───────────────────────────────────────────────────
+        body.getChildren().add(sectionCard("⚠️  Weaknesses", a.weakness_summary,
+                "#fef9c3", "#ca8a04", "#713f12"));
+
+        // ── Hire recommendation pill row ──────────────────────────────────────
+        javafx.scene.layout.HBox recRow = new javafx.scene.layout.HBox(12);
+        recRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+
+        String recText  = a.hire_recommendation != null ? a.hire_recommendation : "—";
+        String recBg    = recText.equalsIgnoreCase("Hire")       ? "#dcfce7" :
+                recText.equalsIgnoreCase("Borderline") ? "#fef9c3" : "#fee2e2";
+        String recColor = recText.equalsIgnoreCase("Hire")       ? "#16a34a" :
+                recText.equalsIgnoreCase("Borderline") ? "#ca8a04" : "#dc2626";
+
+        javafx.scene.control.Label recLabel = new javafx.scene.control.Label("🏅  Recommendation");
+        recLabel.setStyle("-fx-font-family:'Segoe UI'; -fx-font-size:13; -fx-font-weight:700; -fx-text-fill:" + TEXT_DARK + ";");
+        javafx.scene.control.Label recBadge = new javafx.scene.control.Label(recText);
+        recBadge.setStyle("-fx-background-color:" + recBg + "; -fx-text-fill:" + recColor + ";" +
+                "-fx-font-family:'Segoe UI'; -fx-font-weight:800; -fx-font-size:13;" +
+                "-fx-background-radius:999; -fx-padding:5 16;");
+        recRow.getChildren().addAll(recLabel, recBadge);
+
+        // ── Reasoning card ────────────────────────────────────────────────────
+        body.getChildren().add(recRow);
+        body.getChildren().add(sectionCard("📝  Reasoning", a.reasoning,
+                "#eff6ff", ACCENT, TEXT_DARK));
+
+        // ── Resources ─────────────────────────────────────────────────────────
+        if (a.resources != null && !a.resources.isEmpty()) {
+            javafx.scene.control.Label resTitle = new javafx.scene.control.Label("📚  Learning Resources");
+            resTitle.setStyle("-fx-font-family:'Segoe UI'; -fx-font-size:15; -fx-font-weight:800; -fx-text-fill:" + TEXT_DARK + ";");
+            body.getChildren().add(resTitle);
+
+            for (int i = 0; i < a.resources.size(); i++) {
+                var r = a.resources.get(i);
+
+                String typeColor = switch (r.type == null ? "" : r.type.toLowerCase()) {
+                    case "video"   -> "#7c3aed";
+                    case "docs"    -> "#0369a1";
+                    case "course"  -> "#0891b2";
+                    default        -> "#475569";
+                };
+                String typeBg = switch (r.type == null ? "" : r.type.toLowerCase()) {
+                    case "video"   -> "#ede9fe";
+                    case "docs"    -> "#e0f2fe";
+                    case "course"  -> "#cffafe";
+                    default        -> "#f1f5f9";
+                };
+
+                javafx.scene.layout.VBox resCard = new javafx.scene.layout.VBox(5);
+                resCard.setStyle("-fx-background-color:" + CARD_BG + ";" +
+                        "-fx-background-radius:12; -fx-border-radius:12;" +
+                        "-fx-border-color:" + CARD_BD + "; -fx-border-width:1;" +
+                        "-fx-padding:12 16;");
+
+                // Top row: number + type badge + title
+                javafx.scene.layout.HBox topRow = new javafx.scene.layout.HBox(8);
+                topRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+
+                javafx.scene.control.Label numLbl = new javafx.scene.control.Label(String.valueOf(i + 1));
+                numLbl.setStyle("-fx-background-color:" + ACCENT + "; -fx-text-fill:white;" +
+                        "-fx-font-size:11; -fx-font-weight:800; -fx-font-family:'Segoe UI';" +
+                        "-fx-background-radius:999; -fx-min-width:22; -fx-min-height:22;" +
+                        "-fx-alignment:center; -fx-padding:0 6;");
+
+                javafx.scene.control.Label typeLbl = new javafx.scene.control.Label(
+                        r.type != null ? r.type.toUpperCase() : "LINK");
+                typeLbl.setStyle("-fx-background-color:" + typeBg + "; -fx-text-fill:" + typeColor + ";" +
+                        "-fx-font-size:10; -fx-font-weight:800; -fx-font-family:'Segoe UI';" +
+                        "-fx-background-radius:999; -fx-padding:2 8;");
+
+                javafx.scene.control.Label titleLbl = new javafx.scene.control.Label(
+                        r.title != null ? r.title : "Resource");
+                titleLbl.setStyle("-fx-font-family:'Segoe UI'; -fx-font-size:13;" +
+                        "-fx-font-weight:700; -fx-text-fill:" + TEXT_DARK + ";");
+                titleLbl.setWrapText(true);
+                javafx.scene.layout.HBox.setHgrow(titleLbl, javafx.scene.layout.Priority.ALWAYS);
+
+                topRow.getChildren().addAll(numLbl, typeLbl, titleLbl);
+
+                // URL row
+                javafx.scene.control.Label urlLbl = new javafx.scene.control.Label(
+                        "🔗  " + (r.url != null ? r.url : ""));
+                urlLbl.setStyle("-fx-font-family:'Segoe UI'; -fx-font-size:11;" +
+                        "-fx-text-fill:" + ACCENT2 + "; -fx-cursor:hand;");
+                urlLbl.setWrapText(true);
+                // Click to open in browser
+                if (r.url != null && !r.url.isBlank()) {
+                    final String fUrl = r.url;
+                    urlLbl.setOnMouseClicked(ev -> {
+                        try { java.awt.Desktop.getDesktop().browse(new java.net.URI(fUrl)); }
+                        catch (Exception ignored) {}
+                    });
+                }
+
+                // Why row
+                javafx.scene.control.Label whyLbl = new javafx.scene.control.Label(
+                        "💡  " + (r.why != null ? r.why : ""));
+                whyLbl.setStyle("-fx-font-family:'Segoe UI'; -fx-font-size:11; -fx-text-fill:" + TEXT_LITE + ";");
+                whyLbl.setWrapText(true);
+
+                resCard.getChildren().addAll(topRow, urlLbl, whyLbl);
+                body.getChildren().add(resCard);
+            }
+        }
+
+        // Spacer at bottom
+        javafx.scene.layout.Region spacer = new javafx.scene.layout.Region();
+        spacer.setPrefHeight(8);
+        body.getChildren().add(spacer);
+
+        root.getChildren().addAll(header, body);
+
+        // ── Scroll pane ───────────────────────────────────────────────────────
+        javafx.scene.control.ScrollPane scroll = new javafx.scene.control.ScrollPane(root);
+        scroll.setFitToWidth(true);
+        scroll.setHbarPolicy(javafx.scene.control.ScrollPane.ScrollBarPolicy.NEVER);
+        scroll.setStyle("-fx-background-color:" + BG + "; -fx-background:transparent;" +
+                "-fx-border-color:transparent;");
+        scroll.setPrefViewportHeight(560);
+        scroll.setPrefWidth(700);
+
+        // ── Dialog ────────────────────────────────────────────────────────────
+        javafx.scene.control.Dialog<Void> d = new javafx.scene.control.Dialog<>();
+        d.setTitle("AI Analysis");
+        d.getDialogPane().setHeader(null);
+        d.getDialogPane().setStyle("-fx-background-color:" + BG + "; -fx-padding:0;");
+        d.getDialogPane().getButtonTypes().add(javafx.scene.control.ButtonType.CLOSE);
+        d.getDialogPane().setContent(scroll);
+
+        // Style the close button
+        d.getDialogPane().lookupButton(javafx.scene.control.ButtonType.CLOSE)
+                .setStyle("-fx-background-color:" + ACCENT + "; -fx-text-fill:white;" +
+                        "-fx-font-family:'Segoe UI'; -fx-font-weight:800; -fx-font-size:13;" +
+                        "-fx-background-radius:999; -fx-padding:8 24; -fx-cursor:hand;");
+
+        d.showAndWait();
+    }
+
+    /** Builds a titled content card with coloured left border. */
+    private javafx.scene.layout.VBox sectionCard(String title, String content,
+                                                 String bgColor, String accentColor,
+                                                 String textColor) {
+        javafx.scene.layout.VBox card = new javafx.scene.layout.VBox(6);
+        card.setStyle("-fx-background-color:" + bgColor + ";" +
+                "-fx-background-radius:12; -fx-border-radius:12;" +
+                "-fx-border-color:" + accentColor + "44; -fx-border-width:0 0 0 4;" +
+                "-fx-padding:12 16;");
+
+        javafx.scene.control.Label titleLbl = new javafx.scene.control.Label(title);
+        titleLbl.setStyle("-fx-font-family:'Segoe UI'; -fx-font-size:13; -fx-font-weight:800;" +
+                "-fx-text-fill:" + accentColor + ";");
+
+        javafx.scene.control.Label contentLbl = new javafx.scene.control.Label(
+                content != null ? content : "—");
+        contentLbl.setWrapText(true);
+        contentLbl.setStyle("-fx-font-family:'Segoe UI'; -fx-font-size:13;" +
+                "-fx-text-fill:" + textColor + "; -fx-line-spacing:2;");
+
+        card.getChildren().addAll(titleLbl, contentLbl);
+        return card;
+    }}

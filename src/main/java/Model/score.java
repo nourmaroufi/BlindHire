@@ -10,6 +10,7 @@ public class score {
     private BigDecimal score;
     private Timestamp createdAt;
     private String status;   // "accepted" or "rejected"
+    private String candidateUsername;  // joined from user table — set by scoreService.getAcceptedByJob()
 
     public score() {}
 
@@ -40,4 +41,8 @@ public class score {
     public void setCreatedAt(Timestamp v){ this.createdAt = v; }
     public String getStatus()            { return status; }
     public void setStatus(String v)      { this.status = v; }
+
+    /** Set by scoreService when joining with the user table. */
+    public String getCandidateUsername()         { return candidateUsername; }
+    public void   setCandidateUsername(String v) { this.candidateUsername = v; }
 }

@@ -21,7 +21,10 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 
 import java.io.IOException;
+import java.io.File;
 import java.net.URL;
+import javafx.stage.FileChooser;
+import Service.CandidaturePdfExportService;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -44,6 +47,7 @@ public class CandidatureController implements Initializable {
     @FXML private ComboBox<String> jobPositionFilter;
     @FXML private ComboBox<String> statusFilter;
     @FXML private Label paginationInfoLabel;
+    @FXML private Button exportPdfBtn;
 
     private int jobOfferFilterId = -1;
 
@@ -64,7 +68,7 @@ public class CandidatureController implements Initializable {
         candidateNameColumn.setCellValueFactory(cell -> {
             try {
                 User c = new CandidatureService().getCandidateUserById(cell.getValue().getCandidateId());
-                return new ReadOnlyStringWrapper(c != null ? c.getNom() + " " + c.getPrenom() : "Unknown");
+                return new ReadOnlyStringWrapper(c != null && c.getUsername() != null ? c.getUsername() : "Anonymous");
             } catch (SQLException e) {
                 e.printStackTrace();
                 return new ReadOnlyStringWrapper("Error");
@@ -256,10 +260,10 @@ public class CandidatureController implements Initializable {
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Application details");
-        alert.setHeaderText((candidate != null ? candidate.getNom() + " " + candidate.getPrenom() : "Unknown") + " - " + jobTitle);
+        alert.setHeaderText((candidate != null ? candidate.getUsername() != null ? candidate.getUsername() : "Anonymous" : "Unknown") + " - " + jobTitle);
         alert.setContentText(String.format(
                 "Candidate: %s\nPosition: %s\nApplied: %s\nExperience: %s\nStatus: %s",
-                candidate != null ? candidate.getNom() + " " + candidate.getPrenom() : "Unknown",
+                candidate != null ? candidate.getUsername() != null ? candidate.getUsername() : "Anonymous" : "Unknown",
                 jobTitle,
                 c.getApplicationDate(),
                 candidate != null ? candidate.getExperience() : "n/a",
@@ -270,47 +274,46 @@ public class CandidatureController implements Initializable {
     private void handleAcceptApplication(Candidature c) {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Accept application");
-        confirm.setHeaderText("Accept candidate ID " + c.getCandidateId());
-        confirm.setContentText("Are you sure? All other applicants for this job will be automatically rejected.");
+        confirm.setHeaderText("Accept candidate " + c.getCandidateId());
+        confirm.setContentText("Are you sure you want to accept this application?");
 
         confirm.showAndWait().ifPresent(response -> {
             if (response != ButtonType.OK) return;
 
             CandidatureService service = new CandidatureService();
 
-            // ── 1. Accept this one & reject all others for the same job ──
+            // ── 1. Accept this candidature only ──────────────────────────────
             try {
                 service.acceptAndRejectOthers(c.getId(), c.getJobOfferId());
             } catch (SQLException e) {
                 e.printStackTrace();
-                showErrorAlert("Database Error", "Failed to update statuses in the database.");
+                showErrorAlert("Database Error", "Failed to update status in the database.");
                 return;
             }
 
-            // ── 2. Close the job offer ──
+            // ── 2. Close the job offer ────────────────────────────────────────
             try {
                 new JobOfferService().closeJobOffer(c.getJobOfferId());
             } catch (Exception e) {
-                e.printStackTrace(); // don't block UI if this fails
+                e.printStackTrace();
             }
 
-            // ── 3. Send acceptance email + in-app notification to accepted candidate ──
+            // ── 3. Send acceptance email + in-app notification ────────────────
             try {
                 User candidate = service.getCandidateUserById(c.getCandidateId());
                 String jobTitle = service.getJobTitleById(c.getJobOfferId());
                 if (candidate != null) {
-                    // Email
+                    String displayName = candidate.getUsername() != null ? candidate.getUsername() : "Candidate";
                     if (candidate.getEmail() != null) {
                         new EmailService().sendEmail(
                                 candidate.getEmail(),
                                 "Your application has been accepted – " + jobTitle,
-                                "Dear " + candidate.getNom() + " " + candidate.getPrenom() + ",\n\n" +
+                                "Dear " + displayName + ",\n\n" +
                                         "Congratulations! We are pleased to inform you that your application for \"" + jobTitle + "\" has been accepted.\n\n" +
                                         "Our team will be in touch with you shortly regarding the next steps.\n\n" +
                                         "Best regards,\nBlindHire Team"
                         );
                     }
-                    // In-app notification — jobOfferId passed so clicking opens the quiz
                     new NotificationCService().createNotification(
                             candidate.getId(),
                             "accepted",
@@ -323,35 +326,12 @@ public class CandidatureController implements Initializable {
                 e.printStackTrace();
             }
 
-            // ── 4. Send rejection emails to all other applicants for this job ──
-            try {
-                String jobTitle = service.getJobTitleById(c.getJobOfferId());
-                List<Candidature> others = service.getCandidaturesByJobOfferId(c.getJobOfferId());
-                for (Candidature other : others) {
-                    if (other.getId() == c.getId()) continue;
-                    User otherCandidate = service.getCandidateUserById(other.getCandidateId());
-                    if (otherCandidate != null && otherCandidate.getEmail() != null) {
-                        new EmailService().sendEmail(
-                                otherCandidate.getEmail(),
-                                "Update on your application – " + jobTitle,
-                                "Dear " + otherCandidate.getNom() + " " + otherCandidate.getPrenom() + ",\n\n" +
-                                        "Thank you for applying for \"" + jobTitle + "\".\n\n" +
-                                        "After careful consideration, another candidate was selected for this position.\n\n" +
-                                        "We encourage you to apply for future opportunities that match your profile.\n\n" +
-                                        "Best regards,\nBlindHire Team"
-                        );
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            // ── 5. Reload the table so statuses update visually ──
+            // ── 4. Reload the table ───────────────────────────────────────────
             loadApplications();
-            showSuccessAlert("Application accepted",
-                    "Candidate ID " + c.getCandidateId() + " accepted. Job offer closed. All other applicants rejected.");
+            showSuccessAlert("Application accepted", "Candidate accepted successfully.");
         });
     }
+
 
     private void handleRejectApplication(Candidature c) {
         TextInputDialog dialog = new TextInputDialog();
@@ -387,7 +367,7 @@ public class CandidatureController implements Initializable {
                         new EmailService().sendEmail(
                                 candidate.getEmail(),
                                 "Update on your application – " + jobTitle,
-                                "Dear " + candidate.getNom() + " " + candidate.getPrenom() + ",\n\n" +
+                                "Dear " + candidate.getUsername() != null ? candidate.getUsername() : "Anonymous" + ",\n\n" +
                                         "Thank you for applying for \"" + jobTitle + "\".\n\n" +
                                         "After careful consideration, we regret to inform you that your application has not been selected at this time.\n\n" +
                                         "Reason: " + reason + "\n\n" +
@@ -421,4 +401,57 @@ public class CandidatureController implements Initializable {
         alert.setContentText(message);
         alert.showAndWait();
     }
+    // ── EXPORT PDF ────────────────────────────────────────────────────────────
+
+    @FXML
+    private void handleExportPdf() {
+        java.util.List<Candidature> items = applicationsTable.getItems();
+        if (items == null || items.isEmpty()) {
+            Alert a = new Alert(Alert.AlertType.INFORMATION);
+            a.setTitle("Export PDF"); a.setHeaderText(null);
+            a.setContentText("No applications to export."); a.showAndWait();
+            return;
+        }
+
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Save Applications PDF");
+        chooser.setInitialFileName("candidatures.pdf");
+        chooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
+        Stage stage = (Stage) exportPdfBtn.getScene().getWindow();
+        File dest = chooser.showSaveDialog(stage);
+        if (dest == null) return;
+
+        exportPdfBtn.setDisable(true);
+        exportPdfBtn.setText("⏳  Exporting...");
+
+        new Thread(() -> {
+            try {
+                CandidatureService svc = new CandidatureService();
+                CandidaturePdfExportService.export(items, svc, dest.getAbsolutePath());
+
+                javafx.application.Platform.runLater(() -> {
+                    exportPdfBtn.setDisable(false);
+                    exportPdfBtn.setText("📄  Export PDF");
+                    Alert ok = new Alert(Alert.AlertType.INFORMATION);
+                    ok.setTitle("Export Successful"); ok.setHeaderText(null);
+                    ok.setContentText("PDF saved:\n" + dest.getAbsolutePath());
+                    ok.showAndWait();
+                    try { java.awt.Desktop.getDesktop().open(dest); } catch (Exception ignored) {}
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+                javafx.application.Platform.runLater(() -> {
+                    exportPdfBtn.setDisable(false);
+                    exportPdfBtn.setText("📄  Export PDF");
+                    Alert err = new Alert(Alert.AlertType.ERROR);
+                    err.setTitle("Export Failed"); err.setHeaderText(null);
+                    err.setContentText("Could not generate PDF:\n" + e.getMessage());
+                    err.showAndWait();
+                });
+            }
+        }).start();
+    }
+
+
 }

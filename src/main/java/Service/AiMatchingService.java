@@ -16,9 +16,7 @@ import java.io.IOException;
 public class AiMatchingService {
 
     private static final String GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
-    private static final String MODEL        = "llama-3.1-8b-instant"; // fast & free on Groq
-
-    /**
+    private static final String MODEL = "llama-3.1-8b-instant";    /**
      * Returns a match score 0-100 between job requirements and candidate skills.
      *
      * @param jobSkills       Required skills from the job offer.
@@ -28,19 +26,19 @@ public class AiMatchingService {
     public static String getMatchScore(String jobSkills, String candidateSkills) throws IOException {
 
         // 1. Try environment variable (works in terminal/production)
-        String apiKey = System.getenv("GROQ_API_KEY");
-
+        String apiKey = "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";
         // 2. Try Java system property (set in IDE run config via -DGROQ_API_KEY=...)
         if (apiKey == null || apiKey.isEmpty())
-            apiKey = System.getProperty("GROQ_API_KEY");
+            apiKey = System.getProperty("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");
 
         // 3. Hardcoded fallback for development — replace with your key from https://console.groq.com
         if (apiKey == null || apiKey.isEmpty())
-            apiKey = "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";
+            apiKey = "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";
 
+        System.out.println("API KEY = " + apiKey);
         // Handle missing/empty skill data gracefully
         if (jobSkills == null || jobSkills.isBlank()) {
-            return "50"; // neutral score when job has no listed skills
+            return "0"; // neutral score when job has no listed skills
         }
         if (candidateSkills == null || candidateSkills.isBlank()) {
             return "0";  // no candidate skills = no match

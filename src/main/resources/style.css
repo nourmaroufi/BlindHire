@@ -1,0 +1,350 @@
+/* Root container */
+.root {
+    -fx-background-color: #f4f7fc;
+    -fx-font-family: "Segoe UI", "System", sans-serif;
+}
+
+/* Header banner with gradient */
+.header-banner {
+    -fx-background-color: linear-gradient(to right, #2b3a67, #3f5277);
+    -fx-background-radius: 12px;
+    -fx-padding: 20px 25px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0, 0, 4);
+}
+
+.header-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 5, 0, 0, 2);
+}
+
+/* ScrollPane transparent background */
+.transparent-scrollpane {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.transparent-scrollpane > .viewport {
+    -fx-background-color: transparent;
+}
+
+/* Interview list container */
+.interview-list {
+    -fx-background-color: transparent;
+}
+
+/* Interview Card */
+.interview-card {
+    -fx-background-color: white;
+    -fx-background-radius: 16px;
+    -fx-padding: 18px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0, 0, 4);
+    -fx-border-color: #eaeef3;
+    -fx-border-radius: 16px;
+    -fx-spacing: 12px;
+}
+
+.interview-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 18, 0, 0, 8);
+    -fx-translate-y: -2px;
+    -fx-transition: translate-y 0.2s ease;
+}
+
+/* Header row inside card (icon + type badge) */
+.card-header {
+    -fx-alignment: center-left;
+    -fx-spacing: 12px;
+}
+
+/* Icon for interview type (emoji fallback) */
+.type-icon {
+    -fx-font-size: 28px;
+    -fx-min-width: 40px;
+    -fx-alignment: center;
+}
+
+/* Badge for interview type */
+.type-badge {
+    -fx-background-color: #e6f0ff;
+    -fx-background-radius: 20px;
+    -fx-padding: 5px 15px;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2b3a67;
+}
+
+/* Details grid */
+.details-grid {
+    -fx-hgap: 20px;
+    -fx-vgap: 8px;
+    -fx-padding: 5px 0 5px 0;
+}
+
+.detail-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #2c3e50;
+}
+
+.detail-value {
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #1a2639;
+}
+
+/* Separator */
+.card-separator {
+    -fx-background-color: #e0e6ed;
+    -fx-padding: 0 0 1px 0;
+    -fx-max-height: 1px;
+}
+
+/* Action buttons row */
+.card-actions {
+    -fx-alignment: center-right;
+    -fx-spacing: 10px;
+    -fx-padding: 5px 0 0 0;
+}
+
+/* Chat button */
+.chat-button {
+    -fx-background-color: #2b3a67;
+    -fx-background-radius: 25px;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 20px;
+    -fx-cursor: hand;
+    -fx-font-size: 13px;
+}
+
+.chat-button:hover {
+    -fx-background-color: #3f5277;
+    -fx-effect: dropshadow(gaussian, rgba(43,58,103,0.4), 8, 0, 0, 2);
+}
+
+/* Empty state message */
+.empty-message {
+    -fx-font-size: 16px;
+    -fx-text-fill: #7f8c8d;
+    -fx-padding: 40px;
+    -fx-alignment: center;
+}
+/* ===== Header Banner ===== */
+.header-banner {
+    -fx-background-color: linear-gradient(to right, #1a2980, #26d0ce);
+    -fx-background-radius: 15;
+    -fx-padding: 20;
+}
+
+.header-label {
+    -fx-text-fill: white;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+
+/* ===== Calendar Styling ===== */
+.calendar-wrapper {
+    -fx-background-color: white;
+    -fx-background-radius: 20;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 15,0,0,5);
+}
+/* ===== Dashboard Cards ===== */
+.interview-card {
+    -fx-background-color: white;
+    -fx-background-radius: 15;
+    -fx-padding: 15;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10,0,0,3);
+}
+/* ===== Modern Tabs ===== */
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-background-color: transparent;
+}
+
+.tab-pane .tab {
+    -fx-background-color: #e6ecf5;
+    -fx-background-radius: 15 15 0 0;
+    -fx-padding: 8 20 8 20;
+}
+
+.tab-pane .tab:selected {
+    -fx-background-color: #1a2980;
+}
+
+.tab-pane .tab:selected .tab-label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.tab-pane .tab-label {
+    -fx-text-fill: #1a2980;
+    -fx-font-size: 14px;
+}
+
+
+/* ===================================================
+   DARK NAVY OVERRIDES — matches DashboardPage tokens
+   =================================================== */
+
+/* Page background */
+.root {
+    -fx-background-color: #0f172a;
+}
+
+/* Tab pane chrome — fully transparent so our card shows through */
+.tab-pane {
+    -fx-background-color: transparent;
+}
+
+.tab-pane > .tab-header-area {
+    -fx-background-color: transparent;
+    -fx-padding: 0 0 0 0;
+}
+
+.tab-pane > .tab-header-area > .tab-header-background {
+    -fx-background-color: transparent;
+}
+
+/* Individual tab pill */
+.tab-pane .tab {
+    -fx-background-color: rgba(30,41,59,0.70);
+    -fx-background-radius: 10 10 0 0;
+    -fx-padding: 9 22 9 22;
+    -fx-border-width: 0;
+    -fx-cursor: hand;
+}
+
+.tab-pane .tab .tab-label {
+    -fx-text-fill: rgba(255,255,255,0.45);
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-font-family: 'Segoe UI', Arial;
+}
+
+/* Selected tab — indigo accent */
+.tab-pane .tab:selected {
+    -fx-background-color: #1e293b;
+    -fx-background-radius: 10 10 0 0;
+    -fx-border-color: rgba(99,102,241,0.50) rgba(99,102,241,0.50) transparent rgba(99,102,241,0.50);
+    -fx-border-width: 1.5;
+    -fx-border-radius: 10 10 0 0;
+}
+
+.tab-pane .tab:selected .tab-label {
+    -fx-text-fill: #818cf8;
+    -fx-font-weight: bold;
+}
+
+/* Tab content area */
+.tab-pane > .tab-content-area {
+    -fx-background-color: #1e293b;
+    -fx-background-radius: 0 16 16 16;
+    -fx-border-color: rgba(148,163,184,0.10);
+    -fx-border-width: 1;
+    -fx-border-radius: 0 16 16 16;
+    -fx-padding: 0;
+}
+
+/* Search / filter text field */
+.text-field {
+    -fx-background-color: rgba(15,23,42,0.80);
+    -fx-border-color: rgba(148,163,184,0.18);
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-text-fill: #f1f5f9;
+    -fx-prompt-text-fill: #475569;
+    -fx-padding: 8 12;
+    -fx-font-size: 13px;
+}
+
+.text-field:focused {
+    -fx-border-color: rgba(6,182,212,0.55);
+    -fx-effect: dropshadow(gaussian, rgba(6,182,212,0.15), 8, 0, 0, 0);
+}
+
+/* ComboBox dark styling */
+.combo-box {
+    -fx-background-color: rgba(15,23,42,0.80);
+    -fx-border-color: rgba(148,163,184,0.18);
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+}
+
+.combo-box .list-cell {
+    -fx-text-fill: #f1f5f9;
+    -fx-background-color: rgba(15,23,42,0.80);
+    -fx-font-size: 13px;
+}
+
+.combo-box-popup .list-view {
+    -fx-background-color: #1e293b;
+    -fx-border-color: rgba(99,102,241,0.30);
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+}
+
+.combo-box-popup .list-view .list-cell {
+    -fx-text-fill: #e2e8f0;
+    -fx-background-color: transparent;
+    -fx-padding: 8 14;
+}
+
+.combo-box-popup .list-view .list-cell:hover {
+    -fx-background-color: rgba(99,102,241,0.18);
+}
+
+/* ScrollPane dark chrome */
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-border-width: 0;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar:vertical,
+.scroll-bar:horizontal {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar:vertical .track,
+.scroll-bar:horizontal .track {
+    -fx-background-color: rgba(255,255,255,0.05);
+    -fx-background-radius: 4;
+}
+
+.scroll-bar:vertical .thumb,
+.scroll-bar:horizontal .thumb {
+    -fx-background-color: rgba(99,102,241,0.35);
+    -fx-background-radius: 4;
+}
+
+/* Interview row cards — dark card style */
+.interview-card {
+    -fx-background-color: rgba(30,41,59,0.85);
+    -fx-background-radius: 12;
+    -fx-border-color: rgba(148,163,184,0.10);
+    -fx-border-width: 1;
+    -fx-border-radius: 12;
+    -fx-padding: 12 16;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.30), 10, 0, 0, 3);
+}
+
+.interview-card:hover {
+    -fx-background-color: rgba(99,102,241,0.10);
+    -fx-border-color: rgba(99,102,241,0.30);
+    -fx-effect: dropshadow(gaussian, rgba(99,102,241,0.18), 14, 0, 0, 4);
+}
+
+/* Calendar wrapper */
+.calendar-wrapper {
+    -fx-background-color: #1e293b;
+    -fx-background-radius: 20;
+    -fx-border-color: rgba(148,163,184,0.10);
+    -fx-border-width: 1;
+    -fx-border-radius: 20;
+    -fx-padding: 4;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 20, 0, 0, 6);
+}

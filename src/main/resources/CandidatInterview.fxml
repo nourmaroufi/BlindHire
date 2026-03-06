@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="Controller.FrontOffice.InterviewController"
+      spacing="0"
+      style="-fx-background-color: linear-gradient(to bottom right, #e8f5f3, #d5edf4, #e2eef8);">
+
+    <!-- ── HEADER ─────────────────────────────────────────────────────────── -->
+    <StackPane style="-fx-background-color: linear-gradient(to right, #0c4a6e, #0fafdd);
+                      -fx-effect: dropshadow(gaussian, rgba(15,175,221,0.30), 18, 0, 0, 5);">
+
+        <VBox>
+            <!-- Top row: title + buttons -->
+            <HBox alignment="CENTER_LEFT" spacing="16">
+                <padding><Insets top="22" right="28" bottom="14" left="28"/></padding>
+
+                <VBox spacing="4">
+                    <Label text="My Interviews"
+                           style="-fx-font-size: 26px; -fx-font-weight: bold;
+                                  -fx-text-fill: white; -fx-font-family: 'Segoe UI';"/>
+                    <Label text="Track your upcoming and past interviews"
+                           style="-fx-font-size: 13px; -fx-text-fill: rgba(255,255,255,0.72);"/>
+                </VBox>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <Button text="🎯  Practice Interview"
+                        onAction="#goToPracticeInterview"
+                        style="-fx-background-color: white;
+                               -fx-text-fill: #0fafdd;
+                               -fx-font-size: 13px; -fx-font-weight: bold;
+                               -fx-padding: 10 22; -fx-background-radius: 25;
+                               -fx-border-color: white; -fx-border-width: 2;
+                               -fx-border-radius: 25; -fx-cursor: hand;
+                               -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 6, 0, 0, 2);"/>
+
+                <StackPane fx:id="notificationPane" style="-fx-cursor: hand;">
+                    <Label fx:id="bellLabel" text="🔔"
+                           style="-fx-font-size: 20px;
+                                  -fx-background-color: rgba(255,255,255,0.18);
+                                  -fx-background-radius: 50; -fx-padding: 9;"/>
+                    <Label fx:id="notifBadge" text="0"
+                           style="-fx-background-color: #ef4444; -fx-text-fill: white;
+                                  -fx-background-radius: 10; -fx-font-size: 10px;
+                                  -fx-padding: 1 5; -fx-font-weight: bold;"
+                           StackPane.alignment="TOP_RIGHT" visible="false"/>
+                </StackPane>
+            </HBox>
+
+            <!-- Custom tab bar sits at the bottom of the header -->
+            <HBox fx:id="tabBar" spacing="4" alignment="CENTER_LEFT">
+                <padding><Insets left="28" right="28"/></padding>
+            </HBox>
+        </VBox>
+
+    </StackPane>
+
+    <!-- ── NOTIFICATION DROPDOWN ──────────────────────────────────────────── -->
+    <VBox fx:id="notificationDropdown" spacing="8"
+          visible="false" managed="false"
+          style="-fx-background-color: white;
+                 -fx-border-color: #bae6fd; -fx-border-radius: 16;
+                 -fx-background-radius: 16; -fx-padding: 16;
+                 -fx-effect: dropshadow(gaussian, rgba(15,175,221,0.20), 14, 0, 0, 5);
+                 -fx-border-width: 1.5;">
+        <VBox.margin><Insets left="28" right="28" top="4"/></VBox.margin>
+        <Label text="Notifications"
+               style="-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #0c4a6e;"/>
+        <VBox fx:id="notificationList" spacing="6"/>
+    </VBox>
+
+    <!-- ── TAB CONTENT AREA ───────────────────────────────────────────────── -->
+    <StackPane fx:id="tabContentArea" VBox.vgrow="ALWAYS"
+               style="-fx-background-color: transparent;">
+
+        <!-- UPCOMING TAB PANE -->
+        <ScrollPane fx:id="upcomingPane" fitToWidth="true"
+                    style="-fx-background-color: transparent;
+                           -fx-border-color: transparent;
+                           -fx-background: transparent;">
+            <VBox fx:id="interviewContainer" spacing="16">
+                <padding><Insets top="24" right="28" bottom="24" left="28"/></padding>
+            </VBox>
+        </ScrollPane>
+
+        <!-- PAST INTERVIEWS TAB PANE -->
+        <VBox fx:id="pastPane" visible="false" managed="false" spacing="0">
+
+            <HBox spacing="12" alignment="CENTER_RIGHT"
+                  style="-fx-background-color: white;
+                         -fx-padding: 12 28;
+                         -fx-border-color: #e2e8f0;
+                         -fx-border-width: 0 0 1 0;
+                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 4, 0, 0, 2);">
+                <Label text="Filter by status:"
+                       style="-fx-font-weight: bold; -fx-text-fill: #0c4a6e; -fx-font-size: 13px;"/>
+                <ComboBox fx:id="statusFilterComboBox" prefWidth="170"
+                          style="-fx-background-radius: 20;
+                                 -fx-border-radius: 20;
+                                 -fx-border-color: #0fafdd;
+                                 -fx-border-width: 1.5;
+                                 -fx-font-size: 13px;"/>
+            </HBox>
+
+            <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                        style="-fx-background-color: transparent;
+                               -fx-border-color: transparent;
+                               -fx-background: transparent;">
+                <VBox fx:id="pastContainer" spacing="16">
+                    <padding><Insets top="24" right="28" bottom="24" left="28"/></padding>
+                </VBox>
+            </ScrollPane>
+        </VBox>
+
+
+        <!-- ACCEPTED OFFER TAB PANE -->
+        <VBox fx:id="acceptedOfferPane" visible="false" managed="false" spacing="0"
+              style="-fx-background-color: transparent;">
+            <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                        style="-fx-background-color: transparent;
+                               -fx-border-color: transparent;
+                               -fx-background: transparent;">
+                <VBox fx:id="acceptedOfferContainer" spacing="20">
+                    <padding><Insets top="24" right="28" bottom="24" left="28"/></padding>
+                </VBox>
+            </ScrollPane>
+        </VBox>
+
+    </StackPane>
+
+</VBox>

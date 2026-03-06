@@ -1,4 +1,5 @@
 package ui;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -183,13 +184,14 @@ public class HomePage {
                         "-fx-padding: 0 8 10 8;"
         );
 
-        Button[] navBtns = new Button[6];
+        Button[] navBtns = new Button[7];
         navBtns[0] = createNavButton(new String(Character.toChars(0x1F3E0)), "Home",       true);
         navBtns[1] = createNavButton(new String(Character.toChars(0x1F4BC)), "Jobs",       false);
         navBtns[2] = createNavButton(new String(Character.toChars(0x1F3E2)), "Companies",  false);
         navBtns[3] = createNavButton(new String(Character.toChars(0x1F464)), "My Profile", false);
         navBtns[4] = createNavButton(new String(Character.toChars(0x1F4CA)), "Dashboard",  false);
         navBtns[5] = createNavButton(new String(Character.toChars(0x1F4DD)), "My Quizzes", false);
+        navBtns[6] = createNavButton(new String(Character.toChars(0x1F4C5)), "Interviews",  false);
 
         navBtns[0].setOnAction(e -> { setActiveBtn(navBtns, 0); root.setCenter(createMainContent()); });
         navBtns[1].setOnAction(e -> {
@@ -208,6 +210,25 @@ public class HomePage {
         navBtns[3].setOnAction(e -> { setActiveBtn(navBtns, 3); root.setCenter(new Profilepage(currentUser).getRoot()); });
         navBtns[4].setOnAction(e -> { setActiveBtn(navBtns, 4); showComingSoon("Dashboard"); });
         navBtns[5].setOnAction(e -> { setActiveBtn(navBtns, 5); openQuizzesPage(); });
+        navBtns[6].setOnAction(e -> {
+            setActiveBtn(navBtns, 6);
+            try {
+                FXMLLoader loader = new FXMLLoader(
+                        getClass().getResource("/CandidatInterview.fxml"));
+
+                Parent view = loader.load();
+
+                Controller.FrontOffice.InterviewController ctrl = loader.getController();
+                ctrl.setHomeBorderPane(root);   // ⭐ VERY IMPORTANT
+                ctrl.setCurrentUser(currentUser); // pass real user ID
+
+                root.setCenter(view);
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                showComingSoon("Interviews");
+            }
+        });
 
         menuBox.getChildren().add(menuLabel);
         for (Button b : navBtns) menuBox.getChildren().add(b);

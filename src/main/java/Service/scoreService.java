@@ -85,6 +85,35 @@ public class scoreService {
         return getLeaderboardByJobOffer(jobOfferId);
     }
 
+
+    /** Returns all scores with status='accepted' for a given job offer, joined with user username. */
+    public List<score> getAcceptedByJob(int jobOfferId) throws SQLException {
+        List<score> list = new ArrayList<>();
+        PreparedStatement ps = conn().prepareStatement(
+                "SELECT s.id_score, s.id_user, s.job_offer_id, s.score, s.created_at, s.status, " +
+                        "       COALESCE(NULLIF(u.username, ''), CONCAT(u.nom, ' ', u.prenom)) AS candidate_username " +
+                        "FROM score s " +
+                        "JOIN user u ON s.id_user = u.id " +
+                        "WHERE s.job_offer_id=? AND s.status='accepted' ORDER BY s.score DESC");
+        ps.setInt(1, jobOfferId);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            score s = map(rs);
+            s.setCandidateUsername(rs.getString("candidate_username"));
+            list.add(s);
+        }
+        return list;
+    }
+
+    /** Counts accepted scores for a given job offer. */
+    public int countAcceptedByJob(int jobOfferId) throws SQLException {
+        PreparedStatement ps = conn().prepareStatement(
+                "SELECT COUNT(*) FROM score WHERE job_offer_id=? AND status='accepted'");
+        ps.setInt(1, jobOfferId);
+        ResultSet rs = ps.executeQuery();
+        return rs.next() ? rs.getInt(1) : 0;
+    }
+
     private score map(ResultSet rs) throws SQLException {
         score s = new score();
         s.setIdScore(rs.getInt("id_score"));

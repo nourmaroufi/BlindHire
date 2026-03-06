@@ -23,6 +23,12 @@ import java.math.BigDecimal;
 
 public class QuizResultPopup {
 
+    /** Callback invoked when user clicks "Get AI Analysis" (score < 50 only). */
+    @FunctionalInterface
+    public interface AiCallback {
+        void run(java.math.BigDecimal percent, String skills);
+    }
+
     public static void show(Stage owner,
                             String jobTitle,
                             int userId,
@@ -32,6 +38,20 @@ public class QuizResultPopup {
                             int correctAnswers,
                             boolean timesUp,
                             Runnable onClose) {
+        show(owner, jobTitle, userId, jobOfferId, percent, totalQuestions,
+                correctAnswers, timesUp, onClose, null);
+    }
+
+    public static void show(Stage owner,
+                            String jobTitle,
+                            int userId,
+                            int jobOfferId,
+                            BigDecimal percent,
+                            int totalQuestions,
+                            int correctAnswers,
+                            boolean timesUp,
+                            Runnable onClose,
+                            AiCallback aiCallback) {
 
         Stage popup = new Stage(StageStyle.TRANSPARENT);
         popup.initModality(Modality.APPLICATION_MODAL);
@@ -43,7 +63,7 @@ public class QuizResultPopup {
         backdrop.setOpacity(0);
 
         VBox card = buildCard(jobTitle, userId, jobOfferId, percent,
-                totalQuestions, correctAnswers, timesUp, popup, onClose);
+                totalQuestions, correctAnswers, timesUp, popup, onClose, aiCallback);
         card.setMaxWidth(500);
         card.setTranslateY(44);
         card.setOpacity(0);
@@ -70,7 +90,8 @@ public class QuizResultPopup {
     // ─────────────────────────────────────────────────────────────────────────
     private static VBox buildCard(String jobTitle, int userId, int jobOfferId,
                                   BigDecimal percent, int totalQ, int correct,
-                                  boolean timesUp, Stage popup, Runnable onClose) {
+                                  boolean timesUp, Stage popup, Runnable onClose,
+                                  AiCallback aiCallback) {
 
         double  pct    = (percent == null) ? 0 : percent.doubleValue();
         boolean passed = pct >= 50;
@@ -186,7 +207,7 @@ public class QuizResultPopup {
         msg.setStyle("-fx-font-family:'Segoe UI'; -fx-font-size:12; -fx-text-fill:#64748B; -fx-padding:0 26;");
         VBox.setMargin(msg, new Insets(10, 0, 0, 0));
 
-        // ── Close button ──────────────────────────────────────────────────────
+        // ── Close button (declared here so both branches below can reference it) ──
         Label btnClose = new Label("Close");
         btnClose.setPrefWidth(210);
         btnClose.setAlignment(Pos.CENTER);
@@ -205,9 +226,35 @@ public class QuizResultPopup {
             ft.setOnFinished(ev -> { popup.close(); if (onClose != null) onClose.run(); });
             ft.play();
         });
-        VBox.setMargin(btnClose, new Insets(14, 22, 24, 22));
+        VBox.setMargin(btnClose, new Insets(10, 22, 24, 22));
 
-        card.getChildren().addAll(banner, ring, pctLbl, pills, div, details, msg, btnClose);
+        // ── AI Analysis button (only shown when failed AND callback available) ──
+        if (!passed && aiCallback != null) {
+            final BigDecimal fPercent = percent;
+            Label btnAi = new Label("✨  Show Recommendations");
+            btnAi.setPrefWidth(310);
+            btnAi.setAlignment(Pos.CENTER);
+            btnAi.setStyle(
+                    "-fx-background-color: linear-gradient(to right, #6366f1, #8b5cf6);" +
+                            "-fx-text-fill: white; -fx-font-family:'Segoe UI'; -fx-font-weight: 800;" +
+                            "-fx-font-size:13; -fx-background-radius:999; -fx-padding:12 0; -fx-cursor:hand;");
+            btnAi.setEffect(new DropShadow(10, 0, 3, Color.web("#6366f1", 0.4)));
+            btnAi.setOnMouseEntered(e -> btnAi.setScaleX(1.04));
+            btnAi.setOnMouseExited(e  -> btnAi.setScaleX(1.00));
+            btnAi.setOnMouseClicked(e -> {
+                Scene sc = card.getScene();
+                Runnable triggerAi = () -> aiCallback.run(fPercent, jobTitle);
+                if (sc == null) { popup.close(); triggerAi.run(); return; }
+                FadeTransition ft = new FadeTransition(Duration.millis(160), sc.getRoot());
+                ft.setToValue(0);
+                ft.setOnFinished(ev -> { popup.close(); triggerAi.run(); });
+                ft.play();
+            });
+            VBox.setMargin(btnAi, new Insets(14, 22, 0, 22));
+            card.getChildren().addAll(banner, ring, pctLbl, pills, div, details, msg, btnAi, btnClose);
+        } else {
+            card.getChildren().addAll(banner, ring, pctLbl, pills, div, details, msg, btnClose);
+        }
         return card;
     }
 

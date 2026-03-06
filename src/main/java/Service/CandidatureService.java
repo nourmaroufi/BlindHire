@@ -40,19 +40,11 @@ public class CandidatureService {
      * Accepts one candidature and automatically rejects all others for the same job.
      */
     public void acceptAndRejectOthers(int acceptedCandidatureId, int jobId) throws SQLException {
-        // Accept the chosen one
+        // Accept the chosen one only — others keep their current status
         PreparedStatement accept = cnx.prepareStatement(
                 "UPDATE candidature SET status='accepted' WHERE id=?");
         accept.setInt(1, acceptedCandidatureId);
         accept.executeUpdate();
-
-        // Reject all others for the same job
-        PreparedStatement reject = cnx.prepareStatement(
-                "UPDATE candidature SET status='rejected', rejection_reason='Another candidate was selected for this position.' " +
-                        "WHERE job_id=? AND id != ? AND status != 'rejected'");
-        reject.setInt(1, jobId);
-        reject.setInt(2, acceptedCandidatureId);
-        reject.executeUpdate();
     }
     public void addCandidature(Candidature candidature) throws SQLException {
         String sql =
@@ -127,7 +119,7 @@ public class CandidatureService {
      */
     public User getCandidateUserById(int userId) throws SQLException {
         PreparedStatement ps = cnx.prepareStatement(
-                "SELECT id, nom, prenom, mail, role, skills, experience " +
+                "SELECT id, nom, prenom, mail, role, skills, experience, username " +
                         "FROM user WHERE id = ?");
         ps.setInt(1, userId);
         ResultSet rs = ps.executeQuery();
@@ -139,6 +131,7 @@ public class CandidatureService {
             u.setEmail(rs.getString("mail"));
             u.setSkills(rs.getString("skills"));
             u.setExperience(rs.getString("experience"));
+            u.setUsername(rs.getString("username"));
             try { u.setRole(Role.valueOf(rs.getString("role"))); }
             catch (Exception ignored) {}
             return u;

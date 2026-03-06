@@ -111,9 +111,9 @@ public class LeaderboardController {
             try {
                 User u = new Service.CandidatureService().getCandidateUserById(uid);
                 if (u != null) {
-                    String n = ((u.getPrenom() != null ? u.getPrenom() : "") + " " +
-                            (u.getNom()    != null ? u.getNom()    : "")).trim();
-                    map.put(uid, n.isEmpty() ? "User #" + uid : n);
+                    String n = u.getUsername() != null && !u.getUsername().isBlank()
+                            ? u.getUsername() : "User #" + uid;
+                    map.put(uid, n);
                 } else {
                     map.put(uid, "User #" + uid);
                 }

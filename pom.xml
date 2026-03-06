@@ -16,8 +16,6 @@
     </properties>
 
     <dependencies>
-        <!-- Jakarta Mail -->
-        <!-- Single JavaMail jar — jakarta.mail.* imports (used by NotificationService + EmailService) -->
         <dependency>
             <groupId>com.sun.mail</groupId>
             <artifactId>jakarta.mail</artifactId>
@@ -111,6 +109,26 @@
             <artifactId>gson</artifactId>
             <version>2.11.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.calendarfx</groupId>
+            <artifactId>view</artifactId>
+            <version>11.12.0</version>
+        </dependency>
+
+        <dependency>
+               <groupId>com.itextpdf</groupId>
+                 <artifactId>itextpdf</artifactId>
+                 <version>5.5.13.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-web</artifactId>
+            <version>20.0.2</version>
+        </dependency>
+
+
+
     </dependencies>
 
     <build>
@@ -121,6 +139,7 @@
                 <version>0.0.8</version>
                 <configuration>
                     <mainClass>ui.BlindHireApp</mainClass>
+
                 </configuration>
             </plugin>
         </plugins>

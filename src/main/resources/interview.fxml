@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<!--
+  interview.fxml — NO external CSS, everything inline
+  TabPane replaced with custom HBox tab bar + StackPane switcher (wired in Java)
+  so tabs look exactly right on the dark navy background.
+  PAGE_BG #0f172a · CARD_BG #1e293b · Indigo #6366f1 · Cyan #06b6d4
+-->
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="Controller.InterviewPageController"
+      spacing="0"
+      style="-fx-background-color: #0f172a;">
+
+    <padding>
+        <Insets top="36" right="40" bottom="40" left="40"/>
+    </padding>
+
+    <!-- ═══════════════════════════ HEADER ═══════════════════════════ -->
+    <HBox alignment="CENTER_LEFT" spacing="18"
+          style="-fx-padding: 0 0 30 0;">
+
+        <!-- Gradient icon badge -->
+        <StackPane prefWidth="54" prefHeight="54" minWidth="54" minHeight="54"
+                   style="-fx-background-color: linear-gradient(to bottom right, #6366f1, #06b6d4);
+                          -fx-background-radius: 16;
+                          -fx-effect: dropshadow(gaussian, rgba(99,102,241,0.55), 16, 0, 0, 6);">
+            <Label text="📅" style="-fx-font-size: 26px;"/>
+        </StackPane>
+
+        <VBox spacing="5">
+            <Label text="Interviews Dashboard"
+                   style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+            <Label text="Manage, review and track all your scheduled interviews"
+                   style="-fx-font-size: 13px; -fx-text-fill: #7dd3fc;"/>
+        </VBox>
+
+        <Region HBox.hgrow="ALWAYS"/>
+
+        <Button text="➕  Create Interviews"
+                onAction="#openCreateInterviewsPage"
+                style="-fx-background-color: linear-gradient(to right, #6366f1, #818cf8);
+                       -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold;
+                       -fx-background-radius: 25; -fx-padding: 13 26; -fx-cursor: hand;
+                       -fx-effect: dropshadow(gaussian, rgba(99,102,241,0.55), 16, 0, 0, 5);"/>
+    </HBox>
+
+    <!-- ═══════════════════════════ CUSTOM TAB BAR ═══════════════════════════ -->
+    <!-- Built entirely in Java (initialize) so we get full style control      -->
+    <HBox fx:id="tabBar" spacing="4" alignment="CENTER_LEFT"
+          style="-fx-padding: 0 0 0 4;"/>
+
+    <!-- ═══════════════════════════ CONTENT CARD ════════════════════════════ -->
+    <StackPane fx:id="tabContentArea" VBox.vgrow="ALWAYS"
+               style="-fx-background-color: #1e293b;
+                      -fx-background-radius: 0 18 18 18;
+                      -fx-border-color: rgba(99,102,241,0.30);
+                      -fx-border-width: 1.5;
+                      -fx-border-radius: 0 18 18 18;
+                      -fx-padding: 28;
+                      -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.40), 24, 0, 0, 8);">
+
+        <!-- ══════ PANE 0 — Overview (upcoming cards) ══════ -->
+        <ScrollPane fx:id="overviewPane" fitToWidth="true"
+                    style="-fx-background-color: transparent;
+                           -fx-background: transparent; -fx-border-width: 0;">
+            <VBox fx:id="overviewContainer" spacing="20"
+                  style="-fx-background-color: transparent;"/>
+        </ScrollPane>
+
+        <!-- ══════ PANE 1 — Dashboard table ══════ -->
+        <VBox fx:id="dashboardPane" spacing="16"
+              style="-fx-background-color: transparent;"
+              visible="false" managed="false">
+
+            <!-- Search + filter toolbar -->
+            <HBox spacing="14" alignment="CENTER_LEFT"
+                  style="-fx-background-color: rgba(15,23,42,0.80);
+                         -fx-background-radius: 14;
+                         -fx-border-color: rgba(99,102,241,0.30);
+                         -fx-border-width: 1.5; -fx-border-radius: 14;
+                         -fx-padding: 13 20;">
+                <Label text="🔍"
+                       style="-fx-font-size: 15px; -fx-text-fill: #818cf8;"/>
+                <TextField fx:id="searchField"
+                           promptText="Search by score, job, type, status…"
+                           prefWidth="340"
+                           style="-fx-background-color: transparent; -fx-border-width: 0;
+                                  -fx-text-fill: white; -fx-font-size: 13px;
+                                  -fx-prompt-text-fill: #64748b;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label text="TYPE"
+                       style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #a5b4fc;"/>
+                <ComboBox fx:id="filterTypeComboBox" prefWidth="140"
+                          style="-fx-background-color: rgba(99,102,241,0.18);
+                                 -fx-border-color: rgba(99,102,241,0.40);
+                                 -fx-border-radius: 9; -fx-background-radius: 9;"/>
+            </HBox>
+
+            <!-- Column header row -->
+            <HBox spacing="10"
+                  style="-fx-background-color: rgba(99,102,241,0.15);
+                         -fx-background-radius: 11;
+                         -fx-border-color: rgba(99,102,241,0.35);
+                         -fx-border-width: 1; -fx-border-radius: 11;
+                         -fx-padding: 11 16;">
+                <Label text="SCORE"           prefWidth="120"
+                       style="-fx-font-size:11px; -fx-font-weight:bold; -fx-text-fill:#c7d2fe;"/>
+                <Label text="DATE &amp; TIME" prefWidth="160"
+                       style="-fx-font-size:11px; -fx-font-weight:bold; -fx-text-fill:#c7d2fe;"/>
+                <Label text="TYPE"            prefWidth="110"
+                       style="-fx-font-size:11px; -fx-font-weight:bold; -fx-text-fill:#c7d2fe;"/>
+                <Label text="JOB OFFER"       prefWidth="130"
+                       style="-fx-font-size:11px; -fx-font-weight:bold; -fx-text-fill:#c7d2fe;"/>
+                <Label text="INTERVIEWER"     prefWidth="120"
+                       style="-fx-font-size:11px; -fx-font-weight:bold; -fx-text-fill:#c7d2fe;"/>
+                <Label text="LOCATION"        prefWidth="180"
+                       style="-fx-font-size:11px; -fx-font-weight:bold; -fx-text-fill:#c7d2fe;"/>
+                <Label text="NOTES"           prefWidth="150"
+                       style="-fx-font-size:11px; -fx-font-weight:bold; -fx-text-fill:#c7d2fe;"/>
+                <Label text="ACTIONS"         prefWidth="220"
+                       style="-fx-font-size:11px; -fx-font-weight:bold; -fx-text-fill:#c7d2fe;"/>
+            </HBox>
+
+            <!-- Scrollable data rows injected by controller -->
+            <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                        style="-fx-background-color: transparent;
+                               -fx-background: transparent; -fx-border-width: 0;"
+                        vbarPolicy="AS_NEEDED" hbarPolicy="AS_NEEDED">
+                <VBox fx:id="interviewContainer" spacing="8"
+                      style="-fx-background-color: transparent;"/>
+            </ScrollPane>
+        </VBox>
+
+        <!-- ══════ PANE 2 — Calendar ══════ -->
+        <VBox fx:id="calendarPane" alignment="TOP_CENTER"
+              style="-fx-background-color: transparent;"
+              visible="false" managed="false">
+            <VBox fx:id="calendarContainer"
+                  style="-fx-background-color: #0f172a;
+                         -fx-background-radius: 14;
+                         -fx-border-color: rgba(99,102,241,0.25);
+                         -fx-border-width: 1; -fx-border-radius: 14;"
+                  prefWidth="900" prefHeight="560"/>
+        </VBox>
+
+        <!-- ══════ PANE 3 — Past Interviews ══════ -->
+        <VBox fx:id="pastPane" spacing="16"
+              style="-fx-background-color: transparent;"
+              visible="false" managed="false">
+
+            <!-- Status filter -->
+            <HBox spacing="14" alignment="CENTER_RIGHT"
+                  style="-fx-background-color: rgba(15,23,42,0.80);
+                         -fx-background-radius: 12;
+                         -fx-border-color: rgba(99,102,241,0.30);
+                         -fx-border-width: 1.5; -fx-border-radius: 12;
+                         -fx-padding: 13 20;">
+                <Label text="FILTER BY STATUS"
+                       style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #a5b4fc;"/>
+                <ComboBox fx:id="pastStatusFilterComboBox" prefWidth="160"
+                          style="-fx-background-color: rgba(99,102,241,0.18);
+                                 -fx-border-color: rgba(99,102,241,0.40);
+                                 -fx-border-radius: 9; -fx-background-radius: 9;"/>
+            </HBox>
+
+            <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                        style="-fx-background-color: transparent;
+                               -fx-background: transparent; -fx-border-width: 0;">
+                <VBox fx:id="pastInterviewContainer" spacing="12"
+                      style="-fx-background-color: transparent;"/>
+            </ScrollPane>
+        </VBox>
+
+
+        <!-- ══════ PANE 4 — Accepted Candidates (identity revealed) ══════ -->
+        <VBox fx:id="acceptedPane" spacing="16"
+              style="-fx-background-color: transparent;"
+              visible="false" managed="false">
+
+            <Label text="🏆  Accepted Candidates"
+                   style="-fx-font-size: 20px; -fx-font-weight: bold;
+                          -fx-text-fill: white; -fx-padding: 0 0 6 0;"/>
+
+            <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                        style="-fx-background-color: transparent;
+                               -fx-background: transparent; -fx-border-width: 0;">
+                <VBox fx:id="acceptedContainer" spacing="16"
+                      style="-fx-background-color: transparent;"/>
+            </ScrollPane>
+
+        </VBox>
+
+    </StackPane>
+
+</VBox>

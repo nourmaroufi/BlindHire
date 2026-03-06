@@ -52,6 +52,17 @@
 
                 <!-- Cover Letter with Floating Label Effect -->
                 <VBox spacing="6">
+                    <HBox alignment="CENTER_LEFT" spacing="12">
+
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="generateLetterBtn"
+                                text="&#x2728; Generate with AI"
+                                onAction="#handleGenerateLetter"
+                                style="-fx-background-color: linear-gradient(to right, #7c3aed, #0fafdd);
+                                       -fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold;
+                                       -fx-background-radius: 20; -fx-padding: 7 18; -fx-cursor: hand;
+                                       -fx-effect: dropshadow(gaussian, rgba(124,58,237,0.30), 8, 0, 0, 3);"/>
+                    </HBox>
                     <Label text="Cover Letter"
                            style="-fx-font-weight:600;
                                   -fx-text-fill:#475569;

@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.time.LocalDate;
 import Utils.NavigationManager;
+import Service.AIPracticeService;
 
 /**
  * AddCandidatureController
@@ -35,6 +36,7 @@ public class AddCandidatureController {
     @FXML private TextField salaryField;
     @FXML private CheckBox  termsCheckBox;
     @FXML private Button    submitButton;
+    @FXML private Button    generateLetterBtn;
 
     private File     selectedCV;
     private JobOffer selectedJob;
@@ -188,6 +190,64 @@ public class AddCandidatureController {
             }
         }
         return true;
+    }
+
+    // ── GENERATE COVER LETTER ────────────────────────────────────────────────────
+
+    @FXML
+    private void handleGenerateLetter() {
+        if (currentUser == null) {
+            showAlert(Alert.AlertType.WARNING, "Not Logged In", "No user session found.");
+            return;
+        }
+        if (selectedJob == null) {
+            showAlert(Alert.AlertType.WARNING, "No Job", "Job context is missing.");
+            return;
+        }
+
+        // Collect profile info (anonymous: username, bio, skills only)
+        String username = currentUser.getUsername() != null ? currentUser.getUsername() : "Candidate";
+        String bio      = currentUser.getBio()      != null && !currentUser.getBio().isBlank()
+                ? currentUser.getBio()    : "motivated professional";
+        String skills   = currentUser.getSkills()   != null && !currentUser.getSkills().isBlank()
+                ? currentUser.getSkills() : "various relevant skills";
+        String jobTitle = selectedJob.getTitle();
+
+        // Disable button and show loading
+        generateLetterBtn.setDisable(true);
+        generateLetterBtn.setText("⏳ Generating...");
+        coverLetterField.setPromptText("Generating your letter...");
+
+        new Thread(() -> {
+            try {
+                String prompt =
+                        "Write a professional cover letter for a job application. " +
+                                "The applicant goes by the username "+ username +
+                        "Their bio: " + bio + ". " +
+                        "Their skills: " + skills + ". " +
+                        "The job they are applying for: " + jobTitle  +
+                        "Write the letter in first person, 3 short paragraphs. " +
+                        "Do NOT include any real name, email, phone, or address — keep the applicant anonymous. " +
+                        "Start directly with the letter body (no 'Dear Hiring Manager' header). " +
+                        "Keep it concise, enthusiastic, and professional.";
+
+                AIPracticeService ai = new AIPracticeService();
+                String letter = ai.askAI(prompt);
+
+                javafx.application.Platform.runLater(() -> {
+                    coverLetterField.setText(letter != null ? letter.trim() : "");
+                    generateLetterBtn.setDisable(false);
+                    generateLetterBtn.setText("Generate cover letter with AI");
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+                javafx.application.Platform.runLater(() -> {
+                    showAlert(Alert.AlertType.ERROR, "AI Error", "Could not generate letter: " + e.getMessage());
+                    generateLetterBtn.setDisable(false);
+                    generateLetterBtn.setText("✨ Generate cover letter with AI");
+                });
+            }
+        }).start();
     }
 
     // ── NAVIGATION ───────────────────────────────────────────────────────────────

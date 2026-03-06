@@ -13,6 +13,9 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.awt.Desktop;
+import java.io.File;
+import java.net.URI;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -31,6 +34,7 @@ public class CandidatureDetailsController implements Initializable {
     @FXML private Label educationLabel;
     @FXML private Label applicationDateLabel;
     @FXML private Label experienceLabel;
+    @FXML private Label salaryLabel;
     @FXML private TextArea coverLetterArea;
     @FXML private FlowPane skillsContainer;
     @FXML private VBox rejectionReasonContainer;
@@ -49,80 +53,48 @@ public class CandidatureDetailsController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         candidatureService = new CandidatureService();
         jobOfferService = new JobOfferService();
-        setupButtonHoverEffects(); // Add this line
+        // Hover effects are set up in setCandidature() after the scene is attached
     }
 
     public void setCandidature(Candidature candidature, CandidatureController parentController) {
         this.candidature = candidature;
         this.parentController = parentController;
         loadCandidatureDetails();
+        setupButtonHoverEffects();
     }
 
     private void setupButtonHoverEffects() {
         // View Resume button hover
-        viewResumeButton.setOnMouseEntered(e -> {
-            viewResumeButton.setStyle("-fx-background-color: rgba(99,102,241,0.28); -fx-text-fill: #a5b4fc; " +
-                    "-fx-border-color: linear-gradient(to right, #1e40af, #2563eb); " +
-                    "-fx-border-width: 2; -fx-border-radius: 15; -fx-background-radius: 15; " +
-                    "-fx-padding: 14 25; -fx-font-size: 14px; -fx-font-weight: bold; " +
-                    "-fx-cursor: hand; -fx-effect: dropshadow(gaussian, #2563eb80, 10, 0, 0, 2);");
-        });
-
-        viewResumeButton.setOnMouseExited(e -> {
-            viewResumeButton.setStyle("-fx-background-color: rgba(99,102,241,0.15); -fx-text-fill: #818cf8; " +
-                    "-fx-border-color: linear-gradient(to right, #2563eb, #3b82f6); " +
-                    "-fx-border-width: 2; -fx-border-radius: 15; -fx-background-radius: 15; " +
-                    "-fx-padding: 14 25; -fx-font-size: 14px; -fx-font-weight: bold; -fx-cursor: hand;");
-        });
+        viewResumeButton.setOnMouseEntered(e ->
+                viewResumeButton.setStyle("-fx-background-color: rgba(99,102,241,0.28); -fx-text-fill: #a5b4fc; " +
+                        "-fx-border-color: rgba(99,102,241,0.60); " +
+                        "-fx-border-width: 1.5; -fx-border-radius: 12; -fx-background-radius: 12; " +
+                        "-fx-padding: 10 22; -fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand;"));
+        viewResumeButton.setOnMouseExited(e ->
+                viewResumeButton.setStyle("-fx-background-color: rgba(99,102,241,0.15); -fx-text-fill: #818cf8; " +
+                        "-fx-border-color: rgba(99,102,241,0.40); " +
+                        "-fx-border-width: 1.5; -fx-border-radius: 12; -fx-background-radius: 12; " +
+                        "-fx-padding: 10 22; -fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand;"));
 
         // Accept button hover
-        acceptButton.setOnMouseEntered(e -> {
-            acceptButton.setStyle("-fx-background-color: linear-gradient(to right, #059669, #047857); " +
-                    "-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; " +
-                    "-fx-background-radius: 15; -fx-padding: 14 25; -fx-cursor: hand; " +
-                    "-fx-effect: dropshadow(gaussian, #10b981, 20, 0.4, 0, 6);");
-        });
-
-        acceptButton.setOnMouseExited(e -> {
-            acceptButton.setStyle("-fx-background-color: linear-gradient(to right, #10b981, #059669); " +
-                    "-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; " +
-                    "-fx-background-radius: 15; -fx-padding: 14 25; -fx-cursor: hand; " +
-                    "-fx-effect: dropshadow(gaussian, #10b98180, 15, 0.3, 0, 4);");
-        });
+        acceptButton.setOnMouseEntered(e ->
+                acceptButton.setStyle("-fx-background-color: linear-gradient(to bottom right, #047857, #059669); " +
+                        "-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 13px; " +
+                        "-fx-background-radius: 12; -fx-padding: 10 26; -fx-cursor: hand; -fx-border-width: 0;"));
+        acceptButton.setOnMouseExited(e ->
+                acceptButton.setStyle("-fx-background-color: linear-gradient(to bottom right, #059669, #10b981); " +
+                        "-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 13px; " +
+                        "-fx-background-radius: 12; -fx-padding: 10 26; -fx-cursor: hand; -fx-border-width: 0;"));
 
         // Reject button hover
-        rejectButton.setOnMouseEntered(e -> {
-            rejectButton.setStyle("-fx-background-color: linear-gradient(to right, #dc2626, #b91c1c); " +
-                    "-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; " +
-                    "-fx-background-radius: 15; -fx-padding: 14 25; -fx-cursor: hand; " +
-                    "-fx-effect: dropshadow(gaussian, #ef4444, 20, 0.4, 0, 6);");
-        });
-
-        rejectButton.setOnMouseExited(e -> {
-            rejectButton.setStyle("-fx-background-color: linear-gradient(to right, #ef4444, #dc2626); " +
-                    "-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; " +
-                    "-fx-background-radius: 15; -fx-padding: 14 25; -fx-cursor: hand; " +
-                    "-fx-effect: dropshadow(gaussian, #ef444480, 15, 0.3, 0, 4);");
-        });
-
-        // Close button hover
-        Button closeButton = (Button) viewResumeButton.getScene().lookup("#closeButton");
-        if (closeButton != null) {
-            closeButton.setOnMouseEntered(e -> {
-                closeButton.setStyle("-fx-background-color: #f8fafc; -fx-text-fill: #334155; " +
-                        "-fx-border-color: linear-gradient(to right, #64748b, #475569); " +
-                        "-fx-border-width: 2; -fx-border-radius: 15; -fx-background-radius: 15; " +
-                        "-fx-padding: 14 30; -fx-font-size: 14px; -fx-font-weight: bold; " +
-                        "-fx-cursor: hand; -fx-effect: dropshadow(gaussian, #64748b80, 10, 0, 0, 2);");
-            });
-
-            closeButton.setOnMouseExited(e -> {
-                closeButton.setStyle("-fx-background-color: white; -fx-text-fill: #475569; " +
-                        "-fx-border-color: linear-gradient(to right, #94a3b8, #64748b); " +
-                        "-fx-border-width: 2; -fx-border-radius: 15; -fx-background-radius: 15; " +
-                        "-fx-padding: 14 30; -fx-font-size: 14px; -fx-font-weight: bold; -fx-cursor: hand;");
-            });
-        }
+        rejectButton.setOnMouseEntered(e ->
+                rejectButton.setStyle("-fx-background-color: linear-gradient(to bottom right, #be123c, #e11d48); " +
+                        "-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 13px; " +
+                        "-fx-background-radius: 12; -fx-padding: 10 26; -fx-cursor: hand; -fx-border-width: 0;"));
+        rejectButton.setOnMouseExited(e ->
+                rejectButton.setStyle("-fx-background-color: linear-gradient(to bottom right, #e11d48, #f43f5e); " +
+                        "-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 13px; " +
+                        "-fx-background-radius: 12; -fx-padding: 10 26; -fx-cursor: hand; -fx-border-width: 0;"));
     }
     private void loadCandidatureDetails() {
         try {
@@ -132,19 +104,16 @@ public class CandidatureDetailsController implements Initializable {
 
             // Set basic information
             if (candidate != null) {
-                String fullName = candidate.getNom() + " " + candidate.getPrenom();
-                candidateNameLabel.setText(fullName);
+                // Anonymous mode — show username only
+                String username = candidate.getUsername() != null ? candidate.getUsername() : "Anonymous";
+                candidateNameLabel.setText(username);
 
-                // Set avatar initials
-                String initials = (candidate.getNom() != null && !candidate.getNom().isEmpty() ?
-                        candidate.getNom().substring(0, 1) : "") +
-                        (candidate.getPrenom() != null && !candidate.getPrenom().isEmpty() ?
-                                candidate.getPrenom().substring(0, 1) : "");
-                avatarInitials.setText(initials.isEmpty() ? "?" : initials);
+                // Avatar: first char of username
+                avatarInitials.setText(username.substring(0, 1).toUpperCase());
 
-                // Contact information
-                emailLabel.setText(candidate.getEmail() != null ? candidate.getEmail() : "Not provided");
-                phoneLabel.setText(candidate.getPhone() != null ? candidate.getPhone() : "Not provided");
+                // Contact information hidden for anonymity
+                emailLabel.setText("Hidden");
+                phoneLabel.setText("Hidden");
 
                 // Education
                 educationLabel.setText(candidate.getDiplomas() != null ?
@@ -154,10 +123,10 @@ public class CandidatureDetailsController implements Initializable {
                 experienceLabel.setText(candidate.getExperience() != null ?
                         candidate.getExperience() : "Not specified");
             } else {
-                candidateNameLabel.setText("Unknown Candidate");
+                candidateNameLabel.setText("Anonymous");
                 avatarInitials.setText("?");
-                emailLabel.setText("Not provided");
-                phoneLabel.setText("Not provided");
+                emailLabel.setText("Hidden");
+                phoneLabel.setText("Hidden");
                 educationLabel.setText("Not specified");
                 experienceLabel.setText("Not specified");
             }
@@ -168,6 +137,11 @@ public class CandidatureDetailsController implements Initializable {
             // Application date
             applicationDateLabel.setText(candidature.getApplicationDate() != null ?
                     candidature.getApplicationDate().toString() : "Not specified");
+
+            // Salary
+            Double salary = candidature.getExpectedSalary();
+            salaryLabel.setText(salary != null && salary > 0
+                    ? String.format("%.0f TND", salary) : "—");
 
             // Status badge
             updateStatusBadge(candidature.getStatus());
@@ -253,25 +227,66 @@ public class CandidatureDetailsController implements Initializable {
 
     @FXML
     private void handleViewResume() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Resume/CV");
-        alert.setHeaderText("Resume for " + candidateNameLabel.getText());
-
-        if (candidature != null && candidature.getCvPath() != null && !candidature.getCvPath().isEmpty()) {
-            alert.setContentText("CV/Resume path: " + candidature.getCvPath() + "\n\n" +
-                    "In a real implementation, this would open the candidate's CV/Resume file.");
-        } else {
-            alert.setContentText("No resume/CV has been uploaded for this candidate.");
+        if (candidature == null || candidature.getCvPath() == null || candidature.getCvPath().isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("No CV");
+            alert.setHeaderText(null);
+            alert.setContentText("No CV has been uploaded for this candidate.");
+            alert.showAndWait();
+            return;
         }
 
-        alert.showAndWait();
+        String cvPath = candidature.getCvPath().trim();
+
+        try {
+            // URL → open in browser
+            if (cvPath.startsWith("http://") || cvPath.startsWith("https://")) {
+                Desktop.getDesktop().browse(new URI(cvPath));
+                return;
+            }
+
+            // Local file — try absolute path first, then relative to working dir
+            File file = new File(cvPath);
+            if (!file.exists()) {
+                file = new File(System.getProperty("user.dir"), cvPath);
+            }
+
+            if (!file.exists()) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("File Not Found");
+                alert.setHeaderText(null);
+                alert.setContentText("Could not find the CV file at:\n" + cvPath);
+                alert.showAndWait();
+                return;
+            }
+
+            if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {
+                Desktop.getDesktop().open(file);
+            } else {
+                String os = System.getProperty("os.name").toLowerCase();
+                if (os.contains("win")) {
+                    Runtime.getRuntime().exec(new String[]{"rundll32", "url.dll,FileProtocolHandler", file.getAbsolutePath()});
+                } else if (os.contains("mac")) {
+                    Runtime.getRuntime().exec(new String[]{"open", file.getAbsolutePath()});
+                } else {
+                    Runtime.getRuntime().exec(new String[]{"xdg-open", file.getAbsolutePath()});
+                }
+            }
+
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error Opening CV");
+            alert.setHeaderText(null);
+            alert.setContentText("Could not open the CV:\n" + e.getMessage());
+            alert.showAndWait();
+        }
     }
 
     @FXML
     private void handleAccept() {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Accept Application");
-        confirm.setHeaderText("Accept " + candidateNameLabel.getText() + " for " + jobTitleLabel.getText());
+        confirm.setHeaderText("Accept candidate " + candidateNameLabel.getText() + " for " + jobTitleLabel.getText());
         confirm.setContentText("Are you sure? All other applicants for this job will be automatically rejected.");
 
         Optional<ButtonType> result = confirm.showAndWait();
@@ -297,7 +312,7 @@ public class CandidatureDetailsController implements Initializable {
                         new EmailService().sendEmail(
                                 candidate.getEmail(),
                                 "Your application has been accepted – " + jobTitle,
-                                "Dear " + candidate.getNom() + " " + candidate.getPrenom() + ",\n\n" +
+                                "Dear Candidate" + ",\n\n" +
                                         "Congratulations! We are pleased to inform you that your application for \"" + jobTitle + "\" has been accepted.\n\n" +
                                         "Our team will be in touch with you shortly regarding the next steps.\n\n" +
                                         "Best regards,\nBlindHire Team"
@@ -389,7 +404,7 @@ public class CandidatureDetailsController implements Initializable {
                         new EmailService().sendEmail(
                                 candidate.getEmail(),
                                 "Update on your application – " + jobTitle,
-                                "Dear " + candidate.getNom() + " " + candidate.getPrenom() + ",\n\n" +
+                                "Dear Candidate" + ",\n\n" +
                                         "Thank you for applying for \"" + jobTitle + "\".\n\n" +
                                         "After careful consideration, we regret to inform you that your application has not been selected at this time.\n\n" +
                                         "Reason: " + reason + "\n\n" +

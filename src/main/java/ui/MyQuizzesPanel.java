@@ -298,7 +298,6 @@ public class MyQuizzesPanel extends StackPane {
         jobTitle.setMaxWidth(264);
         jobTitle.setEllipsisString("…");
         Label jobId = new Label("Job #" + row.jobOfferId());
-        jobId.setStyle("-fx-font-family:'Segoe UI'; -fx-font-size:11; -fx-text-fill:" + C_SLATE + ";");
         jobCol.getChildren().addAll(jobTitle, jobId);
 
         // ── 2. CANDIDATURE STATUS ─────────────────────────────────────────────

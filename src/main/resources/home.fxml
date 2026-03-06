@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.chart.*?>
+
+<BorderPane prefHeight="900.0" prefWidth="1400.0"
+            style="-fx-background-color: linear-gradient(to bottom right, #eef2ff, #fdfbff);"
+            xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="Controller.HomeController">
+
+    <!-- ================= LEFT SIDEBAR ================= -->
+    <left>
+        <VBox prefWidth="230"
+              spacing="30"
+              style="-fx-background-color: linear-gradient(to bottom, #1a2980, #26d0ce);
+                     -fx-padding: 30;">
+
+            <children>
+
+                <!-- Logo -->
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <children>
+                        <Circle radius="15" fill="white"/>
+                        <Label text="BLINDHIRE"
+                               style="-fx-font-size: 18px;
+                                      -fx-font-weight: bold;
+                                      -fx-text-fill: white;"/>
+                    </children>
+                </HBox>
+
+                <!-- Navigation -->
+                <VBox spacing="18">
+                    <children>
+                        <Button text="Dashboard"
+                                onAction="#gotodashboard"
+                                style="-fx-background-color: white;
+                       -fx-text-fill: #1a2980;
+                       -fx-background-radius: 12;"/>
+
+                        <Button text="Job Offers"
+                                onAction="#goToJobOffers"
+                                style="-fx-background-color: transparent;
+                       -fx-text-fill: white;"/>
+                        <Button text="Interviews"
+                                onAction="#gotoInterviews"
+                                style="-fx-background-color: transparent;
+                       -fx-text-fill: white;"/>
+
+                        <Button text="Candidats"
+                                onAction="#gotocandidat"
+                                style="-fx-background-color: transparent;
+                       -fx-text-fill: white;"/>
+
+                        <Button text="Events"
+                                style="-fx-background-color: transparent;
+                       -fx-text-fill: white;"/>
+
+                        <Button text="Settings"
+                                style="-fx-background-color: transparent;
+                       -fx-text-fill: white;"/>
+                    </children>
+                </VBox>
+
+
+                <Pane VBox.vgrow="ALWAYS"/>
+
+                <Button text="Logout"
+                        onAction="#logout"
+                        style="-fx-background-color: white;
+                               -fx-text-fill: #1a2980;
+                               -fx-background-radius: 20;"/>
+
+            </children>
+        </VBox>
+    </left>
+
+    <center>
+        <StackPane fx:id="contentArea"
+                   style="-fx-padding: 40;" />
+    </center>
+
+    <!-- ================= RIGHT PANEL ================= -->
+    <right>
+        <VBox prefWidth="260"
+              spacing="20"
+              style="-fx-background-color: #ffffff;
+                     -fx-padding: 30;
+                     -fx-background-radius: 30 0 0 30;
+                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 20, 0.2, -5, 0);">
+
+            <Label text="Calendar"
+                   style="-fx-font-size: 20px;
+                          -fx-font-weight: bold;
+                          -fx-text-fill: #1a2980;"/>
+
+            <ListView fx:id="calendarList"
+                      prefHeight="450"
+                      style="-fx-background-radius: 15;"/>
+
+        </VBox>
+    </right>
+
+</BorderPane>

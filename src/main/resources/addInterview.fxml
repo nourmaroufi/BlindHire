@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.web.WebView?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="Controller.AddInterviewController"
+      spacing="0" alignment="TOP_CENTER"
+      prefWidth="660"
+      style="-fx-background-color: #0f172a;">
+
+    <!-- Header Banner -->
+    <HBox alignment="CENTER_LEFT" spacing="14"
+          style="-fx-background-color: #1e293b;
+                 -fx-border-color: transparent transparent rgba(148,163,184,0.12) transparent;
+                 -fx-border-width: 0 0 1 0;
+                 -fx-padding: 22 30;">
+        <Label text="📅" style="-fx-font-size:22px;"/>
+        <VBox spacing="3">
+            <Label fx:id="headerTitleLabel" text="Schedule Interview"
+                   style="-fx-font-size:19px; -fx-font-weight:bold; -fx-text-fill:#f1f5f9;"/>
+            <Label fx:id="headerSubLabel" text="Fill in the details below to book the interview"
+                   style="-fx-font-size:12px; -fx-text-fill:#64748b;"/>
+        </VBox>
+    </HBox>
+
+    <!-- Info pills (pre-filled, read-only) -->
+    <HBox spacing="12" alignment="CENTER_LEFT"
+          style="-fx-padding: 16 30 4 30; -fx-background-color: #0f172a;">
+        <VBox spacing="4" style="-fx-background-color: rgba(99,102,241,0.10);
+                                  -fx-background-radius: 10;
+                                  -fx-border-color: rgba(99,102,241,0.25);
+                                  -fx-border-radius: 10; -fx-border-width: 1;
+                                  -fx-padding: 10 16;">
+            <Label text="JOB OFFER" style="-fx-font-size:10px; -fx-text-fill:#6366f1; -fx-font-weight:bold;"/>
+            <Label fx:id="jobOfferLabel" text="—"
+                   style="-fx-font-size:13px; -fx-text-fill:#e2e8f0; -fx-font-weight:bold;"/>
+        </VBox>
+        <VBox spacing="4" style="-fx-background-color: rgba(6,182,212,0.10);
+                                  -fx-background-radius: 10;
+                                  -fx-border-color: rgba(6,182,212,0.25);
+                                  -fx-border-radius: 10; -fx-border-width: 1;
+                                  -fx-padding: 10 16;">
+            <Label text="CANDIDATE" style="-fx-font-size:10px; -fx-text-fill:#06b6d4; -fx-font-weight:bold;"/>
+            <Label fx:id="candidateLabel" text="—"
+                   style="-fx-font-size:13px; -fx-text-fill:#e2e8f0; -fx-font-weight:bold;"/>
+        </VBox>
+        <VBox spacing="4" style="-fx-background-color: rgba(16,185,129,0.10);
+                                  -fx-background-radius: 10;
+                                  -fx-border-color: rgba(16,185,129,0.25);
+                                  -fx-border-radius: 10; -fx-border-width: 1;
+                                  -fx-padding: 10 16;">
+            <Label text="SCORE ID" style="-fx-font-size:10px; -fx-text-fill:#10b981; -fx-font-weight:bold;"/>
+            <Label fx:id="scoreIdLabel" text="—"
+                   style="-fx-font-size:13px; -fx-text-fill:#e2e8f0; -fx-font-weight:bold;"/>
+        </VBox>
+    </HBox>
+
+    <!-- Form Card -->
+    <VBox spacing="0"
+          style="-fx-background-color: rgba(30,41,59,0.80);
+                 -fx-background-radius: 16;
+                 -fx-border-color: rgba(148,163,184,0.10);
+                 -fx-border-width: 1; -fx-border-radius: 16;
+                 -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 20, 0, 0, 6);">
+        <VBox.margin>
+            <Insets top="14" right="30" bottom="0" left="30"/>
+        </VBox.margin>
+        <padding>
+            <Insets top="24" right="28" bottom="24" left="28"/>
+        </padding>
+
+        <GridPane hgap="16" vgap="18" prefWidth="580">
+            <columnConstraints>
+                <ColumnConstraints prefWidth="130" minWidth="130"/>
+                <ColumnConstraints hgrow="ALWAYS"/>
+            </columnConstraints>
+
+            <!-- Date -->
+            <Label text="Date *" GridPane.rowIndex="0" GridPane.columnIndex="0"
+                   style="-fx-font-weight:bold; -fx-text-fill:#94a3b8; -fx-font-size:12px;"/>
+            <DatePicker fx:id="datePicker" maxWidth="Infinity"
+                        GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"
+                        style="-fx-background-color: rgba(15,23,42,0.8);
+                               -fx-border-color: rgba(148,163,184,0.2);
+                               -fx-border-radius: 8; -fx-background-radius: 8;"/>
+
+            <!-- Time -->
+            <Label text="Time *" GridPane.rowIndex="1" GridPane.columnIndex="0"
+                   style="-fx-font-weight:bold; -fx-text-fill:#94a3b8; -fx-font-size:12px;"/>
+            <ComboBox fx:id="timeComboBox" maxWidth="Infinity"
+                      GridPane.rowIndex="1" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"
+                      style="-fx-background-color: rgba(15,23,42,0.8);
+                             -fx-border-color: rgba(148,163,184,0.2);
+                             -fx-border-radius: 8;"/>
+
+            <!-- Interview Type -->
+            <Label text="Type *" GridPane.rowIndex="2" GridPane.columnIndex="0"
+                   style="-fx-font-weight:bold; -fx-text-fill:#94a3b8; -fx-font-size:12px;"/>
+            <ComboBox fx:id="typeComboBox" maxWidth="Infinity"
+                      GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"
+                      style="-fx-background-color: rgba(15,23,42,0.8);
+                             -fx-border-color: rgba(148,163,184,0.2);
+                             -fx-border-radius: 8;"/>
+
+            <!-- Interviewer (pre-filled, editable display name) -->
+            <Label text="Interviewer" GridPane.rowIndex="3" GridPane.columnIndex="0"
+                   style="-fx-font-weight:bold; -fx-text-fill:#94a3b8; -fx-font-size:12px;"/>
+            <TextField fx:id="interviewerField" promptText="Interviewer name (optional)"
+                       maxWidth="Infinity" editable="false"
+                       GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"
+                       style="-fx-background-color: rgba(15,23,42,0.5);
+                              -fx-border-color: rgba(148,163,184,0.12);
+                              -fx-border-radius: 8; -fx-background-radius: 8;
+                              -fx-text-fill: #64748b; -fx-padding: 8 12;"/>
+
+            <!-- Location (In Person only) -->
+            <Label fx:id="locationLabel" text="Address *" GridPane.rowIndex="4" GridPane.columnIndex="0"
+                   style="-fx-font-weight:bold; -fx-text-fill:#94a3b8; -fx-font-size:12px;"/>
+            <HBox GridPane.rowIndex="4" GridPane.columnIndex="1" spacing="8" alignment="CENTER_LEFT">
+                <TextField fx:id="locationField" promptText="Type an address to search..."
+                           HBox.hgrow="ALWAYS"
+                           style="-fx-background-color: rgba(15,23,42,0.8);
+                                  -fx-border-color: rgba(148,163,184,0.2);
+                                  -fx-border-radius: 8; -fx-background-radius: 8;
+                                  -fx-text-fill: #f1f5f9; -fx-padding: 8 12;"/>
+                <Button fx:id="searchMapBtn" text="🔍 Search"
+                        onAction="#handleSearchLocation"
+                        style="-fx-background-color: #6366f1; -fx-text-fill:white;
+                               -fx-background-radius:8; -fx-padding: 8 14;
+                               -fx-font-size:12px; -fx-cursor:hand;"/>
+            </HBox>
+
+            <!-- Map Preview -->
+            <Label fx:id="mapLabel" text="Map Preview" GridPane.rowIndex="5" GridPane.columnIndex="0"
+                   style="-fx-font-weight:bold; -fx-text-fill:#94a3b8; -fx-font-size:12px;"/>
+            <WebView fx:id="mapView" GridPane.rowIndex="5" GridPane.columnIndex="1"
+                     prefHeight="260" maxWidth="Infinity"/>
+        </GridPane>
+    </VBox>
+
+    <!-- Buttons -->
+    <HBox spacing="14" alignment="CENTER" style="-fx-padding: 20 30;">
+        <Button text="✅  Schedule Interview" fx:id="addButton" onAction="#handleAddInterview"
+                prefWidth="190"
+                style="-fx-background-color: linear-gradient(to right, #6366f1, #818cf8);
+                       -fx-text-fill:white; -fx-background-radius:10;
+                       -fx-padding: 11 20; -fx-font-size:13px;
+                       -fx-font-weight:bold; -fx-cursor:hand;
+                       -fx-effect: dropshadow(gaussian, rgba(99,102,241,0.40), 10, 0, 0, 3);"/>
+        <Button text="✖  Cancel" fx:id="cancelButton" onAction="#handleCancel"
+                prefWidth="120"
+                style="-fx-background-color: rgba(255,255,255,0.06);
+                       -fx-text-fill:#94a3b8; -fx-background-radius:10;
+                       -fx-padding: 11 20; -fx-font-size:13px;
+                       -fx-border-color: rgba(148,163,184,0.20);
+                       -fx-border-radius:10; -fx-cursor:hand;"/>
+    </HBox>
+
+</VBox>
