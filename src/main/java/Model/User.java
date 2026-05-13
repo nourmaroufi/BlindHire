@@ -14,8 +14,18 @@ public class User {
     private String  phone;
     private boolean isVerified;
     private String  verificationCode;
-    private String  faceData;            // Base64-encoded JPEG face snapshot
-    private String  username;            // Public blind username e.g. "SilentFalcon4821"
+    private String  faceData;
+    private String  username;
+
+    // ── NEW fields to match the database ─────────────────────────────────────
+    private boolean fingerprintEnabled;
+    private String  bannedUntil;           // datetime stored as String
+    private String  banReason;
+    private int     failedLoginAttempts;
+    private String  recruiterRequestStatus;
+    private String  recruiterRequestReviewedAt;  // datetime stored as String
+    private String  cvPath;
+    // ─────────────────────────────────────────────────────────────────────────
 
     public User() {}
 
@@ -51,6 +61,7 @@ public class User {
                 phone, isVerified, verificationCode, faceData, null);
     }
 
+    // ── Existing getters/setters (unchanged) ──────────────────────────────────
     public int     getId()                              { return id; }
     public void    setId(int id)                        { this.id = id; }
     public String  getNom()                             { return nom; }
@@ -82,8 +93,30 @@ public class User {
     public String  getUsername()                        { return username; }
     public void    setUsername(String username)         { this.username = username; }
 
-    /** Public display name — username if set, otherwise "nom prenom". */
-    public String  getDisplayName() {
+    // ── NEW getters/setters ───────────────────────────────────────────────────
+    public boolean isFingerprintEnabled()                          { return fingerprintEnabled; }
+    public void    setFingerprintEnabled(boolean fingerprintEnabled){ this.fingerprintEnabled = fingerprintEnabled; }
+
+    public String  getBannedUntil()                                { return bannedUntil; }
+    public void    setBannedUntil(String bannedUntil)              { this.bannedUntil = bannedUntil; }
+
+    public String  getBanReason()                                  { return banReason; }
+    public void    setBanReason(String banReason)                  { this.banReason = banReason; }
+
+    public int     getFailedLoginAttempts()                        { return failedLoginAttempts; }
+    public void    setFailedLoginAttempts(int failedLoginAttempts) { this.failedLoginAttempts = failedLoginAttempts; }
+
+    public String  getRecruiterRequestStatus()                          { return recruiterRequestStatus; }
+    public void    setRecruiterRequestStatus(String recruiterRequestStatus){ this.recruiterRequestStatus = recruiterRequestStatus; }
+
+    public String  getRecruiterRequestReviewedAt()                      { return recruiterRequestReviewedAt; }
+    public void    setRecruiterRequestReviewedAt(String recruiterRequestReviewedAt){ this.recruiterRequestReviewedAt = recruiterRequestReviewedAt; }
+
+    public String  getCvPath()                                     { return cvPath; }
+    public void    setCvPath(String cvPath)                        { this.cvPath = cvPath; }
+    // ─────────────────────────────────────────────────────────────────────────
+
+    public String getDisplayName() {
         return (username != null && !username.isBlank()) ? username : nom + " " + prenom;
     }
 
