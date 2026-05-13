@@ -20,7 +20,7 @@ import java.nio.charset.StandardCharsets;
 public class ApiService {
 
     // ── Paste your Groq API key here ──────────────────────────────────────────
-    private static final String GROQ_API_KEY = "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";
+    private static final String GROQ_API_KEY = "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";
 
     private static final String GROQ_URL =
             "https://api.groq.com/openai/v1/chat/completions";
