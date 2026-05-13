@@ -26,7 +26,7 @@ public class AiMatchingService {
     public static String getMatchScore(String jobSkills, String candidateSkills) throws IOException {
 
         // 1. Try environment variable (works in terminal/production)
-        String apiKey = "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";
+        String apiKey = "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";
         // 2. Try Java system property (set in IDE run config via -DGROQ_API_KEY=...)
         if (apiKey == null || apiKey.isEmpty())
             apiKey = System.getProperty("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");
