@@ -93,6 +93,14 @@
             <artifactId>jna-platform</artifactId>
             <version>5.14.0</version>
         </dependency>
+
+        <!-- BCrypt — password hashing compatible with Symfony -->
+        <dependency>
+            <groupId>org.mindrot</groupId>
+            <artifactId>jbcrypt</artifactId>
+            <version>0.4</version>
+        </dependency>
+
         <!-- JavaMail -->
         <dependency>
             <groupId>com.sun.mail</groupId>

@@ -151,6 +151,10 @@ public class AddCandidatureController {
             if (!salaryField.getText().trim().isEmpty())
                 candidature.setExpectedSalary(Double.parseDouble(salaryField.getText().trim()));
 
+            java.time.LocalDateTime now = java.time.LocalDateTime.now();
+            candidature.setCreatedAt(now);
+            candidature.setUpdatedAt(now);
+
             candidatureService.addCandidature(candidature);
             showAlert(Alert.AlertType.INFORMATION, "Success",
                     "Application submitted successfully!");
@@ -223,13 +227,13 @@ public class AddCandidatureController {
                 String prompt =
                         "Write a professional cover letter for a job application. " +
                                 "The applicant goes by the username "+ username +
-                        "Their bio: " + bio + ". " +
-                        "Their skills: " + skills + ". " +
-                        "The job they are applying for: " + jobTitle  +
-                        "Write the letter in first person, 3 short paragraphs. " +
-                        "Do NOT include any real name, email, phone, or address — keep the applicant anonymous. " +
-                        "Start directly with the letter body (no 'Dear Hiring Manager' header). " +
-                        "Keep it concise, enthusiastic, and professional.";
+                                "Their bio: " + bio + ". " +
+                                "Their skills: " + skills + ". " +
+                                "The job they are applying for: " + jobTitle  +
+                                "Write the letter in first person, 3 short paragraphs. " +
+                                "Do NOT include any real name, email, phone, or address — keep the applicant anonymous. " +
+                                "Start directly with the letter body (no 'Dear Hiring Manager' header). " +
+                                "Keep it concise, enthusiastic, and professional.";
 
                 AIPracticeService ai = new AIPracticeService();
                 String letter = ai.askAI(prompt);

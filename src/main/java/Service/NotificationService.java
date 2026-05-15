@@ -41,7 +41,7 @@ public class NotificationService {
 
     // ── Gmail SMTP ────────────────────────────────────────────────────────────
     private static final String GMAIL_ADDRESS      = "jedchihi100@gmail.com";
-    private static final String GMAIL_APP_PASSWORD = "hixr ugif tykh kwsv";
+    private static final String GMAIL_APP_PASSWORD = "feoyextzcqucjhyg";
 
     // ── Twilio SMS ────────────────────────────────────────────────────────────
     private static final String TWILIO_ACCOUNT_SID = "ACd7784cedc764c0264de4c988a294f022";

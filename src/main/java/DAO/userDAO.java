@@ -12,6 +12,14 @@ import java.util.List;
 
 public class userDAO {
 
+    private String nullIfBlank(String value) {
+        return (value == null || value.isBlank()) ? null : value;
+    }
+
+    private String normalizeRecruiterRequestStatus(String status) {
+        return (status == null || status.isBlank()) ? "approved" : status;
+    }
+
     private Role parseRole(String s) {
         if (s == null) return Role.client;
         for (Role r : Role.values())
@@ -20,10 +28,9 @@ public class userDAO {
     }
 
     private User mapRow(ResultSet rs) throws Exception {
-        String username = null;
-        try { username = rs.getString("username"); } catch (Exception ignored) {}
+        String username = rs.getString("username");
 
-        return new User(
+        User user = new User(
                 rs.getInt("id"),
                 rs.getString("nom"),
                 rs.getString("prenom"),
@@ -40,29 +47,48 @@ public class userDAO {
                 rs.getString("face_data"),
                 username
         );
+
+        user.setFingerprintEnabled(rs.getInt("fingerprint_enabled") == 1);
+        user.setBannedUntil(rs.getString("banned_until"));
+        user.setBanReason(rs.getString("ban_reason"));
+        user.setFailedLoginAttempts(rs.getInt("failed_login_attempts"));
+        user.setRecruiterRequestStatus(rs.getString("recruiter_request_status"));
+        user.setRecruiterRequestReviewedAt(rs.getString("recruiter_request_reviewed_at"));
+        user.setCvPath(rs.getString("cv_path"));
+
+        return user;
     }
 
     // ── INSERT ────────────────────────────────────────────────────────────────
     public void insert(User user) {
-        String sql = "INSERT INTO user(nom, prenom, mail, mdp, role, skills, diplomas, " +
-                "experience, bio, phone, is_verified, verification_code, face_data, username) " +
-                "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO user(nom, prenom, username, mail, mdp, role, skills, diplomas, " +
+                "experience, bio, phone, is_verified, verification_code, face_data, " +
+                "fingerprint_enabled, banned_until, ban_reason, failed_login_attempts, " +
+                "recruiter_request_status, recruiter_request_reviewed_at, cv_path) " +
+                "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
         try (Connection conn = Mydb.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1,  user.getNom());
             ps.setString(2,  user.getPrenom());
-            ps.setString(3,  user.getEmail());
-            ps.setString(4,  user.getMdp());
-            ps.setString(5,  user.getRole().name());
-            ps.setString(6,  user.getSkills());
-            ps.setString(7,  user.getDiplomas());
-            ps.setString(8,  user.getExperience());
-            ps.setString(9,  user.getBio());
-            ps.setString(10, user.getPhone());
-            ps.setInt(11,    user.isVerified() ? 1 : 0);
-            ps.setString(12, user.getVerificationCode());
-            ps.setString(13, user.getFaceData());
-            ps.setString(14, user.getUsername());
+            ps.setString(3,  user.getUsername());
+            ps.setString(4,  user.getEmail());
+            ps.setString(5,  user.getMdp());
+            ps.setString(6,  user.getRole().name());
+            ps.setString(7,  user.getSkills());
+            ps.setString(8,  user.getDiplomas());
+            ps.setString(9,  user.getExperience());
+            ps.setString(10, user.getBio());
+            ps.setString(11, user.getPhone());
+            ps.setInt(12,    user.isVerified() ? 1 : 0);
+            ps.setString(13, user.getVerificationCode());
+            ps.setString(14, user.getFaceData());
+            ps.setInt(15,    user.isFingerprintEnabled() ? 1 : 0);
+            ps.setString(16, nullIfBlank(user.getBannedUntil()));
+            ps.setString(17, nullIfBlank(user.getBanReason()));
+            ps.setInt(18,    Math.max(0, user.getFailedLoginAttempts()));
+            ps.setString(19, normalizeRecruiterRequestStatus(user.getRecruiterRequestStatus()));
+            ps.setString(20, nullIfBlank(user.getRecruiterRequestReviewedAt()));
+            ps.setString(21, nullIfBlank(user.getCvPath()));
             ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -142,26 +168,35 @@ public class userDAO {
 
     // ── UPDATE (full) ─────────────────────────────────────────────────────────
     public void update(User user) {
-        String sql = "UPDATE user SET nom=?,prenom=?,mail=?,mdp=?,role=?," +
+        String sql = "UPDATE user SET nom=?,prenom=?,username=?,mail=?,mdp=?,role=?," +
                 "skills=?,diplomas=?,experience=?,bio=?,phone=?," +
-                "is_verified=?,verification_code=?,face_data=?,username=? WHERE id=?";
+                "is_verified=?,verification_code=?,face_data=?,fingerprint_enabled=?," +
+                "banned_until=?,ban_reason=?,failed_login_attempts=?," +
+                "recruiter_request_status=?,recruiter_request_reviewed_at=?,cv_path=? WHERE id=?";
         try (Connection conn = Mydb.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1,  user.getNom());
             ps.setString(2,  user.getPrenom());
-            ps.setString(3,  user.getEmail());
-            ps.setString(4,  user.getMdp());
-            ps.setString(5,  user.getRole().name());
-            ps.setString(6,  user.getSkills());
-            ps.setString(7,  user.getDiplomas());
-            ps.setString(8,  user.getExperience());
-            ps.setString(9,  user.getBio());
-            ps.setString(10, user.getPhone());
-            ps.setInt(11,    user.isVerified() ? 1 : 0);
-            ps.setString(12, user.getVerificationCode());
-            ps.setString(13, user.getFaceData());
-            ps.setString(14, user.getUsername());
-            ps.setInt(15,    user.getId());
+            ps.setString(3,  user.getUsername());
+            ps.setString(4,  user.getEmail());
+            ps.setString(5,  user.getMdp());
+            ps.setString(6,  user.getRole().name());
+            ps.setString(7,  user.getSkills());
+            ps.setString(8,  user.getDiplomas());
+            ps.setString(9,  user.getExperience());
+            ps.setString(10, user.getBio());
+            ps.setString(11, user.getPhone());
+            ps.setInt(12,    user.isVerified() ? 1 : 0);
+            ps.setString(13, user.getVerificationCode());
+            ps.setString(14, user.getFaceData());
+            ps.setInt(15,    user.isFingerprintEnabled() ? 1 : 0);
+            ps.setString(16, nullIfBlank(user.getBannedUntil()));
+            ps.setString(17, nullIfBlank(user.getBanReason()));
+            ps.setInt(18,    Math.max(0, user.getFailedLoginAttempts()));
+            ps.setString(19, normalizeRecruiterRequestStatus(user.getRecruiterRequestStatus()));
+            ps.setString(20, nullIfBlank(user.getRecruiterRequestReviewedAt()));
+            ps.setString(21, nullIfBlank(user.getCvPath()));
+            ps.setInt(22,    user.getId());
             ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -221,6 +256,65 @@ public class userDAO {
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Error updating password: " + e.getMessage());
+        }
+    }
+
+    // ── UPDATE password only (no verification code change) ──────────────────
+    public void updatePasswordOnly(int userId, String newMdp) {
+        try (Connection conn = Mydb.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(
+                     "UPDATE user SET mdp=? WHERE id=?")) {
+            ps.setString(1, newMdp);
+            ps.setInt(2, userId);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error updating password: " + e.getMessage());
+        }
+    }
+
+    // ── UPDATE failed login attempts ────────────────────────────────────────
+    public void updateFailedLoginAttempts(int userId, int attempts) {
+        try (Connection conn = Mydb.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(
+                     "UPDATE user SET failed_login_attempts=? WHERE id=?")) {
+            ps.setInt(1, Math.max(0, attempts));
+            ps.setInt(2, userId);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error updating failed login attempts: " + e.getMessage());
+        }
+    }
+
+    // ── UPDATE ban fields ───────────────────────────────────────────────────
+    public void updateBan(int userId, String bannedUntil, String banReason) {
+        try (Connection conn = Mydb.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(
+                     "UPDATE user SET banned_until=?, ban_reason=? WHERE id=?")) {
+            ps.setString(1, nullIfBlank(bannedUntil));
+            ps.setString(2, nullIfBlank(banReason));
+            ps.setInt(3, userId);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error updating ban info: " + e.getMessage());
+        }
+    }
+
+    // ── UPDATE recruiter approval fields ───────────────────────────────────
+    public void updateRecruiterApproval(int userId, String status, String reviewedAt, boolean isVerified) {
+        try (Connection conn = Mydb.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(
+                     "UPDATE user SET recruiter_request_status=?, recruiter_request_reviewed_at=?, is_verified=? WHERE id=?")) {
+            ps.setString(1, normalizeRecruiterRequestStatus(status));
+            ps.setString(2, nullIfBlank(reviewedAt));
+            ps.setInt(3, isVerified ? 1 : 0);
+            ps.setInt(4, userId);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error updating recruiter approval: " + e.getMessage());
         }
     }
 

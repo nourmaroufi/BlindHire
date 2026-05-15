@@ -4,11 +4,15 @@ import DAO.userDAO;
 import Model.Role;
 import Model.User;
 import Utils.Mydb;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,17 +22,13 @@ public class userservice {
 
     private final userDAO userDAO = new userDAO();
     private static User currentUser;
+    private static final DateTimeFormatter DB_DATETIME = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    // ── REGISTER ──────────────────────────────────────────────────────────────
-
-    /**
-     * Registers a new user, generates a verification code, sends it via
-     * email AND SMS, then saves the user as unverified.
-     * Returns the saved user (with id) so the UI can navigate to VerificationPage.
-     */
     public userservice() {
         this.cnx = Mydb.getInstance().getConnection();
     }
+
+    // ── REGISTER ──────────────────────────────────────────────────────────────
 
     public User register(User user) {
         validate(user);
@@ -41,25 +41,34 @@ public class userservice {
         // Auto-generate a blind username if not already set
         if (user.getUsername() == null || user.getUsername().isBlank()) {
             String username;
-            // Ensure uniqueness (retry on collision — extremely rare)
             do {
                 username = Utils.UsernameGenerator.generate();
             } while (userDAO.findByUsername(username) != null);
             user.setUsername(username);
         }
 
+        // ── Hash the password before saving ──────────────────────────────────
+        user.setMdp(BCrypt.hashpw(user.getMdp(), BCrypt.gensalt()));
+
         user.setVerificationCode(null);
         user.setVerified(false);
+
+        if (user.getRole() == Role.recruteur) {
+            user.setRecruiterRequestStatus("pending");
+            user.setRecruiterRequestReviewedAt(null);
+        } else {
+            user.setRecruiterRequestStatus("approved");
+        }
         userDAO.insert(user);
 
         return userDAO.findByEmail(user.getEmail());
     }
 
-    /**
-     * Verifies a user's account by checking the code they entered.
-     * Marks the account as verified and clears the code on success.
-     */
+    // ── VERIFY ────────────────────────────────────────────────────────────────
+
     public void verifyAccount(User user, String enteredCode) {
+        if (user.getRole() == Role.recruteur && !isRecruiterApproved(user))
+            throw new IllegalArgumentException("PENDING_APPROVAL");
         if (enteredCode == null || enteredCode.trim().isEmpty())
             throw new IllegalArgumentException("Please enter the verification code.");
         if (user.getVerificationCode() == null
@@ -71,10 +80,6 @@ public class userservice {
         user.setVerificationCode(null);
     }
 
-    /**
-     * Resends a fresh verification code via the chosen channel.
-     * @param usePhone true = SMS, false = email
-     */
     public void resendVerificationCode(User user, boolean usePhone) {
         String code = NotificationService.generateCode();
         userDAO.updateVerificationCode(user.getId(), code);
@@ -91,7 +96,6 @@ public class userservice {
         }
     }
 
-    /** Overload kept for LoginPage unverified redirect — defaults to email. */
     public void resendVerificationCode(User user) {
         resendVerificationCode(user, false);
     }
@@ -103,21 +107,54 @@ public class userservice {
             throw new IllegalArgumentException("Email and password are required!");
 
         User user = userDAO.findByEmail(email);
-        if (user == null || !user.getMdp().equals(password))
+        if (user == null)
             throw new IllegalArgumentException("Invalid email or password!");
+
+        if (isCurrentlyBanned(user))
+            throw new IllegalArgumentException("Account is temporarily blocked.");
+
+        if (user.getRole() == Role.recruteur && !isRecruiterApproved(user))
+            throw new IllegalArgumentException("PENDING_APPROVAL");
+
+        // ── Support both bcrypt hashes (Symfony) and legacy plain-text ────────
+        String stored = user.getMdp();
+        String normalized = normalizeBcryptHash(stored);
+        boolean valid = isBcryptHash(normalized)       // bcrypt hash from Symfony or new Java registrations
+                ? BCrypt.checkpw(password, normalized)
+                : stored.equals(password);             // legacy plain-text users already in DB
+
+        if (!valid) {
+            int attempts = user.getFailedLoginAttempts() + 1;
+            if (attempts >= 3) {
+                banForMinutes(user, 15, "Too many failed login attempts");
+                userDAO.updateFailedLoginAttempts(user.getId(), 0);
+                user.setFailedLoginAttempts(0);
+                throw new IllegalArgumentException("Too many failed attempts. Account blocked for 15 minutes.");
+            }
+            userDAO.updateFailedLoginAttempts(user.getId(), attempts);
+            user.setFailedLoginAttempts(attempts);
+            throw new IllegalArgumentException("Invalid email or password!");
+        }
+
         if (!user.isVerified())
-            throw new IllegalArgumentException("UNVERIFIED"); // special signal to UI
+            throw new IllegalArgumentException("UNVERIFIED");
+
+        if (!isBcryptHash(stored)) {
+            String hashed = BCrypt.hashpw(password, BCrypt.gensalt());
+            userDAO.updatePasswordOnly(user.getId(), hashed);
+            user.setMdp(hashed);
+        }
+
+        if (user.getFailedLoginAttempts() > 0) {
+            userDAO.updateFailedLoginAttempts(user.getId(), 0);
+            user.setFailedLoginAttempts(0);
+        }
 
         return user;
     }
 
     // ── FORGOT PASSWORD ───────────────────────────────────────────────────────
 
-    /**
-     * Initiates a password reset for the given email or phone.
-     * Generates a code, saves it, sends it, and returns the user.
-     * Throws if the contact is not found.
-     */
     public User initiatePasswordReset(String contact, boolean isPhone) {
         User user = isPhone
                 ? userDAO.findByPhone(contact)
@@ -144,9 +181,6 @@ public class userservice {
         return user;
     }
 
-    /**
-     * Verifies the reset code and updates the password.
-     */
     public void resetPassword(User user, String enteredCode, String newPassword) {
         if (enteredCode == null || enteredCode.trim().isEmpty())
             throw new IllegalArgumentException("Please enter the reset code.");
@@ -158,8 +192,10 @@ public class userservice {
         if (!newPassword.matches(".*[a-zA-Z].*") || !newPassword.matches(".*[0-9].*"))
             throw new IllegalArgumentException("Password must contain at least one letter and one number.");
 
-        userDAO.updatePassword(user.getId(), newPassword);
-        user.setMdp(newPassword);
+        // ── Hash the new password before saving ──────────────────────────────
+        String hashed = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+        userDAO.updatePassword(user.getId(), hashed);
+        user.setMdp(hashed);
         user.setVerificationCode(null);
     }
 
@@ -168,7 +204,37 @@ public class userservice {
     public void updateUser(User user) {
         if (user == null) throw new IllegalArgumentException("User cannot be null!");
         validate(user);
+        if (user.getMdp() != null && !isBcryptHash(user.getMdp())) {
+            user.setMdp(BCrypt.hashpw(user.getMdp(), BCrypt.gensalt()));
+        }
         userDAO.update(user);
+    }
+
+    public void approveRecruiter(User user) {
+        if (user == null) throw new IllegalArgumentException("User cannot be null!");
+        String reviewedAt = LocalDateTime.now().format(DB_DATETIME);
+        userDAO.updateRecruiterApproval(user.getId(), "approved", reviewedAt, true);
+        user.setRecruiterRequestStatus("approved");
+        user.setRecruiterRequestReviewedAt(reviewedAt);
+        user.setVerified(true);
+    }
+
+    public void banUser(User user, int minutes, String reason) {
+        if (user == null) throw new IllegalArgumentException("User cannot be null!");
+        banForMinutes(user, minutes, reason);
+        userDAO.updateFailedLoginAttempts(user.getId(), 0);
+        user.setFailedLoginAttempts(0);
+    }
+
+    public void unbanUser(User user) {
+        if (user == null) throw new IllegalArgumentException("User cannot be null!");
+        userDAO.updateBan(user.getId(), null, null);
+        user.setBannedUntil(null);
+        user.setBanReason(null);
+    }
+
+    public boolean isUserBanned(User user) {
+        return user != null && isCurrentlyBanned(user);
     }
 
     public void deleteUser(int id)           { userDAO.delete(id); }
@@ -178,13 +244,10 @@ public class userservice {
         userDAO.updateFaceData(user.getId(), faceBase64);
         user.setFaceData(faceBase64);
     }
+
     public User getUserByPhone(String phone) { return userDAO.findByPhone(phone); }
-
-    public User getUserById(int id) {
-        return userDAO.findById(id);
-    }
-
-    public List<User> getAllUsers()           { return userDAO.getAll(); }
+    public User getUserById(int id)          { return userDAO.findById(id); }
+    public List<User> getAllUsers()          { return userDAO.getAll(); }
 
     public List<User> getUsersByRole(Role role) {
         List<User> filtered = new ArrayList<>();
@@ -197,7 +260,7 @@ public class userservice {
     public List<User> getRecruiters() { return getUsersByRole(Role.recruteur); }
     public List<User> getClients()    { return getUsersByRole(Role.client); }
 
-    public void    setCurrentUser(User user) { this.currentUser = user; }
+    public void    setCurrentUser(User user) { currentUser = user; }
     public User    getCurrentUser()          { return currentUser; }
     public boolean emailExists(String email) { return userDAO.findByEmail(email) != null; }
     public boolean phoneExists(String phone) { return userDAO.findByPhone(phone) != null; }
@@ -220,6 +283,7 @@ public class userservice {
         }
         return 0;
     }
+
     private void validate(User u) {
         if (u.getNom() == null || u.getNom().isEmpty()
                 || u.getPrenom() == null || u.getPrenom().isEmpty()
@@ -228,5 +292,41 @@ public class userservice {
             throw new IllegalArgumentException("All required fields must be filled!");
         if (!u.getEmail().contains("@"))
             throw new IllegalArgumentException("Invalid email address!");
+    }
+
+    private boolean isBcryptHash(String value) {
+        return value != null
+                && (value.startsWith("$2a$") || value.startsWith("$2b$") || value.startsWith("$2y$"));
+    }
+
+    private String normalizeBcryptHash(String value) {
+        if (value == null) return null;
+        if (value.startsWith("$2y$")) {
+            return "$2a$" + value.substring(4);
+        }
+        return value;
+    }
+
+    private boolean isRecruiterApproved(User user) {
+        String status = user.getRecruiterRequestStatus();
+        return status == null || status.isBlank() || "approved".equalsIgnoreCase(status);
+    }
+
+    private void banForMinutes(User user, int minutes, String reason) {
+        String until = LocalDateTime.now().plusMinutes(minutes).format(DB_DATETIME);
+        userDAO.updateBan(user.getId(), until, reason);
+        user.setBannedUntil(until);
+        user.setBanReason(reason);
+    }
+
+    private boolean isCurrentlyBanned(User user) {
+        String bannedUntil = user.getBannedUntil();
+        if (bannedUntil == null || bannedUntil.isBlank()) return false;
+        try {
+            LocalDateTime until = LocalDateTime.parse(bannedUntil, DB_DATETIME);
+            return until.isAfter(LocalDateTime.now());
+        } catch (DateTimeParseException e) {
+            return false;
+        }
     }
 }

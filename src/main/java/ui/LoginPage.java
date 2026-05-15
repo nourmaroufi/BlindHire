@@ -1,5 +1,6 @@
 package ui;
 
+import Model.Role;
 import Model.User;
 import Service.userservice;
 import javafx.geometry.Insets;
@@ -278,6 +279,10 @@ public class LoginPage {
             if (user == null) { errorLabel.setText("No account found with this email."); return; }
             if (user.getFaceData() == null || user.getFaceData().isEmpty()) {
                 errorLabel.setText("No face registered. Use password login."); return; }
+            if (user.getRole() == Role.recruteur
+                    && user.getRecruiterRequestStatus() != null
+                    && !"approved".equalsIgnoreCase(user.getRecruiterRequestStatus())) {
+                errorLabel.setText("Recruiter account pending admin approval."); return; }
             if (!user.isVerified()) { errorLabel.setText("Account not verified."); return; }
             FaceCaptureDialog dialog = new FaceCaptureDialog(FaceCaptureDialog.Mode.AUTH, user.getFaceData());
             dialog.showAndWait();
@@ -299,7 +304,9 @@ public class LoginPage {
             if (rememberMe) Utils.SessionManager.saveSession(user.getId());
             navigateByRole(user);
         } catch (IllegalArgumentException e) {
-            if ("UNVERIFIED".equals(e.getMessage())) {
+            if ("PENDING_APPROVAL".equals(e.getMessage())) {
+                errorLabel.setText("Recruiter account pending admin approval.");
+            } else if ("UNVERIFIED".equals(e.getMessage())) {
                 try {
                     userservice svc = new userservice();
                     User unverified = svc.getUserByEmail(email);
